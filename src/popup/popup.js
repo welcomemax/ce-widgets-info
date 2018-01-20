@@ -3,7 +3,7 @@ var widgetsData = bgWindow.widgetsData;
 
 var popup = angular.module('popup', []);
 
-popup.controller('popupController', ['$scope', function($scope) {
+popup.controller('popupController', ['$scope', function ($scope) {
     this.$onInit = function () {
         angular.extend($scope, widgetsData);
 

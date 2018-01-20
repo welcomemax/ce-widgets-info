@@ -14,7 +14,6 @@ chrome.runtime.onConnect.addListener(function(port) {
 widgetsInfoClass = function () {};
 
 widgetsInfoClass.prototype = {
-    divs: [],
     matches: [],
 
     eappsRegex: /^elfsight-app-(.*)$/,
@@ -28,14 +27,28 @@ widgetsInfoClass.prototype = {
     },
 
     collectWidgets: function() {
-        this.divs = document.getElementsByTagName('div');
+        var divs = document.getElementsByTagName('div');
+        var tags = document.getElementsByTagName('elfsight-app');
 
+        for (var i = 0; i < tags.length; i++) {
+            var curr = tags[i];
 
-        for (var i = 0; i < this.divs.length; i++) {
-            var curr = this.divs[i];
+            this.matches.push({
+                type: 'eapps',
+                el: curr,
+                publicID: curr.dataset.id
+            });
+        }
+
+        for (var i = 0; i < divs.length; i++) {
+            var curr = divs[i];
 
             if (this.eappsRegex.test(curr.className)) {
-                this.matches.push({type: 'eapps', el: curr});
+                this.matches.push({
+                    type: 'eapps',
+                    el: curr,
+                    publicID: curr.className.match(this.eappsRegex)[1]
+                });
             }
         }
 
@@ -53,20 +66,19 @@ widgetsInfoClass.prototype = {
     },
 
     getPlatformData: function (curr) {
-        var publicID = curr.el.className.match(this.eappsRegex)[1];
-
         var xhr = new XMLHttpRequest();
 
-        xhr.open('GET', this.eappsUrl + publicID, false); // @TODO async & send for all widgets
+        xhr.open('GET', this.eappsUrl + curr.publicID, false); // @TODO async & send for all (batch) eapps widgets
         xhr.send();
 
         if (xhr.status == 200) {
-            var responseRegex = /\/\*\*\/collect\((.*)\)\;/;
+            var responseRegex = /\/\*\*\/collect\((.*)\);/;
             var responseJSON = JSON.parse(xhr.responseText.match(responseRegex)[1]);
-            var responseData = responseJSON.data.widgets[publicID].data;
+            var responseData = responseJSON.data.widgets[curr.publicID].data;
 
             var widgetData = {
-                publicID: publicID,
+                type: curr.type,
+                publicID: curr.publicID,
                 app: responseData.app,
                 settings: responseData.settings
             };
