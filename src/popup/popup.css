@@ -16,6 +16,7 @@ body {
     .popup header {
         background: #ffffff;
         color: #38393a;
+        line-height: 16px;
         justify-content: space-between;
     }
         .popup header h1 {
@@ -39,8 +40,49 @@ body {
             width: 100%;
         }
 
+        .widget {
+
+        }
+
+            .widget .widget-header {
+                display: flex;
+                justify-content: space-between;
+                line-height: 16px;
+            }
+
+                .widget .widget-header .widget-header-app {
+                    font-size: 12px;
+                }
+
+                .widget .widget-header .widget-header-type {
+                    font-size: 10px;
+                }
+
+            .widget .widget-settings {
+                width: 284px;
+                max-height: 200px;
+                background: #ffffff;
+                color: #38393a;
+                border: 1px solid #303131;
+                border-radius: 3px;
+                padding: 4px 8px;
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+
     .popup footer {
         background: #ffffff;
         color: #38393a;
+        line-height: 16px;
         justify-content: flex-end;
     }
+
+        .popup footer label{
+            font-size: 12px;
+        }
+
+            .popup footer label input{
+                position: relative;
+                bottom: -2px;
+                margin: 0 4px 0 0;
+            }

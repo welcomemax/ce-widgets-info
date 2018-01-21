@@ -4,6 +4,10 @@ var widgetsData = bgWindow.widgetsData;
 var popup = angular.module('popup', []);
 
 popup.controller('popupController', ['$scope', function ($scope) {
+    $scope.settings = {
+        highlight: true
+    };
+
     this.$onInit = function () {
         $scope.widgetsData = widgetsData;
 
