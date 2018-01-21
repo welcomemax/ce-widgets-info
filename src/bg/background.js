@@ -1,7 +1,7 @@
 var background = angular.module('background', []);
 
 background.controller('backgroundController', ['$scope', '$window', function ($scope, $window) {
-    $scope.tabsWidgetsData = {};
+    $scope.storedWidgetsData = {};
 
     this.$onInit = function () {
         chrome.tabs.onUpdated.addListener(function (id, info, tab) {
@@ -16,16 +16,13 @@ background.controller('backgroundController', ['$scope', '$window', function ($s
     };
 
     chrome.tabs.onActivated.addListener(function (info) {
-        if ($scope.tabsWidgetsData[info.tabId]) {
             $scope.getWidgetsData(info.tabId);
-        } else {
-            $scope.setBadge(0);
-        }
     });
 
     $scope.setBadge = function (count) {
         if (count) {
             chrome.browserAction.setBadgeText({text: count.toString()});
+            chrome.browserAction.setBadgeBackgroundColor({color: '#38393a'});
         } else {
             chrome.browserAction.setBadgeText({text: ''});
         }
@@ -37,14 +34,20 @@ background.controller('backgroundController', ['$scope', '$window', function ($s
         port.postMessage({getWidgets: true, highlightWidgets: true});
 
         port.onMessage.addListener(function (response) {
-            $scope.tabsWidgetsData[id] = response;
+            $scope.storedWidgetsData[id] = response;
 
             $scope.getWidgetsData(id);
         });
     };
 
     $scope.getWidgetsData = function (id) {
-        $window.widgetsData = $scope.tabsWidgetsData[id];
-        $scope.setBadge($scope.tabsWidgetsData[id].length);
+        if ($scope.storedWidgetsData[id]) {
+            $window.widgetsData = $scope.storedWidgetsData[id];
+            $scope.setBadge($scope.storedWidgetsData[id].length);
+        } else {
+            $window.widgetsData = [];
+            $scope.setBadge(0);
+        }
+
     };
 }]);

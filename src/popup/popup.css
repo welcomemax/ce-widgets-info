@@ -1,7 +1,46 @@
-#container {
-    padding: 10px;
-    height: 100px;
-    width: 200px;
+body {
     font-family: Helvetica, Ubuntu, Arial, sans-serif;
+    margin: 0;
 }
 
+.popup {
+    min-width: 300px;
+}
+    .popup header,
+    .popup main,
+    .popup footer {
+        padding: 8px 16px;
+        display: flex;
+    }
+
+    .popup header {
+        background: #ffffff;
+        color: #38393a;
+        justify-content: space-between;
+    }
+        .popup header h1 {
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .popup header .widgets-count {
+            font-size: 12px;
+        }
+
+    .popup main {
+        background: #38393a;
+        color: #ffffff;
+    }
+
+        .popup main .widgets-empty{
+            padding: 8px 0;
+            text-align: center;
+            font-size: 12px;
+            width: 100%;
+        }
+
+    .popup footer {
+        background: #ffffff;
+        color: #38393a;
+        justify-content: flex-end;
+    }

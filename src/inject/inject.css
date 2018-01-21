@@ -3,5 +3,5 @@
  **/
 
 .widget-highlight{
-    border: 1px solid #F93262 !important;
+    box-shadow: 0px 0px 1px 1px rgba(249,50,98,1);
 }

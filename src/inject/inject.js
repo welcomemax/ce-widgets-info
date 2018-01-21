@@ -98,8 +98,8 @@ widgetsInfoClass.prototype = {
     },
 
     collectWidgetsData: function () {
-        for (var i = 0; i < this.widget.length; i++) {
-            var widget = this.widget[i];
+        for (var i = 0; i < this.widgets.length; i++) {
+            var widget = this.widgets[i];
 
             if (widget.type = 'eapps') {
                 this.getPlatformData(widget);
