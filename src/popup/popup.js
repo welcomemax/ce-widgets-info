@@ -5,8 +5,16 @@ var popup = angular.module('popup', []);
 
 popup.controller('popupController', ['$scope', function ($scope) {
     this.$onInit = function () {
-        angular.extend($scope, widgetsData);
+        $scope.widgetsData = widgetsData;
 
-        $scope.count = widgetsData.length;
+        if ($scope.widgetsData) {
+            $scope.count = $scope.widgetsData.length;
+        }
     };
 }]);
+
+popup.directive('widgetsCount', function() {
+    return {
+        template: '{{count}} widget{{count > 1 ? "s" : ""}} detected'
+    };
+});

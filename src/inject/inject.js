@@ -127,11 +127,15 @@ widgetsInfoClass.prototype = {
     },
 
     highlightWidgets: function () {
-        for (var i = 0; i < this.$widgets.length; i++) {
-            var curr = this.$widgets[i].el;
+        var self = this;
 
-            curr.className += ' widget-highlight';
-        }
+        setTimeout(function () {
+            for (var i = 0; i < self.$widgets.length; i++) {
+                var curr = self.$widgets[i].el;
+
+                curr.className += ' widget-highlight';
+            }
+        }, 3000, self);
     },
 
     getWidgetsData: function () {

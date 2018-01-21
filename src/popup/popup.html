@@ -11,7 +11,12 @@
     <body>
         <div id="container">
             <div ng-app="popup" ng-controller="popupController as app">
-                <div>{{count}} widgets found</div>
+                <div widgets-count></div>
+                <div ng-repeat="widgetData in widgetsData">
+                    <div>{{widgetData.app}}</div>
+                    <div>{{widgetData.type}}</div>
+                    <div>{{widgetData.settings}}</div>
+                </div>
             </div>
         </div>
     </body>
