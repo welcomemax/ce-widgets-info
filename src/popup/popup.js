@@ -19,6 +19,6 @@ popup.controller('popupController', ['$scope', function ($scope) {
 
 popup.directive('widgetsCount', function() {
     return {
-        template: '{{count}} widget{{count > 1 ? "s" : ""}} detected'
+        template: '<b>{{count}}</b> widget{{count > 1 ? "s" : ""}} detected'
     };
 });
