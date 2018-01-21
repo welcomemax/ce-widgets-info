@@ -14,9 +14,10 @@ chrome.runtime.onConnect.addListener(function(port) {
 widgetsInfoClass = function () {};
 
 widgetsInfoClass.prototype = {
-    matches: [],
+    $widgets: [],
 
     eappsRegex: /^elfsight-app-(.*)$/,
+    optionsRegex: /^elfsight(.*)Options$/,
 
     eappsUrl: 'https://apps.elfsight.com/p/boot/?callback=collect&w=',
 
@@ -27,37 +28,77 @@ widgetsInfoClass.prototype = {
     },
 
     collectWidgets: function() {
-        var divs = document.getElementsByTagName('div');
-        var tags = document.getElementsByTagName('elfsight-app');
+        // @TODO separate spaghetti with methods
+        var $tags = document.getElementsByTagName('elfsight-app');
 
-        for (var i = 0; i < tags.length; i++) {
-            var curr = tags[i];
+        for (var i = 0; i < $tags.length; i++) {
+            var $curr = $tags[i];
 
-            this.matches.push({
+            /**
+             * OLD EAPPS
+             */
+            this.$widgets.push({
                 type: 'eapps',
-                el: curr,
-                publicID: curr.dataset.id
+                el: $curr,
+                publicID: $curr.dataset.id
             });
         }
 
-        for (var i = 0; i < divs.length; i++) {
-            var curr = divs[i];
+        var $divs = document.getElementsByTagName('div');
 
-            if (this.eappsRegex.test(curr.className)) {
-                this.matches.push({
-                    type: 'eapps',
-                    el: curr,
-                    publicID: curr.className.match(this.eappsRegex)[1]
-                });
+        for (var i = 0; i < $divs.length; i++) {
+            var $curr = $divs[i];
+
+            /**
+             * EAPPS
+             */
+            var regMatches = $curr.className.match(this.eappsRegex);
+            if (regMatches) {
+                var publicID = regMatches[1];
             }
+
+            if (publicID) {
+                this.$widgets.push({
+                    type: 'eapps',
+                    el: $curr,
+                    publicID: publicID
+                });
+
+                publicID = null;
+            }
+
+            /**
+             * CodeCanyon
+             */
+            var datasetKeys = Object.keys($curr.dataset);
+            if (datasetKeys[0]) {
+                var appNameMatches = datasetKeys[0].match(this.optionsRegex);
+                if (appNameMatches) {
+                    var appName = datasetKeys[0].match(this.optionsRegex)[1];
+                }
+            }
+
+            if (appName) {
+                var options = $curr.dataset[datasetKeys[0]];
+                var optionsJSON = JSON.parse(decodeURIComponent(options));
+
+                this.widgetsData.push({
+                    type: 'codecanyon',
+                    app: appName,
+                    settings: optionsJSON
+                });
+
+                appName = null;
+            }
+
         }
 
         this.collectWidgetsData();
     },
 
     collectWidgetsData: function () {
-        for (var i = 0; i < this.matches.length; i++) {
-            var curr = this.matches[i];
+        for (var i = 0; i < this.$widgets.length; i++) {
+            var curr = this.$widgets[i];
 
             if (curr.type = 'eapps') {
                 this.getPlatformData(curr);
@@ -76,20 +117,18 @@ widgetsInfoClass.prototype = {
             var responseJSON = JSON.parse(xhr.responseText.match(responseRegex)[1]);
             var responseData = responseJSON.data.widgets[curr.publicID].data;
 
-            var widgetData = {
+            this.widgetsData.push({
                 type: curr.type,
                 publicID: curr.publicID,
                 app: responseData.app,
                 settings: responseData.settings
-            };
-
-            this.widgetsData.push(widgetData);
+            });
         }
     },
 
     highlightWidgets: function () {
-        for (var i = 0; i < this.matches.length; i++) {
-            var curr = this.matches[i];
+        for (var i = 0; i < this.$widgets.length; i++) {
+            var curr = this.$widgets[i].el;
 
             curr.className += ' widget-highlight';
         }
@@ -100,6 +139,6 @@ widgetsInfoClass.prototype = {
     }
 };
 
-widgetsInfo = new widgetsInfoClass();
+var widgetsInfo = new widgetsInfoClass();
 
 widgetsInfo.init();
