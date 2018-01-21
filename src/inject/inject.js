@@ -14,7 +14,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 widgetsInfoClass = function () {};
 
 widgetsInfoClass.prototype = {
-    $widgets: [],
+    widgets: [],
 
     eappsRegex: /^elfsight-app-(.*)$/,
     optionsRegex: /^elfsight(.*)Options$/,
@@ -37,9 +37,9 @@ widgetsInfoClass.prototype = {
             /**
              * OLD EAPPS
              */
-            this.$widgets.push({
+            this.widgets.push({
                 type: 'eapps',
-                el: $curr,
+                $el: $curr,
                 publicID: $curr.dataset.id
             });
         }
@@ -58,9 +58,9 @@ widgetsInfoClass.prototype = {
             }
 
             if (publicID) {
-                this.$widgets.push({
+                this.widgets.push({
                     type: 'eapps',
-                    el: $curr,
+                    $el: $curr,
                     publicID: publicID
                 });
 
@@ -85,7 +85,8 @@ widgetsInfoClass.prototype = {
                 this.widgetsData.push({
                     type: 'codecanyon',
                     app: appName,
-                    settings: optionsJSON
+                    settings: optionsJSON,
+                    $el: $curr
                 });
 
                 appName = null;
@@ -97,31 +98,32 @@ widgetsInfoClass.prototype = {
     },
 
     collectWidgetsData: function () {
-        for (var i = 0; i < this.$widgets.length; i++) {
-            var curr = this.$widgets[i];
+        for (var i = 0; i < this.widget.length; i++) {
+            var widget = this.widget[i];
 
-            if (curr.type = 'eapps') {
-                this.getPlatformData(curr);
+            if (widget.type = 'eapps') {
+                this.getPlatformData(widget);
             }
         }
     },
 
-    getPlatformData: function (curr) {
+    getPlatformData: function (widget) {
         var xhr = new XMLHttpRequest();
 
-        xhr.open('GET', this.eappsUrl + curr.publicID, false); // @TODO async & send for all (batch) eapps widgets
+        xhr.open('GET', this.eappsUrl + widget.publicID, false); // @TODO async & send for all (batch) eapps widgets
         xhr.send();
 
         if (xhr.status == 200) {
             var responseRegex = /\/\*\*\/collect\((.*)\);/;
             var responseJSON = JSON.parse(xhr.responseText.match(responseRegex)[1]);
-            var responseData = responseJSON.data.widgets[curr.publicID].data;
+            var responseData = responseJSON.data.widgets[widget.publicID].data;
 
             this.widgetsData.push({
-                type: curr.type,
-                publicID: curr.publicID,
+                type: widget.type,
+                publicID: widget.publicID,
                 app: responseData.app,
-                settings: responseData.settings
+                settings: responseData.settings,
+                $el: widget.$el
             });
         }
     },
@@ -130,8 +132,8 @@ widgetsInfoClass.prototype = {
         var self = this;
 
         setTimeout(function () {
-            for (var i = 0; i < self.$widgets.length; i++) {
-                var curr = self.$widgets[i].el;
+            for (var i = 0; i < self.widgets.length; i++) {
+                var curr = self.widgets[i].$el;
 
                 curr.className += ' widget-highlight';
             }
