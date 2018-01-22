@@ -17,9 +17,11 @@ widgetsInfoClass.prototype = {
     widgets: [],
 
     eappsRegex: /^elfsight-app-(.*)$/,
+    esappsRegex: /^elfsight-sapp-(.*)$/,
     optionsRegex: /^elfsight(.*)Options$/,
 
     eappsUrl: 'https://apps.elfsight.com/p/boot/?callback=collect&w=',
+    esappsUrl: 'https://shy.elfsight.com/p/boot/?callback=collect',
 
     widgetsData: [],
 
@@ -28,7 +30,10 @@ widgetsInfoClass.prototype = {
     },
 
     collectWidgets: function() {
+
+        // @TODO jQuery support
         // @TODO separate spaghetti with methods
+
         var $tags = document.getElementsByTagName('elfsight-app');
 
         for (var i = 0; i < $tags.length; i++) {
@@ -68,6 +73,25 @@ widgetsInfoClass.prototype = {
             }
 
             /**
+             * ESAPPS
+             */
+            var regMatches = $curr.className.match(this.esappsRegex);
+            if (regMatches) {
+                var publicID = regMatches[1];
+            }
+
+            if (publicID) {
+                this.widgets.push({
+                    type: 'esapps',
+                    $el: $curr,
+                    publicID: publicID,
+                    shop: Shopify.shop // @TODO wait until Shopify can be accessed
+                });
+
+                publicID = null;
+            }
+
+            /**
              * CodeCanyon
              */
             var datasetKeys = Object.keys($curr.dataset);
@@ -101,7 +125,7 @@ widgetsInfoClass.prototype = {
         for (var i = 0; i < this.widgets.length; i++) {
             var widget = this.widgets[i];
 
-            if (widget.type = 'eapps') {
+            if (widget.type === 'eapps' || widget.type === 'esapps') {
                 this.getPlatformData(widget);
             }
         }
@@ -110,10 +134,17 @@ widgetsInfoClass.prototype = {
     getPlatformData: function (widget) {
         var xhr = new XMLHttpRequest();
 
-        xhr.open('GET', this.eappsUrl + widget.publicID, false); // @TODO async & send for all (batch) eapps widgets
+        var platformUrl = '';
+        if (widget.type === 'eapps') {
+            platformUrl = this.eappsUrl + '&w=' + widget.publicID;
+        } else if (widget.type === 'esapps') {
+            platformUrl = this.eappsUrl + '&shop=' + widget.shop + '&w=' + widget.publicID;
+        }
+
+        xhr.open('GET', platformUrl, false); // @TODO async & send for all (batch) eapps widgets
         xhr.send();
 
-        if (xhr.status == 200) {
+        if (xhr.status === 200) {
             var responseRegex = /\/\*\*\/collect\((.*)\);/;
             var responseJSON = JSON.parse(xhr.responseText.match(responseRegex)[1]);
             var responseData = responseJSON.data.widgets[widget.publicID].data;
@@ -147,4 +178,8 @@ widgetsInfoClass.prototype = {
 
 var widgetsInfo = new widgetsInfoClass();
 
-widgetsInfo.init();
+window.onload = function(){
+    widgetsInfo.init();
+};
+
+
