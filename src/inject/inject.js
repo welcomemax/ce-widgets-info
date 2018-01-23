@@ -37,13 +37,17 @@ widgetsInfoClass.prototype = {
 
     collectWidgets: function() {
 
-        // @TODO jQuery support
+        // @TODO jQuery widgets support
+        // @TODO data-yt widgets support
+        // @TODO data-it widgets support
         // @TODO separate spaghetti with methods
+
+        var $curr, regMatches, publicID, datasetKeys;
 
         var $tags = document.getElementsByTagName('elfsight-app');
 
         for (var i = 0; i < $tags.length; i++) {
-            var $curr = $tags[i];
+            $curr = $tags[i];
 
             /**
              * OLD EAPPS
@@ -58,14 +62,15 @@ widgetsInfoClass.prototype = {
         var $divs = document.getElementsByTagName('div');
 
         for (var i = 0; i < $divs.length; i++) {
-            var $curr = $divs[i];
+            $curr = $divs[i];
 
             /**
              * EAPPS
              */
-            var regMatches = $curr.className.match(this.eappsRegex);
+
+            regMatches = $curr.className.match(this.eappsRegex);
             if (regMatches) {
-                var publicID = regMatches[1];
+                publicID = regMatches[1];
             }
 
             if (publicID) {
@@ -81,9 +86,9 @@ widgetsInfoClass.prototype = {
             /**
              * ESAPPS
              */
-            var regMatches = $curr.className.match(this.esappsRegex);
+            regMatches = $curr.className.match(this.esappsRegex);
             if (regMatches) {
-                var publicID = regMatches[1];
+                publicID = regMatches[1];
             }
 
             if (publicID) {
@@ -100,7 +105,7 @@ widgetsInfoClass.prototype = {
             /**
              * CodeCanyon
              */
-            var datasetKeys = Object.keys($curr.dataset);
+            datasetKeys = Object.keys($curr.dataset);
             if (datasetKeys[0]) {
                 var appNameMatches = datasetKeys[0].match(this.optionsRegex);
                 if (appNameMatches) {
@@ -125,7 +130,7 @@ widgetsInfoClass.prototype = {
             /**
              * data-is
              */
-            var datasetKeys = Object.keys($curr.dataset);
+            datasetKeys = Object.keys($curr.dataset);
             if (datasetKeys[0]) {
                 if (datasetKeys[0] === 'is') {
                     var settings = {};
@@ -213,8 +218,4 @@ widgetsInfoClass.prototype = {
 
 var widgetsInfo = new widgetsInfoClass();
 
-window.onload = function(){
-    widgetsInfo.init();
-};
-
-
+widgetsInfo.init();
