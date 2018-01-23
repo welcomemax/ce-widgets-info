@@ -14,6 +14,8 @@ chrome.runtime.onConnect.addListener(function(port) {
 widgetsInfoClass = function () {};
 
 widgetsInfoClass.prototype = {
+    debug: true,
+
     widgets: [],
 
     eappsRegex: /^elfsight-app-(.*)$/,
@@ -27,6 +29,10 @@ widgetsInfoClass.prototype = {
 
     init: function () {
         this.collectWidgets();
+
+        if (this.debug) {
+            this.logWidgetsData();
+        }
     },
 
     collectWidgets: function() {
@@ -116,6 +122,27 @@ widgetsInfoClass.prototype = {
                 appName = null;
             }
 
+            /**
+             * data-is
+             */
+            var datasetKeys = Object.keys($curr.dataset);
+            if (datasetKeys[0]) {
+                if (datasetKeys[0] === 'is') {
+                    var settings = {};
+
+                    for (var j = 1; j < datasetKeys.length; j++) {
+                        settings[datasetKeys[j]] = $curr.dataset[datasetKeys[j]];
+                    }
+
+                    this.widgetsData.push({
+                        type: 'data-is',
+                        app: 'Instagram Feed',
+                        settings: settings,
+                        $el: $curr
+                    });
+                }
+            }
+
         }
 
         this.collectWidgetsData();
@@ -169,6 +196,14 @@ widgetsInfoClass.prototype = {
                 curr.className += ' widget-highlight';
             }
         }, 3000, self);
+    },
+
+    logWidgetsData: function () {
+        for (var i = 0; i < this.widgets.length; i++) {
+            var widget = this.widgets[i];
+
+            console.log(widget);
+        }
     },
 
     getWidgetsData: function () {
