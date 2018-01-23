@@ -22,7 +22,7 @@ widgetsInfoClass.prototype = {
     esappsRegex: /^elfsight-sapp-(.*)$/,
     optionsRegex: /^elfsight(.*)Options$/,
 
-    eappsUrl: 'https://apps.elfsight.com/p/boot/?callback=collect&w=',
+    eappsUrl: 'https://apps.elfsight.com/p/boot/?callback=collect',
     esappsUrl: 'https://shy.elfsight.com/p/boot/?callback=collect',
 
     widgetsData: [],
