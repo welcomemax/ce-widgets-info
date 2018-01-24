@@ -28,11 +28,17 @@ widgetsInfoClass.prototype = {
     widgetsData: [],
 
     init: function () {
-        this.collectWidgets();
+        var self = this;
 
-        if (this.debug) {
-            this.logWidgetsData();
-        }
+        document.addEventListener('DOMContentLoaded', function(){
+            console.log('Widgets Info extension loaded');
+
+            self.collectWidgets();
+
+            if (self.debug) {
+                self.logWidgetsData();
+            }
+        })
     },
 
     collectWidgets: function() {
@@ -92,11 +98,12 @@ widgetsInfoClass.prototype = {
             }
 
             if (publicID) {
-                this.widgets.push({
+                this.widgetsData.push({ // @TODO change temp widgetsData to widgets
                     type: 'esapps',
                     $el: $curr,
                     publicID: publicID,
-                    shop: Shopify.shop // @TODO wait until Shopify can be accessed
+                    // shop: Shopify.shop // @TODO wait until Shopify can be accessed
+                    settings: {"widgetData": "currently unaviable for shopify"} // @TODO remove temp
                 });
 
                 publicID = null;
@@ -166,48 +173,50 @@ widgetsInfoClass.prototype = {
     getPlatformData: function (widget) {
         var xhr = new XMLHttpRequest();
 
-        var platformUrl = '';
+        var platformUrl = false;
         if (widget.type === 'eapps') {
             platformUrl = this.eappsUrl + '&w=' + widget.publicID;
-        } else if (widget.type === 'esapps') {
-            platformUrl = this.eappsUrl + '&shop=' + widget.shop + '&w=' + widget.publicID;
+        } else if (widget.type === 'esapps' && widget.shop) {
+            platformUrl = this.eappsUrl + '&shop=' + widget.shop + '&w=' + widget.publicID; // @TODO wait until can get shop
         }
 
-        xhr.open('GET', platformUrl, false); // @TODO async & send for all (batch) eapps widgets
-        xhr.send();
+        if (platformUrl) {
+            xhr.open('GET', platformUrl, false); // @TODO async & send for all (batch) eapps widgets
+            xhr.send();
 
-        if (xhr.status === 200) {
-            var responseRegex = /\/\*\*\/collect\((.*)\);/;
-            var responseJSON = JSON.parse(xhr.responseText.match(responseRegex)[1]);
-            var responseData = responseJSON.data.widgets[widget.publicID].data;
+            if (xhr.status === 200) {
+                var responseRegex = /\/\*\*\/collect\((.*)\);/;
+                var responseJSON = JSON.parse(xhr.responseText.match(responseRegex)[1]);
+                var responseData = responseJSON.data.widgets[widget.publicID].data;
 
-            this.widgetsData.push({
-                type: widget.type,
-                publicID: widget.publicID,
-                app: responseData.app,
-                settings: responseData.settings,
-                $el: widget.$el
-            });
+                this.widgetsData.push({
+                    type: widget.type,
+                    publicID: widget.publicID,
+                    app: responseData.app,
+                    settings: responseData.settings,
+                    $el: widget.$el
+                });
+            }
         }
     },
 
     highlightWidgets: function () {
-        var self = this;
+        for (var i = 0; i < this.widgetsData.length; i++) {
+            var $parent = this.widgetsData[i].$el.parentElement;
 
-        setTimeout(function () {
-            for (var i = 0; i < self.widgets.length; i++) {
-                var curr = self.widgets[i].$el;
-
-                curr.className += ' widget-highlight';
+            if ($parent.className) {
+                $parent.className += ' widget-highlight';
+            } else {
+                $parent.className = 'widget-highlight';
             }
-        }, 3000, self);
+        }
     },
 
     logWidgetsData: function () {
-        for (var i = 0; i < this.widgets.length; i++) {
-            var widget = this.widgets[i];
+        for (var i = 0; i < this.widgetsData.length; i++) {
+            var widget = this.widgetsData[i];
 
-            console.log(widget);
+            console.info(widget);
         }
     },
 

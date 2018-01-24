@@ -1,6 +1,6 @@
 {
   "name": "Elfsight Widgets Info",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "manifest_version": 2,
   "description": "",
   "homepage_url": "https://apps.elfsight.com",
@@ -36,16 +36,11 @@
       ],
       "css": [
         "src/inject/inject.css"
-      ]
-    },
-    {
-      "matches": [
-        "http://*/*",
-        "https://*/*"
       ],
       "js": [
         "src/inject/inject.js"
-      ]
+      ],
+      "run_at": "document_start"
     }
   ]
 }
