@@ -44,8 +44,6 @@ widgetsInfoClass.prototype = {
     collectWidgets: function() {
 
         // @TODO jQuery widgets support
-        // @TODO data-yt widgets support
-        // @TODO data-it widgets support
         // @TODO Weebly Apps widgets support
         // @TODO old Weebly InstaShow widgets support https://elf-test-2.weebly.com/
         // @TODO separate spaghetti with methods
