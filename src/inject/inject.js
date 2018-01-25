@@ -46,6 +46,8 @@ widgetsInfoClass.prototype = {
         // @TODO jQuery widgets support
         // @TODO data-yt widgets support
         // @TODO data-it widgets support
+        // @TODO Weebly Apps widgets support
+        // @TODO old Weebly InstaShow widgets support https://elf-test-2.weebly.com/
         // @TODO separate spaghetti with methods
 
         var $curr, regMatches, publicID, datasetKeys;
@@ -109,10 +111,11 @@ widgetsInfoClass.prototype = {
                 publicID = null;
             }
 
+            datasetKeys = Object.keys($curr.dataset);
+
             /**
              * CodeCanyon
              */
-            datasetKeys = Object.keys($curr.dataset);
             if (datasetKeys[0]) {
                 var appNameMatches = datasetKeys[0].match(this.optionsRegex);
                 if (appNameMatches) {
@@ -137,7 +140,6 @@ widgetsInfoClass.prototype = {
             /**
              * data-is
              */
-            datasetKeys = Object.keys($curr.dataset);
             if (datasetKeys[0]) {
                 if (datasetKeys[0] === 'is') {
                     var settings = {};
@@ -148,13 +150,52 @@ widgetsInfoClass.prototype = {
 
                     this.widgetsData.push({
                         type: 'data-is',
-                        app: 'Instagram Feed',
+                        app: 'Instagram Feed (InstaShow)',
                         settings: settings,
                         $el: $curr
                     });
                 }
             }
 
+            /**
+             * data-yt
+             */
+            if (datasetKeys[0]) {
+                if (datasetKeys[0] === 'yt') {
+                    var settings = {};
+
+                    for (var j = 1; j < datasetKeys.length; j++) {
+                        settings[datasetKeys[j]] = $curr.dataset[datasetKeys[j]];
+                    }
+
+                    this.widgetsData.push({
+                        type: 'data-yt',
+                        app: 'Youtube Gallery (Yottie)',
+                        settings: settings,
+                        $el: $curr
+                    });
+                }
+            }
+
+            /**
+             * data-it
+             */
+            if (datasetKeys[0]) {
+                if (datasetKeys[0] === 'it') {
+                    var settings = {};
+
+                    for (var j = 1; j < datasetKeys.length; j++) {
+                        settings[datasetKeys[j]] = $curr.dataset[datasetKeys[j]];
+                    }
+
+                    this.widgetsData.push({
+                        type: 'data-it',
+                        app: 'Instagram Widget (InstaLink)',
+                        settings: settings,
+                        $el: $curr
+                    });
+                }
+            }
         }
 
         this.collectWidgetsData();
