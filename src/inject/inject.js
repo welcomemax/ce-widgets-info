@@ -1,22 +1,23 @@
-chrome.runtime.onConnect.addListener(function(port) {
-    port.onMessage.addListener(function(data) {
-        if (data.getWidgets) {
-            port.postMessage(widgetsInfo.getWidgetsData());
-        }
 
-        if (data.highlightWidgets) {
-            widgetsInfo.highlightWidgets();
-        }
-    });
+window.onload = function () {
+
+
+}
+
+
+chrome.runtime.onConnect.addListener(function (port) {
+    port.onMessage.addListener(factory);
 });
 
 
-widgetsInfoClass = function () {};
 
+
+widgetsInfoClass = function () {};
 widgetsInfoClass.prototype = {
     debug: true,
 
     widgets: [],
+    widgetsCounter: 0,
 
     eappsRegex: /^elfsight-app-(.*)$/,
     esappsRegex: /^elfsight-sapp-(.*)$/,
@@ -30,9 +31,7 @@ widgetsInfoClass.prototype = {
     init: function () {
         var self = this;
 
-        document.addEventListener('DOMContentLoaded', function(){
-            console.log('Widgets Info extension loaded');
-
+        document.addEventListener('DOMContentLoaded', function() {
             self.collectWidgets();
 
             if (self.debug) {
@@ -42,6 +41,7 @@ widgetsInfoClass.prototype = {
     },
 
     collectWidgets: function() {
+        var self = this;
 
         // @TODO jQuery widgets support
         // @TODO Weebly Apps widgets support
@@ -49,21 +49,6 @@ widgetsInfoClass.prototype = {
         // @TODO separate spaghetti with methods
 
         var $curr, regMatches, publicID, datasetKeys;
-
-        var $tags = document.getElementsByTagName('elfsight-app');
-
-        for (var i = 0; i < $tags.length; i++) {
-            $curr = $tags[i];
-
-            /**
-             * OLD EAPPS
-             */
-            this.widgets.push({
-                type: 'eapps',
-                $el: $curr,
-                publicID: $curr.dataset.id
-            });
-        }
 
         var $divs = document.getElementsByTagName('div');
 
@@ -80,8 +65,8 @@ widgetsInfoClass.prototype = {
             }
 
             if (publicID) {
-                this.widgets.push({
-                    type: 'eapps',
+                self.widgets.push({
+                    app_type: 'eapps',
                     $el: $curr,
                     publicID: publicID
                 });
@@ -98,12 +83,13 @@ widgetsInfoClass.prototype = {
             }
 
             if (publicID) {
-                this.widgetsData.push({ // @TODO change temp widgetsData to widgets
-                    type: 'esapps',
-                    $el: $curr,
+                self.widgetsData.push({ // @TODO change temp widgetsData to widgets
+                    id: self.widgetsCounter++,
                     publicID: publicID,
+                    app_type: 'esapps',
                     // shop: Shopify.shop // @TODO wait until Shopify can be accessed
-                    settings: {"widgetData": "currently unaviable for shopify"} // @TODO remove temp
+                    settings: {"widgetData": "currently unavailable for shopify"}, // @TODO remove temp
+                    $el: $curr
                 });
 
                 publicID = null;
@@ -117,17 +103,18 @@ widgetsInfoClass.prototype = {
             if (datasetKeys[0]) {
                 var appNameMatches = datasetKeys[0].match(this.optionsRegex);
                 if (appNameMatches) {
-                    var appName = datasetKeys[0].match(this.optionsRegex)[1];
+                    var app_name = datasetKeys[0].match(this.optionsRegex)[1];
                 }
             }
 
-            if (appName) {
+            if (app_name) {
                 var options = $curr.dataset[datasetKeys[0]];
                 var optionsJSON = JSON.parse(decodeURIComponent(options));
 
-                this.widgetsData.push({
-                    type: 'codecanyon',
-                    app: appName,
+                self.widgetsData.push({
+                    id: self.widgetsCounter++,
+                    app_type: 'codecanyon',
+                    app_name: app_name,
                     settings: optionsJSON,
                     $el: $curr
                 });
@@ -135,87 +122,95 @@ widgetsInfoClass.prototype = {
                 appName = null;
             }
 
-            /**
-             * data-is
-             */
-            if (datasetKeys[0]) {
-                if (datasetKeys[0] === 'is') {
-                    var settings = {};
-
-                    for (var j = 1; j < datasetKeys.length; j++) {
-                        settings[datasetKeys[j]] = $curr.dataset[datasetKeys[j]];
-                    }
-
-                    this.widgetsData.push({
-                        type: 'data-is',
-                        app: 'Instagram Feed (InstaShow)',
-                        settings: settings,
-                        $el: $curr
-                    });
-                }
-            }
-
-            /**
-             * data-yt
-             */
-            if (datasetKeys[0]) {
-                if (datasetKeys[0] === 'yt') {
-                    var settings = {};
-
-                    for (var j = 1; j < datasetKeys.length; j++) {
-                        settings[datasetKeys[j]] = $curr.dataset[datasetKeys[j]];
-                    }
-
-                    this.widgetsData.push({
-                        type: 'data-yt',
-                        app: 'Youtube Gallery (Yottie)',
-                        settings: settings,
-                        $el: $curr
-                    });
-                }
-            }
-
-            /**
-             * data-it
-             */
-            if (datasetKeys[0]) {
-                if (datasetKeys[0] === 'it') {
-                    var settings = {};
-
-                    for (var j = 1; j < datasetKeys.length; j++) {
-                        settings[datasetKeys[j]] = $curr.dataset[datasetKeys[j]];
-                    }
-
-                    this.widgetsData.push({
-                        type: 'data-it',
-                        app: 'Instagram Widget (InstaLink)',
-                        settings: settings,
-                        $el: $curr
-                    });
-                }
-            }
+            self.checkDataAttr($curr);
         }
 
-        this.collectWidgetsData();
+        self.checkTagNames();
+
+        self.collectWidgetsData();
+    },
+
+    /**
+     * OLD EAPPS
+     */
+    checkTagNames: function ($curr) {
+        var self = this;
+
+        var $tags = document.getElementsByTagName('elfsight-app');
+
+        for (var i = 0; i < $tags.length; i++) {
+            $curr = $tags[i];
+
+            self.widgets.push({
+                app_type: 'eapps',
+                $el: $curr,
+                publicID: $curr.dataset.id
+            });
+        }
+    },
+
+    /**
+     * data-is, data-it, data-yt
+     */
+    checkDataAttr: function ($curr) {
+        var self = this;
+
+        var dataset = $curr.dataset,
+            dataset_keys = Object.keys(dataset);
+
+        var settings = {},
+            app_name, app_type;
+
+        if (dataset_keys[0]) {
+            switch (dataset_keys[0]) {
+                case 'is':
+                    app_type = 'data-is';
+                    app_name = 'Instagram Feed (InstaShow)';
+                    break;
+                case 'yt':
+                    app_type = 'data-yt';
+                    app_name = 'Youtube Gallery (Yottie)';
+                    break;
+                case 'it':
+                    app_type = 'data-it';
+                    app_name = 'Instagram Widget (InstaLink)';
+                    break;
+            }
+
+            if (app_type && app_name) {
+                for (var i = 1; i < dataset_keys.length; i++) {
+                    settings[dataset_keys[i]] = dataset[dataset_keys[i]];
+                }
+
+                self.widgetsData.push({
+                    id: self.widgetsCounter++,
+                    app_type: app_type,
+                    app_name: app_name,
+                    settings: settings,
+                    $el: $curr
+                });
+            }
+        }
     },
 
     collectWidgetsData: function () {
         for (var i = 0; i < this.widgets.length; i++) {
             var widget = this.widgets[i];
 
-            if (widget.type === 'eapps' || widget.type === 'esapps') {
+            if (widget.app_type === 'eapps' || widget.app_type === 'esapps') {
                 this.getPlatformData(widget);
             }
         }
     },
 
+    // @TODO refactor, try to catch network requests to eapps platform
     getPlatformData: function (widget) {
         var xhr = new XMLHttpRequest();
 
-        var platformUrl = false;
-        if (widget.type === 'eapps') {
+        var platformUrl;
+        if (widget.app_type === 'eapps') {
             platformUrl = this.eappsUrl + '&w=' + widget.publicID;
-        } else if (widget.type === 'esapps' && widget.shop) {
+        } else if (widget.app_type === 'esapps' && widget.shop) {
             platformUrl = this.eappsUrl + '&shop=' + widget.shop + '&w=' + widget.publicID; // @TODO wait until can get shop
         }
 
@@ -229,9 +224,10 @@ widgetsInfoClass.prototype = {
                 var responseData = responseJSON.data.widgets[widget.publicID].data;
 
                 this.widgetsData.push({
-                    type: widget.type,
+                    id: self.widgetsCounter++,
                     publicID: widget.publicID,
-                    app: responseData.app,
+                    app_type: widget.app_type,
+                    app_name: responseData.app,
                     settings: responseData.settings,
                     $el: widget.$el
                 });
@@ -243,27 +239,45 @@ widgetsInfoClass.prototype = {
         for (var i = 0; i < this.widgetsData.length; i++) {
             var $parent = this.widgetsData[i].$el.parentElement;
 
-            if ($parent.className) {
-                $parent.className += ' widget-highlight';
-            } else {
-                $parent.className = 'widget-highlight';
-            }
+            $parent.classList.toggle('widget-highlight');
         }
+    },
+
+    highlightWidget: function (data) {
+        var $widget = this.widgetsData[data.id].$el
+        var $widget_wrap = this.widgetsData.parentElement
+
+        console.log(data.id)
+        console.log(data)
+
+        $widget_wrap.classList.toggle('widget-highlight');
     },
 
     logWidgetsData: function () {
         for (var i = 0; i < this.widgetsData.length; i++) {
             var widget = this.widgetsData[i];
 
-            console.info(widget);
+            console.info('widget', widget);
         }
     },
 
     getWidgetsData: function () {
-        return this.widgetsData;
+        var port = chrome.extension.connect();
+        console.log(this.widgetsData)
+        port.postMessage(this.widgetsData);
     }
 };
 
-var widgetsInfo = new widgetsInfoClass();
+widgetsInfo = new widgetsInfoClass();
 
 widgetsInfo.init();
+
+function factory (obj) {
+    if (obj && obj.method) {
+        if (obj.data) {
+            widgetsInfo[obj.method](obj.data);
+        } else {
+            widgetsInfo[obj.method]();
+        }
+    }
+}

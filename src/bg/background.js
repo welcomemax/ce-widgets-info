@@ -16,7 +16,7 @@ background.controller('backgroundController', ['$scope', '$window', function ($s
     };
 
     chrome.tabs.onActivated.addListener(function (info) {
-            $scope.getWidgetsData(info.tabId);
+        $scope.getWidgetsData(info.tabId);
     });
 
     $scope.setBadge = function (count) {
@@ -31,9 +31,12 @@ background.controller('backgroundController', ['$scope', '$window', function ($s
     $scope.collectWidgetsData = function (id) {
         var port = chrome.tabs.connect(id);
 
-        port.postMessage({getWidgets: true, highlightWidgets: true});
+        // port.postMessage({method: 'highlightWidgets'});
+        port.postMessage({method: 'getWidgetsData'});
 
         port.onMessage.addListener(function (response) {
+            console.log(response)
+
             $scope.storedWidgetsData[id] = response;
 
             $scope.getWidgetsData(id);

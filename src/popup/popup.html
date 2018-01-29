@@ -20,10 +20,12 @@
 
             <main>
                 <div ng-if="count">
-                    <div ng-repeat="widgetData in widgetsData" class="widget" ng-mouseover="highlightWidget()">
+                    <div ng-repeat="widgetData in widgetsData" class="widget"
+                         ng-mouseover="highlightWidget()"
+                         ng-click="moveToWidget()">
                         <div class="widget-header">
-                            <div class="widget-header-app">{{widgetData.app}}</div>
-                            <div class="widget-header-type">{{widgetData.type}}</div>
+                            <div class="widget-header-app">{{widgetData.app_name}}</div>
+                            <div class="widget-header-type">{{widgetData.app_type}}</div>
                         </div>
 
                         <pre class="widget-settings">{{widgetData.settings | json}}</pre>
@@ -33,7 +35,7 @@
             </main>
 
             <footer>
-                <label><input ng-model="settings.highlight" type="checkbox" checked>Highlight widgets</label>
+                <label><input ng-model="settings.highlight" type="checkbox" checked>Highlight all widgets</label>
             </footer>
         </div>
     </body>

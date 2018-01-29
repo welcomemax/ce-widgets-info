@@ -3,6 +3,11 @@ var widgetsData = bgWindow.widgetsData;
 
 var popup = angular.module('popup', []);
 
+// doesn't work for some reasons
+// chrome.browserAction.onClicked.addListener(function () {
+//     $scope.togglePopupActive();
+// });
+
 popup.controller('popupController', ['$scope', '$timeout', function ($scope, $timeout) {
     $scope.popupActive = false;
     $scope.settings = {
@@ -12,16 +17,20 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
     this.$onInit = function () {
         $scope.togglePopupActive();
 
+        chrome.tabs.query({
+            currentWindow: true,
+            active: true
+        }, function (tabs) {
+            $scope.tab = tabs[0];
+            $scope.port = chrome.tabs.connect($scope.tab.id);
+        });
+
         $scope.widgetsData = widgetsData;
 
         if ($scope.widgetsData) {
             $scope.count = $scope.widgetsData.length;
         }
     };
-
-    chrome.browserAction.onClicked.addListener(function () {
-        $scope.togglePopupActive();
-    });
 
     $scope.togglePopupActive = function () {
         $timeout(function () {
@@ -30,8 +39,18 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
     };
 
     $scope.highlightWidget = function () {
-        console.log('widget hovered')
-    }
+        $scope.port.postMessage({
+            method: 'hoverWidget',
+            data: {id: 1}
+        });
+    };
+
+    $scope.moveToWidget = function () {
+        $scope.port.postMessage({
+            method: 'moveToWidget',
+            data: {id: 1}
+        });
+    };
 }]);
 
 popup.directive('widgetsCount', function() {
