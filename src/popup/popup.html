@@ -9,7 +9,10 @@
         <link href="popup.css" type="text/css" rel="stylesheet">
     </head>
     <body>
-        <div class="popup" ng-app="popup" ng-controller="popupController as app">
+        <div class="popup"
+             ng-app="popup"
+             ng-controller="popupController as app"
+             ng-class="popupActive ? 'popup-active' : ''">
             <header>
                 <h1>Elfsight Widgets Info</h1>
                 <widgets-count ng-if="count" class="widgets-count"></widgets-count>
@@ -17,7 +20,7 @@
 
             <main>
                 <div ng-if="count">
-                    <div ng-repeat="widgetData in widgetsData" class="widget">
+                    <div ng-repeat="widgetData in widgetsData" class="widget" ng-mouseover="highlightWidget()">
                         <div class="widget-header">
                             <div class="widget-header-app">{{widgetData.app}}</div>
                             <div class="widget-header-type">{{widgetData.type}}</div>
@@ -26,9 +29,7 @@
                         <pre class="widget-settings">{{widgetData.settings | json}}</pre>
                     </div>
                 </div>
-                <div ng-if="!count" class="widgets-empty">
-                    Widgets weren't detected on the current page
-                </div>
+                <widgets-empty ng-if="!count" class="widgets-empty"></widgets-empty>
             </main>
 
             <footer>

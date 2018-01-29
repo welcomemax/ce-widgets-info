@@ -5,20 +5,22 @@ body {
 
 .popup {
     min-width: 300px;
+    background: #38393a;
 }
+
     .popup header,
-    .popup main,
     .popup footer {
         padding: 8px 16px;
         display: flex;
-    }
-
-    .popup header {
         background: #ffffff;
         color: #38393a;
         line-height: 16px;
+    }
+
+    .popup header {
         justify-content: space-between;
     }
+
         .popup header h1 {
             font-size: 14px;
             margin: 0;
@@ -28,20 +30,44 @@ body {
             font-size: 12px;
         }
 
+    .popup footer {
+        justify-content: flex-end;
+    }
+
+        .popup footer label{
+            font-size: 12px;
+        }
+
+            .popup footer label input{
+                position: relative;
+                bottom: -2px;
+                margin: 0 4px 0 0;
+            }
+
     .popup main {
+        display: flex;
         background: #38393a;
         color: #ffffff;
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transition: max-height .3s .2s, opacity .3s .4s;
+    }
+
+    .popup-active main {
+        max-height: 700px;
+        opacity: 1;
     }
 
         .popup main .widgets-empty{
-            padding: 8px 0;
+            padding: 16px 16px;
             text-align: center;
             font-size: 12px;
             width: 100%;
         }
 
         .widget {
-
+            padding: 8px 16px;
         }
 
             .widget .widget-header {
@@ -68,21 +94,4 @@ body {
                 padding: 4px 8px;
                 overflow-x: hidden;
                 overflow-y: auto;
-            }
-
-    .popup footer {
-        background: #ffffff;
-        color: #38393a;
-        line-height: 16px;
-        justify-content: flex-end;
-    }
-
-        .popup footer label{
-            font-size: 12px;
-        }
-
-            .popup footer label input{
-                position: relative;
-                bottom: -2px;
-                margin: 0 4px 0 0;
             }
