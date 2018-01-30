@@ -1,16 +1,8 @@
-
-window.onload = function () {
-
-
-}
-
-
 chrome.runtime.onConnect.addListener(function (port) {
+    window.port = port;
+
     port.onMessage.addListener(factory);
 });
-
-
-
 
 widgetsInfoClass = function () {};
 widgetsInfoClass.prototype = {
@@ -33,6 +25,7 @@ widgetsInfoClass.prototype = {
 
         document.addEventListener('DOMContentLoaded', function() {
             self.collectWidgets();
+            self.wrapWidgets();
 
             if (self.debug) {
                 self.logWidgetsData();
@@ -119,7 +112,7 @@ widgetsInfoClass.prototype = {
                     $el: $curr
                 });
 
-                appName = null;
+                app_name = null;
             }
 
             self.checkDataAttr($curr);
@@ -133,13 +126,13 @@ widgetsInfoClass.prototype = {
     /**
      * OLD EAPPS
      */
-    checkTagNames: function ($curr) {
+    checkTagNames: function () {
         var self = this;
 
         var $tags = document.getElementsByTagName('elfsight-app');
 
         for (var i = 0; i < $tags.length; i++) {
-            $curr = $tags[i];
+            var $curr = $tags[i];
 
             self.widgets.push({
                 app_type: 'eapps',
@@ -205,6 +198,8 @@ widgetsInfoClass.prototype = {
 
     // @TODO refactor, try to catch network requests to eapps platform
     getPlatformData: function (widget) {
+        var self = this;
+
         var xhr = new XMLHttpRequest();
 
         var platformUrl;
@@ -235,22 +230,39 @@ widgetsInfoClass.prototype = {
         }
     },
 
-    highlightWidgets: function () {
+    wrapWidgets: function () {
         for (var i = 0; i < this.widgetsData.length; i++) {
-            var $parent = this.widgetsData[i].$el.parentElement;
+            // var $curr = this.widgetsData[i].$el,
+            //     $parent_html = $curr.parentElement;
+            //
+            // $parent_html.innerHTML = '<div class="">' + $curr.innerHTML + '</div>';
+            //
+            // this.widgetsData[i].$wrap = $parent_html;
+        }
+    },
 
-            $parent.classList.toggle('widget-highlight');
+    highlightWidgets: function (data) {
+        for (var i = 0; i < this.widgetsData.length; i++) {
+            var $wrap = this.widgetsData[i].$el;
+
+            $wrap.classList.toggle('widget-highlight', data.state);
         }
     },
 
     highlightWidget: function (data) {
-        var $widget = this.widgetsData[data.id].$el
-        var $widget_wrap = this.widgetsData.parentElement
+        var $wrap = this.widgetsData[data.id].$el;
 
-        console.log(data.id)
-        console.log(data)
+        $wrap.classList.toggle('widget-highlight', data.state);
+    },
 
-        $widget_wrap.classList.toggle('widget-highlight');
+    moveToWidget: function (data) {
+        var $wrap = this.widgetsData[data.id].$el;
+
+        $wrap.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+            inline: "center"
+        });
     },
 
     logWidgetsData: function () {
@@ -262,8 +274,6 @@ widgetsInfoClass.prototype = {
     },
 
     getWidgetsData: function () {
-        var port = chrome.extension.connect();
-        console.log(this.widgetsData)
         port.postMessage(this.widgetsData);
     }
 };

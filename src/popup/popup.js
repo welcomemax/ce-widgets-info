@@ -38,17 +38,17 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
         });
     };
 
-    $scope.highlightWidget = function () {
+    $scope.highlightWidget = function (id, state) {
         $scope.port.postMessage({
-            method: 'hoverWidget',
-            data: {id: 1}
+            method: 'highlightWidget',
+            data: {id: id, state: state} // @TODO replace hardcoded ID
         });
     };
 
-    $scope.moveToWidget = function () {
+    $scope.moveToWidget = function (id) {
         $scope.port.postMessage({
             method: 'moveToWidget',
-            data: {id: 1}
+            data: {id: id}  // @TODO replace hardcoded ID
         });
     };
 }]);

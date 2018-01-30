@@ -21,8 +21,9 @@
             <main>
                 <div ng-if="count">
                     <div ng-repeat="widgetData in widgetsData" class="widget"
-                         ng-mouseover="highlightWidget()"
-                         ng-click="moveToWidget()">
+                         ng-mouseenter="highlightWidget(widgetData.id, true)"
+                         ng-mouseleave="highlightWidget(widgetData.id, false)"
+                         ng-click="moveToWidget(widgetData.id)">
                         <div class="widget-header">
                             <div class="widget-header-app">{{widgetData.app_name}}</div>
                             <div class="widget-header-type">{{widgetData.app_type}}</div>
