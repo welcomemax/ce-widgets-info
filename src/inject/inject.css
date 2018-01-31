@@ -1,6 +1,7 @@
 .elfsight-widget-wrap {
     position: relative;
     min-height: 50px;
+    transition: box-shadow .3s;
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, .04);
 }
 
@@ -23,8 +24,12 @@
     font-weight: normal;
     letter-spacing: .4px;
     line-height: 1;
-    padding: 4px 12px 4px 28px;
+    padding: 4px 8px 4px 28px;
     border-radius: 2px;
     cursor: pointer;
+    transition: background .3s;
 }
 
+    .elfsight-widget-label:hover {
+        background-color: #303131;
+    }
