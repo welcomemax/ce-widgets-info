@@ -23,14 +23,12 @@ widgetsInfoClass.prototype = {
     init: function () {
         var self = this;
 
-        document.addEventListener('DOMContentLoaded', function() {
-            self.collectWidgets();
-            self.wrapWidgets();
+        self.collectWidgets();
+        self.wrapWidgets();
 
-            if (self.debug) {
-                self.logWidgetsData();
-            }
-        })
+        if (self.debug) {
+            self.logWidgetsData();
+        }
     },
 
     collectWidgets: function() {
@@ -52,7 +50,7 @@ widgetsInfoClass.prototype = {
              * EAPPS
              */
 
-            regMatches = $curr.className.match(this.eappsRegex);
+            regMatches = $curr.className.match(self.eappsRegex);
             if (regMatches) {
                 publicID = regMatches[1];
             }
@@ -70,7 +68,7 @@ widgetsInfoClass.prototype = {
             /**
              * ESAPPS
              */
-            regMatches = $curr.className.match(this.esappsRegex);
+            regMatches = $curr.className.match(self.esappsRegex);
             if (regMatches) {
                 publicID = regMatches[1];
             }
@@ -94,9 +92,9 @@ widgetsInfoClass.prototype = {
              * CodeCanyon
              */
             if (datasetKeys[0]) {
-                var appNameMatches = datasetKeys[0].match(this.optionsRegex);
+                var appNameMatches = datasetKeys[0].match(self.optionsRegex);
                 if (appNameMatches) {
-                    var app_name = datasetKeys[0].match(this.optionsRegex)[1];
+                    var app_name = datasetKeys[0].match(self.optionsRegex)[1];
                 }
             }
 
@@ -164,8 +162,8 @@ widgetsInfoClass.prototype = {
                     app_type = 'data-yt';
                     app_name = 'Youtube Gallery (Yottie)';
                     break;
-                case 'it':
-                    app_type = 'data-it';
+                case 'il':
+                    app_type = 'data-il';
                     app_name = 'Instagram Widget (InstaLink)';
                     break;
             }
@@ -187,11 +185,13 @@ widgetsInfoClass.prototype = {
     },
 
     collectWidgetsData: function () {
-        for (var i = 0; i < this.widgets.length; i++) {
-            var widget = this.widgets[i];
+        var self = this;
+
+        for (var i = 0; i < self.widgets.length; i++) {
+            var widget = self.widgets[i];
 
             if (widget.app_type === 'eapps' || widget.app_type === 'esapps') {
-                this.getPlatformData(widget);
+                self.getPlatformData(widget);
             }
         }
     },
@@ -204,9 +204,9 @@ widgetsInfoClass.prototype = {
 
         var platformUrl;
         if (widget.app_type === 'eapps') {
-            platformUrl = this.eappsUrl + '&w=' + widget.publicID;
+            platformUrl = self.eappsUrl + '&w=' + widget.publicID;
         } else if (widget.app_type === 'esapps' && widget.shop) {
-            platformUrl = this.eappsUrl + '&shop=' + widget.shop + '&w=' + widget.publicID; // @TODO wait until can get shop
+            platformUrl = self.eappsUrl + '&shop=' + widget.shop + '&w=' + widget.publicID; // @TODO wait until can get shop
         }
 
         if (platformUrl) {
@@ -218,7 +218,7 @@ widgetsInfoClass.prototype = {
                 var responseJSON = JSON.parse(xhr.responseText.match(responseRegex)[1]);
                 var responseData = responseJSON.data.widgets[widget.publicID].data;
 
-                this.widgetsData.push({
+                self.widgetsData.push({
                     id: self.widgetsCounter++,
                     publicID: widget.publicID,
                     app_type: widget.app_type,
@@ -231,32 +231,43 @@ widgetsInfoClass.prototype = {
     },
 
     wrapWidgets: function () {
-        for (var i = 0; i < this.widgetsData.length; i++) {
-            // var $curr = this.widgetsData[i].$el,
-            //     $parent_html = $curr.parentElement;
-            //
-            // $parent_html.innerHTML = '<div class="">' + $curr.innerHTML + '</div>';
-            //
-            // this.widgetsData[i].$wrap = $parent_html;
+        var self = this;
+
+        for (var i = 0; i < self.widgetsData.length; i++) {
+            var app_name = self.widgetsData[i].app_name,
+                $curr = self.widgetsData[i].$el,
+                $wrap = document.createElement('div'),
+                $label = document.createElement('div');
+
+            $curr.parentNode.insertBefore($wrap, $curr);
+
+            $wrap.classList.add('elfsight-widget-wrap');
+            $wrap.appendChild($curr);
+            $wrap.appendChild($label);
+
+            $label.classList.add('elfsight-widget-label');
+            $label.innerHTML = app_name + ' widget';
+
+            self.widgetsData[i].$wrap = $wrap;
         }
     },
 
     highlightWidgets: function (data) {
         for (var i = 0; i < this.widgetsData.length; i++) {
-            var $wrap = this.widgetsData[i].$el;
+            var $wrap = this.widgetsData[i].$wrap;
 
-            $wrap.classList.toggle('widget-highlight', data.state);
+            $wrap.classList.toggle('elfsight-widget-highlight', data.state);
         }
     },
 
     highlightWidget: function (data) {
-        var $wrap = this.widgetsData[data.id].$el;
+        var $wrap = this.widgetsData[data.id].$wrap;
 
-        $wrap.classList.toggle('widget-highlight', data.state);
+        $wrap.classList.toggle('elfsight-widget-highlight', data.state);
     },
 
     moveToWidget: function (data) {
-        var $wrap = this.widgetsData[data.id].$el;
+        var $wrap = this.widgetsData[data.id].$wrap;
 
         $wrap.scrollIntoView({
             behavior: "smooth",
@@ -269,7 +280,7 @@ widgetsInfoClass.prototype = {
         for (var i = 0; i < this.widgetsData.length; i++) {
             var widget = this.widgetsData[i];
 
-            console.info('widget', widget);
+            console.info(widget.app_name + ' widget detected:', widget);
         }
     },
 

@@ -3,10 +3,11 @@
   "version": "0.0.4",
   "manifest_version": 2,
   "description": "Internal tool for detecting widgets",
-  "homepage_url": "https://apps.elfsight.com",
+  "homepage_url": "https://elfsight.com",
 
   "permissions": [
     "tabs",
+    "storage",
     "http://*/*",
     "https://*/*"
   ],
@@ -40,7 +41,7 @@
       "js": [
         "src/inject/inject.js"
       ],
-      "run_at": "document_start"
+      "run_at": "document_idle"
     }
   ]
 }

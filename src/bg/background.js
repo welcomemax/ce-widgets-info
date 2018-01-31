@@ -11,6 +11,8 @@ background.controller('backgroundController', ['$scope', '$window', function ($s
                 }
 
                 $scope.collectWidgetsData(id);
+
+                console.log(id, info, tab)
             }
         });
     };
@@ -35,8 +37,6 @@ background.controller('backgroundController', ['$scope', '$window', function ($s
         port.postMessage({method: 'getWidgetsData'});
 
         port.onMessage.addListener(function (response) {
-            console.log(response)
-
             $scope.storedWidgetsData[id] = response;
 
             $scope.getWidgetsData(id);
