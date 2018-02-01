@@ -20,6 +20,11 @@ widgetsInfoClass.prototype = {
 
     widgetsData: [],
 
+    pageData: {
+        url: '',
+        cms: ''
+    },
+
     appsData: [{
         app_slug: 'instagram-feed',
         app_name: 'Instagram Feed',
@@ -55,11 +60,13 @@ widgetsInfoClass.prototype = {
             app.aliases.names.forEach(function (alias) {
                 if (data.app_name.toLowerCase().indexOf(alias) + 1) {
                     curr_app = app;
-                } else {
-                    curr_app.app_name = data.app_name;
                 }
             });
         });
+
+        if (data.app_name && curr_app.app_name === 'Unknown') {
+            curr_app.app_name = data.app_name;
+        }
 
         var widgetData = {
             id: this.widgetsCounter++,

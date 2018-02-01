@@ -15,11 +15,13 @@
              ng-class="popupActive ? 'popup-active' : ''">
             <header>
                 <h1>Elfsight Widgets Info</h1>
-                <widgets-count ng-if="count" class="widgets-count"></widgets-count>
+                <widgets-count ng-if="widgetsData.length" class="widgets-count"></widgets-count>
             </header>
 
             <main>
-                <div ng-if="count">
+                <div ng-if="!loaded" class="loader"></div>
+
+                <div ng-if="loaded">
                     <div ng-repeat="widgetData in widgetsData" class="widget"
                          ng-mouseenter="highlightWidget(widgetData.id, true)"
                          ng-mouseleave="highlightWidget(widgetData.id, false)"
@@ -39,7 +41,17 @@
                         <pre class="widget-settings">{{widgetData.settings | json}}</pre>
                     </div>
                 </div>
-                <widgets-empty ng-if="!count" class="widgets-empty"></widgets-empty>
+
+                <div ng-if="!widgetsData.length" class="widgets-empty">
+                    <div class="widgets-empty-text">
+                        Widgets weren't detected on the current page
+                    </div>
+                    <div class="widgets-empty-reload">
+                        <div ng-if="!reloaded" ng-click="reload()" class="widgets-empty-reload-button">Try again</div>
+                        <div ng-if="reloaded" class="widgets-empty-reload-status">Still nothing here</div>
+                    </div>
+
+                </div>
             </main>
 
             <footer>

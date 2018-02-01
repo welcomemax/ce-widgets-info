@@ -59,15 +59,63 @@ body {
         opacity: 1;
     }
 
+        .popup main .loader {
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border-radius: 50%;
+            border-style: solid;
+            border-top-color: transparent;
+            animation: eapps-instagram-feed-loader 1s infinite linear;
+            opacity: 1;
+            visibility: visible;
+            width: 32px;
+            height: 32px;
+            margin: -16px 0 0 -16px;
+            border-width: 2px;
+            z-index: 1;
+        }
+
+        @keyframes eapps-instagram-feed-loader {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
         .popup main .widgets-empty{
-            padding: 16px 16px;
+            padding: 8px 16px;
             text-align: center;
             font-size: 12px;
             width: 100%;
         }
 
+            .popup main .widgets-empty .widgets-empty-text,
+            .popup main .widgets-empty .widgets-empty-reload {
+                padding: 4px 8px;
+            }
+
+                .popup main .widgets-empty .widgets-empty-reload .widgets-empty-reload-button {
+                    cursor: pointer;
+                    padding: 4px 8px;
+                    color: #38393a;
+                    background: #fff;
+                    border-radius: 2px;
+                    display: inline-block;
+                }
+
+                .popup main .widgets-empty .widgets-empty-reload .widgets-empty-reload-status {
+                    padding: 4px 8px;
+                }
+
         .widget {
             padding: 8px 16px;
+            border-bottom: 1px solid #303131;
         }
 
             .widget:hover {

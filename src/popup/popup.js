@@ -25,11 +25,8 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
             $scope.port = chrome.tabs.connect($scope.tab.id);
         });
 
-        $scope.widgetsData = widgetsData;
-
-        if ($scope.widgetsData) {
-            $scope.count = $scope.widgetsData.length;
-        }
+        $scope.widgetsData = widgetsData; // @replace with port.onMessage.addListener
+        $scope.loaded = true;
     };
 
     $scope.togglePopupActive = function () {
@@ -41,26 +38,29 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
     $scope.highlightWidget = function (id, state) {
         $scope.port.postMessage({
             method: 'highlightWidget',
-            data: {id: id, state: state} // @TODO replace hardcoded ID
+            data: {id: id, state: state}
         });
     };
 
     $scope.moveToWidget = function (id) {
         $scope.port.postMessage({
             method: 'moveToWidget',
-            data: {id: id}  // @TODO replace hardcoded ID
+            data: {id: id}
+        });
+    };
+
+    $scope.reload = function () {
+        $scope.reloaded = true;
+
+        $scope.port.postMessage({
+            method: 'reload',
+            data: {tab: $scope.tab}
         });
     };
 }]);
 
 popup.directive('widgetsCount', function() {
     return {
-        template: '<b>{{count}}</b> widget{{count > 1 ? "s" : ""}} detected'
-    };
-});
-
-popup.directive('widgetsEmpty', function() {
-    return {
-        template: 'Widgets weren\'t detected on the current page'
+        template: '<b>{{widgetsData.length}}</b> widget{{widgetsData.length > 1 ? "s" : ""}} detected'
     };
 });
