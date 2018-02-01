@@ -17,14 +17,14 @@
     position: absolute;
     right: 20px;
     bottom: -10px;
-    background: #38393a url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuOWwzfk4AAAEgSURBVChTlZG7SgNREIYXYzBga+PipdHGNKYUQuwF8YZ9SoukCCQEBJ9AkJT7BHmCFRsfwsJytUmwUzTNgnv2HL8ZRxCxycDHzPzzz9mzu5H3/iyEUI0s6Bv07+QCMriBVRuroQdPcAFLmCvkHdguiuKo9P6O+hVatqJLB/BRluWE3GGpZiMN59xQngobJulSHTLEQH6BLuWCjWV+C0mE2KToi0i9Qv0gSxZtdRNc74TZRDaHkJouS+1vrz7pymTRd7myUwODR9PlgDUG038WjumnYojhE/ZsJtoy9DCdmyRaCslPcw3yzddV+BPO+QHL8m82VaBZpBmDfO9LaOR5vsWLHlLLyW+wr+bfgXjK/e/JM3lB8jOMIDaLnj4HIfoCxvRigdqppKQAAAAASUVORK5CYII=') no-repeat 8px center;
+    background: #38393a url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuOWwzfk4AAAEgSURBVChTlZG7SgNREIYXYzBga+PipdHGNKYUQuwF8YZ9SoukCCQEBJ9AkJT7BHmCFRsfwsJytUmwUzTNgnv2HL8ZRxCxycDHzPzzz9mzu5H3/iyEUI0s6Bv07+QCMriBVRuroQdPcAFLmCvkHdguiuKo9P6O+hVatqJLB/BRluWE3GGpZiMN59xQngobJulSHTLEQH6BLuWCjWV+C0mE2KToi0i9Qv0gSxZtdRNc74TZRDaHkJouS+1vrz7pymTRd7myUwODR9PlgDUG038WjumnYojhE/ZsJtoy9DCdmyRaCslPcw3yzddV+BPO+QHL8m82VaBZpBmDfO9LaOR5vsWLHlLLyW+wr+bfgXjK/e/JM3lB8jOMIDaLnj4HIfoCxvRigdqppKQAAAAASUVORK5CYII=') no-repeat 12px center;
     color: #ffffff;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
     font-weight: normal;
     letter-spacing: .4px;
     line-height: 1;
-    padding: 4px 8px 4px 28px;
+    padding: 4px 12px 4px 32px;
     border-radius: 2px;
     cursor: pointer;
     z-index: 100;

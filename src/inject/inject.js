@@ -20,15 +20,61 @@ widgetsInfoClass.prototype = {
 
     widgetsData: [],
 
-    init: function () {
-        var self = this;
-
-        self.collectWidgets();
-        self.wrapWidgets();
-
-        if (self.debug) {
-            self.logWidgetsData();
+    appsData: [{
+        app_slug: 'instagram-feed',
+        app_name: 'Instagram Feed',
+        app_type: '',
+        aliases: {
+            names: ['instagramfeed', 'instashow'],
+            src: ['instagram-feed', 'instashow']
+        },
+        version: {
+            last: '3.1.1',
+            curr: false
         }
+    }],
+
+    init: function () {
+        this.collectScripts();
+        this.collectWidgets();
+        this.wrapWidgets();
+
+        if (this.debug) {
+            this.logWidgetsData();
+        }
+    },
+
+    pushWidget: function(data) {
+        var curr_app = {
+            app_name: 'Unknown',
+            version: {last: '1.0.0', curr: false}
+        };
+
+        this.appsData.forEach(function(app) {
+            app.aliases.names.push(app.app_name);
+            app.aliases.names.forEach(function (alias) {
+                if (data.app_name.toLowerCase().indexOf(alias) + 1) {
+                    curr_app = app;
+                } else {
+                    curr_app.app_name = data.app_name;
+                }
+            });
+        });
+
+        var widgetData = {
+            id: this.widgetsCounter++,
+            settings: data.settings,
+            $el: data.$el,
+            app_type: data.app_type,
+            app_name: curr_app.app_name,
+            version: curr_app.version
+        };
+
+        if (data.publicID) {
+            widgetData.publicID = data.publicID;
+        }
+
+        this.widgetsData.push(widgetData);
     },
 
     collectWidgets: function() {
@@ -39,7 +85,7 @@ widgetsInfoClass.prototype = {
         // @TODO old Weebly InstaShow widgets support https://elf-test-2.weebly.com/
         // @TODO separate spaghetti with methods
 
-        var $curr, regMatches, publicID, datasetKeys;
+        var $curr, regMatches, publicID;
 
         var $divs = document.getElementsByTagName('div');
 
@@ -86,7 +132,7 @@ widgetsInfoClass.prototype = {
                 publicID = null;
             }
 
-            datasetKeys = Object.keys($curr.dataset);
+            var datasetKeys = Object.keys($curr.dataset);
 
             /**
              * CodeCanyon
@@ -102,9 +148,8 @@ widgetsInfoClass.prototype = {
                 var options = $curr.dataset[datasetKeys[0]];
                 var optionsJSON = JSON.parse(decodeURIComponent(options));
 
-                self.widgetsData.push({
-                    id: self.widgetsCounter++,
-                    app_type: 'codecanyon',
+                self.pushWidget({
+                    app_type: 'CodeCanyon',
                     app_name: app_name,
                     settings: optionsJSON,
                     $el: $curr
@@ -119,6 +164,52 @@ widgetsInfoClass.prototype = {
         self.checkTagNames();
 
         self.collectWidgetsData();
+    },
+
+    collectScripts: function() {
+        var self = this;
+
+        var $scripts = document.getElementsByTagName('script');
+
+        for (var i = 0; i < $scripts.length; i++) {
+            var $curr = $scripts[i];
+
+            var src = $curr.getAttribute('src');
+            if (src) {
+                self.appsData.forEach(function(app) {
+                    app.aliases.src.forEach(function(alias) {
+                        if (src.indexOf(alias) + 1) {
+                            var version = src.split('?ver=')[1];
+
+                            if (version) {
+                                app.version.curr = version;
+                            } else {
+                                app.version.curr = self.parseScriptVersion(src);
+                            }
+                        }
+                    })
+                });
+            }
+        }
+    },
+
+    parseScriptVersion: function(src) {
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('GET', src, false); // @TODO async
+        xhr.send();
+
+        if (xhr.status === 200) {
+            var versionCopyrightRegex = /version:\s?(.*)/i;
+            var versionCodeRegex = /version:"(.*?)"/;
+
+            var copyrightVersion = xhr.responseText.match(versionCopyrightRegex)[1];
+            var codeVersion = xhr.responseText.match(versionCodeRegex)[1];
+
+            return copyrightVersion ? copyrightVersion : codeVersion;
+        }
+
+        return false;
     },
 
     /**
@@ -150,32 +241,33 @@ widgetsInfoClass.prototype = {
             dataset_keys = Object.keys(dataset);
 
         var settings = {},
-            app_name, app_type;
+            app_name, data_prefix;
 
         if (dataset_keys[0]) {
             switch (dataset_keys[0]) {
                 case 'is':
-                    app_type = 'data-is';
-                    app_name = 'Instagram Feed (InstaShow)';
+                    data_prefix = 'is';
+                    app_name = 'InstaShow';
                     break;
                 case 'yt':
-                    app_type = 'data-yt';
-                    app_name = 'Youtube Gallery (Yottie)';
+                    data_prefix = 'yt';
+                    app_name = 'Yottie';
                     break;
                 case 'il':
-                    app_type = 'data-il';
-                    app_name = 'Instagram Widget (InstaLink)';
+                    data_prefix = 'il';
+                    app_name = 'InstaLink';
                     break;
             }
 
-            if (app_type && app_name) {
+            if (data_prefix && app_name) {
                 for (var i = 1; i < dataset_keys.length; i++) {
-                    settings[dataset_keys[i]] = dataset[dataset_keys[i]];
+                    var option = dataset_keys[i].replace(data_prefix, '').toLowerCase();
+
+                    settings[option] = dataset[dataset_keys[i]];
                 }
 
-                self.widgetsData.push({
-                    id: self.widgetsCounter++,
-                    app_type: app_type,
+                self.pushWidget({
+                    app_type: 'data-' + data_prefix,
                     app_name: app_name,
                     settings: settings,
                     $el: $curr
@@ -200,8 +292,6 @@ widgetsInfoClass.prototype = {
     getPlatformData: function (widget) {
         var self = this;
 
-        var xhr = new XMLHttpRequest();
-
         var platformUrl;
         if (widget.app_type === 'eapps') {
             platformUrl = self.eappsUrl + '&w=' + widget.publicID;
@@ -210,6 +300,8 @@ widgetsInfoClass.prototype = {
         }
 
         if (platformUrl) {
+            var xhr = new XMLHttpRequest();
+
             xhr.open('GET', platformUrl, false); // @TODO async & send for all (batch) eapps widgets
             xhr.send();
 
@@ -218,14 +310,13 @@ widgetsInfoClass.prototype = {
                 var responseJSON = JSON.parse(xhr.responseText.match(responseRegex)[1]);
                 var responseData = responseJSON.data.widgets[widget.publicID].data;
 
-                self.widgetsData.push({
-                    id: self.widgetsCounter++,
+                self.pushWidget({
                     publicID: widget.publicID,
                     app_type: widget.app_type,
                     app_name: responseData.app,
                     settings: responseData.settings,
                     $el: widget.$el
-                });
+                })
             }
         }
     },
@@ -246,7 +337,7 @@ widgetsInfoClass.prototype = {
             $wrap.appendChild($label);
 
             $label.classList.add('elfsight-widget-label');
-            $label.innerHTML = app_name + ' widget';
+            $label.innerHTML = app_name;
 
             self.widgetsData[i].$wrap = $wrap;
         }

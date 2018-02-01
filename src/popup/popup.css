@@ -84,6 +84,16 @@ body {
                     font-size: 12px;
                 }
 
+                    .widget .widget-header .widget-header-app-version {
+                        font-weight: normal;
+                        font-size: 10px;
+                        color: #FF6162;
+                    }
+
+                        .widget .widget-header .widget-header-app-version.widget-header-app-version-actual {
+                            color: #52f300;
+                        }
+
                 .widget .widget-header .widget-header-type {
                     font-size: 10px;
                 }

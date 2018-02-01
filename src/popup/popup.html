@@ -27,6 +27,11 @@
                         <div class="widget-header">
                             <div class="widget-header-app">
                                 {{widgetData.app_name}}
+                                <b class="widget-header-app-version"
+                                   ng-if="widgetData.version.curr"
+                                   ng-class="widgetData.version.curr == widgetData.version.last ? 'widget-header-app-version-actual' : ''">
+                                    ver. {{widgetData.version.curr}}
+                                </b>
                             </div>
                             <div class="widget-header-type">{{widgetData.app_type}}</div>
                         </div>
