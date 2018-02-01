@@ -27,8 +27,15 @@
     padding: 4px 8px 4px 28px;
     border-radius: 2px;
     cursor: pointer;
-    transition: background .3s;
+    z-index: 100;
+    opacity: .8;
+    margin: 0 !important;
+    transition: background .3s, opacity .3s;
 }
+
+    .elfsight-widget-wrap:hover .elfsight-widget-label {
+        opacity: 1;
+    }
 
     .elfsight-widget-label:hover {
         background-color: #303131;
