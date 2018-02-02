@@ -1,7 +1,7 @@
 chrome.runtime.onConnect.addListener(function (port) {
     window.port = port;
 
-    port.onMessage.addListener(factory);
+    port.onMessage.addListener(postMessageFactory);
 });
 
 widgetsInfoClass = function () {};
@@ -31,10 +31,142 @@ widgetsInfoClass.prototype = {
         app_type: '',
         aliases: {
             names: ['instagramfeed', 'instashow'],
-            src: ['instagram-feed', 'instashow']
+            src: ['instashow']
         },
         version: {
             last: '3.1.1',
+            curr: false
+        }
+    }, {
+        app_slug: 'instalink',
+        app_name: 'Instagram Widget',
+        app_type: '',
+        aliases: {
+            names: [],
+            src: []
+        },
+        version: {
+            last: '2.3.1',
+            curr: false
+        }
+    }, {
+        app_slug: 'instagram-testimonials',
+        app_name: 'Instagram Testimonials',
+        app_type: '',
+        aliases: {
+            names: [],
+            src: []
+        },
+        version: {
+            last: '1.0.0',
+            curr: false
+        }
+    }, {
+        app_slug: 'yottie',
+        app_name: 'Yottie',
+        app_type: '',
+        aliases: {
+            names: [],
+            src: []
+        },
+        version: {
+            last: '2.6.0',
+            curr: false
+        }
+    }, {
+        app_slug: 'google-maps',
+        app_name: 'Google Maps',
+        app_type: '',
+        aliases: {
+            names: [],
+            src: []
+        },
+        version: {
+            last: '1.1.0',
+            curr: false
+        }
+    }, {
+        app_slug: 'pricing-table',
+        app_name: 'Pricing Table',
+        app_type: '',
+        aliases: {
+            names: [],
+            src: []
+        },
+        version: {
+            last: '2.0.0',
+            curr: false
+        }
+    }, {
+        app_slug: 'social-icons',
+        app_name: 'Social Media Icons',
+        app_type: '',
+        aliases: {
+            names: [],
+            src: []
+        },
+        version: {
+            last: '1.1.1',
+            curr: false
+        }
+    }, {
+        app_slug: 'social-share-buttons',
+        app_name: 'Social Share Buttons',
+        app_type: '',
+        aliases: {
+            names: [],
+            src: []
+        },
+        version: {
+            last: '1.0.1',
+            curr: false
+        }
+    }, {
+        app_slug: 'facebook-feed',
+        app_name: 'Facebook Feed',
+        app_type: '',
+        aliases: {
+            names: [],
+            src: []
+        },
+        version: {
+            last: '1.3.0',
+            curr: false
+        }
+    }, {
+        app_slug: 'facebook-comments',
+        app_name: 'Facebook Comments',
+        app_type: '',
+        aliases: {
+            names: [],
+            src: []
+        },
+        version: {
+            last: '1.0.0',
+            curr: false
+        }
+    }, {
+        app_slug: 'facebook-like-button',
+        app_name: 'Facebook Like Button',
+        app_type: '',
+        aliases: {
+            names: [],
+            src: []
+        },
+        version: {
+            last: '1.0.0',
+            curr: false
+        }
+    }, {
+        app_slug: 'facebook-share-button',
+        app_name: 'Facebook Share Button',
+        app_type: '',
+        aliases: {
+            names: [],
+            src: []
+        },
+        version: {
+            last: '1.0.0',
             curr: false
         }
     }],
@@ -176,6 +308,7 @@ widgetsInfoClass.prototype = {
     collectScripts: function() {
         var self = this;
 
+        var version = false;
         var $scripts = document.getElementsByTagName('script');
 
         for (var i = 0; i < $scripts.length; i++) {
@@ -184,9 +317,10 @@ widgetsInfoClass.prototype = {
             var src = $curr.getAttribute('src');
             if (src) {
                 self.appsData.forEach(function(app) {
+                    app.aliases.src.push(app.app_slug);
                     app.aliases.src.forEach(function(alias) {
                         if (src.indexOf(alias) + 1) {
-                            var version = src.split('?ver=')[1];
+                            version = src.split('?ver=')[1];
 
                             if (version) {
                                 app.version.curr = version;
@@ -203,7 +337,7 @@ widgetsInfoClass.prototype = {
     parseScriptVersion: function(src) {
         var xhr = new XMLHttpRequest();
 
-        xhr.open('GET', src, false); // @TODO async
+        xhr.open('GET', src, false); // @TODO async && fix on localhost
         xhr.send();
 
         if (xhr.status === 200) {
@@ -383,7 +517,7 @@ widgetsInfoClass.prototype = {
     },
 
     getWidgetsData: function () {
-        port.postMessage(this.widgetsData);
+        port.postMessage({method: 'returnWidgetsData', data: this.widgetsData});
     }
 };
 
@@ -391,7 +525,7 @@ widgetsInfo = new widgetsInfoClass();
 
 widgetsInfo.init();
 
-function factory (obj) {
+function postMessageFactory (obj) {
     if (obj && obj.method) {
         if (obj.data) {
             widgetsInfo[obj.method](obj.data);

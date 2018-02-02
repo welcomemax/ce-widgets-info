@@ -31,7 +31,7 @@
                                 {{widgetData.app_name}}
                                 <b class="widget-header-app-version"
                                    ng-if="widgetData.version.curr"
-                                   ng-class="widgetData.version.curr == widgetData.version.last ? 'widget-header-app-version-actual' : ''">
+                                   ng-class="widgetData.version.last == '1.0.0' || widgetData.version.curr == widgetData.version.last ? 'widget-header-app-version-actual' : ''">
                                     ver. {{widgetData.version.curr}}
                                 </b>
                             </div>

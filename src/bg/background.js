@@ -1,56 +1,86 @@
-var background = angular.module('background', []);
+// window.popup_port = chrome.runtime.connect();
 
-background.controller('backgroundController', ['$scope', '$window', function ($scope, $window) {
-    $scope.storedWidgetsData = {};
+chrome.extension.onConnect.addListener(function(port) {
+    window.popup_port = port;
+    popup_port.onMessage.addListener(postMessageFactory);
+});
 
-    this.$onInit = function () {
-        chrome.tabs.onUpdated.addListener(function (id, info, tab) {
-            if (info && info.status && (info.status.toLowerCase() === 'complete')) {
-                if(!id || !tab || !tab.url || (tab.url.indexOf('http') == -1)) {
-                    return;
-                }
+chrome.tabs.onUpdated.addListener(function (id, info, tab) {
+    if (info && info.status && (info.status.toLowerCase() === 'complete')) {
+        if(!id || !tab || !tab.url || !(tab.url.indexOf('http') + 1)) {
+            return;
+        }
 
-                $scope.collectWidgetsData(id);
+        window.id = id;
+        window.tab_port = chrome.tabs.connect(id);
+        tab_port.onMessage.addListener(postMessageFactory);
 
-                console.log(id, info, tab)
-            }
-        });
-    };
+        widgetsInfo.collectWidgetsData();
 
-    chrome.tabs.onActivated.addListener(function (info) {
-        $scope.getWidgetsData(info.tabId);
-    });
+        console.log(id, info, tab); // @TODO remove temp log
+    }
+});
 
-    $scope.setBadge = function (count) {
+chrome.tabs.onActivated.addListener(function (info) {
+    window.id = info.tabId;
+    widgetsInfo.returnWidgetsData();
+});
+
+function postMessageFactory (obj) {
+    if (obj && obj.method) {
+        if (obj.data) {
+            widgetsInfo[obj.method](obj.data);
+        } else {
+            widgetsInfo[obj.method]();
+        }
+    }
+}
+
+widgetsInfoClass = function () {};
+widgetsInfoClass.prototype = {
+    storedWidgetsData: {},
+    widgetsData: [],
+
+    setBadge: function (count) {
         if (count) {
             chrome.browserAction.setBadgeText({text: count.toString()});
             chrome.browserAction.setBadgeBackgroundColor({color: '#38393a'});
         } else {
             chrome.browserAction.setBadgeText({text: ''});
         }
-    };
+    },
 
-    $scope.collectWidgetsData = function (id) {
-        var port = chrome.tabs.connect(id);
+    collectWidgetsData: function () {
+        // tab_port.postMessage({method: 'highlightWidgets'});
+        tab_port.postMessage({method: 'getWidgetsData'});
+    },
 
-        // port.postMessage({method: 'highlightWidgets'});
-        port.postMessage({method: 'getWidgetsData'});
-
-        port.onMessage.addListener(function (response) {
-            $scope.storedWidgetsData[id] = response;
-
-            $scope.getWidgetsData(id);
-        });
-    };
-
-    $scope.getWidgetsData = function (id) {
-        if ($scope.storedWidgetsData[id]) {
-            $window.widgetsData = $scope.storedWidgetsData[id];
-            $scope.setBadge($scope.storedWidgetsData[id].length);
-        } else {
-            $window.widgetsData = [];
-            $scope.setBadge(0);
+    returnWidgetsData: function (data) {
+        if (data) {
+            this.storeWidgetsData(data)
         }
 
-    };
-}]);
+        if (this.storedWidgetsData[id]) {
+            this.widgetsData = this.storedWidgetsData[id];
+            this.setBadge(this.storedWidgetsData[id].length);
+        } else {
+            this.widgetsData = [];
+            this.setBadge(0);
+        }
+
+        // console.log(widgetsData); // @TODO remove temp log
+        // console.log(popup_port); // @TODO remove temp log
+
+        // popup_port.postMessage({method: 'popupWidgetsData', data: widgetsData});
+    },
+
+    getWidgetsData: function () {
+        popup_port.postMessage({method: 'getWidgetsData', data: this.widgetsData});
+    },
+
+    storeWidgetsData: function (data) {
+        this.storedWidgetsData[id] = data;
+    }
+};
+
+widgetsInfo = new widgetsInfoClass();
