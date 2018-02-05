@@ -344,8 +344,17 @@ widgetsInfoClass.prototype = {
             var versionCopyrightRegex = /version:\s?(.*)/i;
             var versionCodeRegex = /version:"(.*?)"/;
 
-            var copyrightVersion = xhr.responseText.match(versionCopyrightRegex)[1];
-            var codeVersion = xhr.responseText.match(versionCodeRegex)[1];
+            var matches, copyrightVersion, codeVersion;
+
+            matches = xhr.responseText.match(versionCopyrightRegex);
+            if (matches) {
+                copyrightVersion = xhr.responseText.match(versionCopyrightRegex)[1];
+            }
+
+            matches = xhr.responseText.match(versionCodeRegex);
+            if (matches) {
+                codeVersion = xhr.responseText.match(versionCodeRegex)[1];
+            }
 
             return copyrightVersion ? copyrightVersion : codeVersion;
         }
