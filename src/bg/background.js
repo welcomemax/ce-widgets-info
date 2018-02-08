@@ -2,13 +2,17 @@ ewiBackgroundClass = function () {};
 ewiBackgroundClass.prototype = {
     storedWidgetsData: {},
     widgetsData: [],
+    tabs: {},
+    tab: {},
+    tab_port: false,
+    popup_port: false,
 
     init: function () {
         var self = this;
 
         chrome.extension.onConnect.addListener(function(port) {
-            window.popup_port = port;
-            popup_port.onMessage.addListener(postMessageFactory);
+            this.popup_port = port;
+            this.popup_port.onMessage.addListener(postMessageFactory);
         });
 
         chrome.tabs.onUpdated.addListener(function (id, info, tab) {
@@ -17,18 +21,23 @@ ewiBackgroundClass.prototype = {
                     return;
                 }
 
-                window.id = id;
-                window.tab_port = chrome.tabs.connect(id);
-                tab_port.onMessage.addListener(postMessageFactory);
+                self.tab = tab;
+                self.tab.site = tab.url.match(/^(?:https?:)?(?:\/\/)?(?:w+\.)?([^\/\?]+)/)[1];
+
+                if (!self.tabs[self.tab.id]) {
+                    self.tabs[self.tab.id] = self.tab;
+                }
+
+                self.tab_port = chrome.tabs.connect(self.tab.id);
+                self.tab_port.onMessage.addListener(postMessageFactory);
 
                 self.collectWidgetsData();
-
-                console.log(id, info, tab); // @TODO remove temp log
             }
         });
 
         chrome.tabs.onActivated.addListener(function (info) {
-            window.id = info.tabId;
+            self.tab = self.tabs[info.tabId];
+
             self.returnWidgetsData();
         });
 
@@ -54,7 +63,7 @@ ewiBackgroundClass.prototype = {
 
     collectWidgetsData: function () {
         // tab_port.postMessage({method: 'highlightWidgets'});
-        tab_port.postMessage({method: 'getWidgetsData'});
+        this.tab_port.postMessage({method: 'getWidgetsData'});
     },
 
     returnWidgetsData: function (data) {
@@ -62,25 +71,30 @@ ewiBackgroundClass.prototype = {
             this.storeWidgetsData(data)
         }
 
-        if (this.storedWidgetsData[id]) {
-            this.widgetsData = this.storedWidgetsData[id];
-            this.setBadge(this.storedWidgetsData[id].length);
+        if (this.tab) {
+            if (this.storedWidgetsData[this.tab.id]) {
+                this.widgetsData = this.storedWidgetsData[this.tab.id];
+                this.setBadge(this.storedWidgetsData[this.tab.id].length);
+            } else {
+                this.widgetsData = [];
+                this.setBadge(0);
+            }
         } else {
             this.widgetsData = [];
             this.setBadge(0);
         }
 
-        popup_port.postMessage({method: 'setWidgetsData', data: this.widgetsData});
-    },
-
-    requestWidgetsData: function () {
-        if (this.widgetsData.length) {
-            popup_port.postMessage({method: 'setWidgetsData', data: this.widgetsData});
+        if (this.popup_port) {
+            this.popup_port.postMessage({method: 'setWidgetsData', data: this.widgetsData});
         }
     },
 
+    requestWidgetsData: function () {
+        popup_port.postMessage({method: 'setWidgetsData', data: this.widgetsData});
+    },
+
     storeWidgetsData: function (data) {
-        this.storedWidgetsData[id] = data;
+        this.storedWidgetsData[this.tab.id] = data;
     }
 };
 
