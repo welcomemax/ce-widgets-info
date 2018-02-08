@@ -14,6 +14,8 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
 
         $scope.bg_port = chrome.extension.connect();
         $scope.bg_port.onMessage.addListener(function (obj) {
+            console.log(obj)
+
             if (obj && obj.method) {
                 if (obj.data) {
                     $scope[obj.method](obj.data);
@@ -22,7 +24,7 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
                 }
             }
         });
-        $scope.bg_port.postMessage({method: 'getWidgetsData'});
+        $scope.bg_port.postMessage({method: 'requestWidgetsData'});
 
         chrome.tabs.query({
             currentWindow: true,
@@ -33,8 +35,10 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
         });
     };
 
-    $scope.widgetsDataToPopup = function (data) {
+    $scope.setWidgetsData = function (data) {
         $scope.$apply(function(){
+            console.log(data)
+
             $scope.widgetsData = data;
             $scope.loaded = true;
         })

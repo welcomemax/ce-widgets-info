@@ -1,11 +1,5 @@
-chrome.runtime.onConnect.addListener(function (port) {
-    window.port = port;
-
-    port.onMessage.addListener(postMessageFactory);
-});
-
-widgetsInfoClass = function () {};
-widgetsInfoClass.prototype = {
+ewiInjectClass = function () {};
+ewiInjectClass.prototype = {
     debug: true,
 
     widgets: [],
@@ -25,160 +19,36 @@ widgetsInfoClass.prototype = {
         cms: ''
     },
 
-    appsData: [{
-        app_slug: 'instagram-feed',
-        app_name: 'Instagram Feed',
-        app_type: '',
-        aliases: {
-            names: ['instagramfeed', 'instashow'],
-            src: ['instashow']
-        },
-        version: {
-            last: '3.1.1',
-            curr: false
-        }
-    }, {
-        app_slug: 'instalink',
-        app_name: 'Instagram Widget',
-        app_type: '',
-        aliases: {
-            names: [],
-            src: []
-        },
-        version: {
-            last: '2.3.1',
-            curr: false
-        }
-    }, {
-        app_slug: 'instagram-testimonials',
-        app_name: 'Instagram Testimonials',
-        app_type: '',
-        aliases: {
-            names: [],
-            src: []
-        },
-        version: {
-            last: '1.0.0',
-            curr: false
-        }
-    }, {
-        app_slug: 'yottie',
-        app_name: 'Yottie',
-        app_type: '',
-        aliases: {
-            names: [],
-            src: []
-        },
-        version: {
-            last: '2.6.0',
-            curr: false
-        }
-    }, {
-        app_slug: 'google-maps',
-        app_name: 'Google Maps',
-        app_type: '',
-        aliases: {
-            names: [],
-            src: []
-        },
-        version: {
-            last: '1.1.0',
-            curr: false
-        }
-    }, {
-        app_slug: 'pricing-table',
-        app_name: 'Pricing Table',
-        app_type: '',
-        aliases: {
-            names: [],
-            src: []
-        },
-        version: {
-            last: '2.0.0',
-            curr: false
-        }
-    }, {
-        app_slug: 'social-icons',
-        app_name: 'Social Media Icons',
-        app_type: '',
-        aliases: {
-            names: [],
-            src: []
-        },
-        version: {
-            last: '1.1.1',
-            curr: false
-        }
-    }, {
-        app_slug: 'social-share-buttons',
-        app_name: 'Social Share Buttons',
-        app_type: '',
-        aliases: {
-            names: [],
-            src: []
-        },
-        version: {
-            last: '1.0.1',
-            curr: false
-        }
-    }, {
-        app_slug: 'facebook-feed',
-        app_name: 'Facebook Feed',
-        app_type: '',
-        aliases: {
-            names: [],
-            src: []
-        },
-        version: {
-            last: '1.3.0',
-            curr: false
-        }
-    }, {
-        app_slug: 'facebook-comments',
-        app_name: 'Facebook Comments',
-        app_type: '',
-        aliases: {
-            names: [],
-            src: []
-        },
-        version: {
-            last: '1.0.0',
-            curr: false
-        }
-    }, {
-        app_slug: 'facebook-like-button',
-        app_name: 'Facebook Like Button',
-        app_type: '',
-        aliases: {
-            names: [],
-            src: []
-        },
-        version: {
-            last: '1.0.0',
-            curr: false
-        }
-    }, {
-        app_slug: 'facebook-share-button',
-        app_name: 'Facebook Share Button',
-        app_type: '',
-        aliases: {
-            names: [],
-            src: []
-        },
-        version: {
-            last: '1.0.0',
-            curr: false
-        }
-    }],
+    appsData: [],
 
     init: function () {
-        this.collectScripts();
-        this.collectWidgets();
-        this.wrapWidgets();
+        var self = this;
 
-        if (this.debug) {
-            this.logWidgetsData();
-        }
+        chrome.runtime.onConnect.addListener(function (port) {
+            window.port = port;
+
+            port.onMessage.addListener(function (obj) {
+                if (obj && obj.method) {
+                    if (obj.data) {
+                        self[obj.method](obj.data);
+                    } else {
+                        self[obj.method]();
+                    }
+                }
+            });
+        });
+
+        chrome.storage.sync.get(function(data) {
+            self.appsData = data.apps;
+
+            self.collectScripts();
+            self.collectWidgets();
+            self.wrapWidgets();
+
+            if (self.debug) {
+                self.logWidgetsData();
+            }
+        });
     },
 
     pushWidget: function(data) {
@@ -524,7 +394,24 @@ widgetsInfoClass.prototype = {
         for (var i = 0; i < this.widgetsData.length; i++) {
             var widget = this.widgetsData[i];
 
-            console.info(widget.app_name + ' widget detected:', widget);
+            console.log('\n----------------| ' + widget.app_name + ' detected' + ' |----------------');
+
+            var widget_keys = Object.keys(widget);
+            widget_keys.forEach(function (key) {
+                var value = widget[key];
+
+                console.log(format_key(key), value, '\n');
+            });
+
+            console.log('---------------------------------------------' + widget.app_name.replace(/./g, '-') + '\n\n');
+
+            function format_key (key) {
+                for (var i = 0; i < 10 - key.trim().length; i++) {
+                    key = ' ' + key;
+                }
+
+                return key + ':';
+            }
         }
     },
 
@@ -533,16 +420,5 @@ widgetsInfoClass.prototype = {
     }
 };
 
-widgetsInfo = new widgetsInfoClass();
-
-widgetsInfo.init();
-
-function postMessageFactory (obj) {
-    if (obj && obj.method) {
-        if (obj.data) {
-            widgetsInfo[obj.method](obj.data);
-        } else {
-            widgetsInfo[obj.method]();
-        }
-    }
-}
+ewiInject = new ewiInjectClass();
+ewiInject.init();

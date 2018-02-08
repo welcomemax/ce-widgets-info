@@ -1,45 +1,47 @@
-// window.popup_port = chrome.runtime.connect();
-
-chrome.extension.onConnect.addListener(function(port) {
-    window.popup_port = port;
-    popup_port.onMessage.addListener(postMessageFactory);
-});
-
-chrome.tabs.onUpdated.addListener(function (id, info, tab) {
-    if (info && info.status && (info.status.toLowerCase() === 'complete')) {
-        if(!id || !tab || !tab.url || !(tab.url.indexOf('http') + 1)) {
-            return;
-        }
-
-        window.id = id;
-        window.tab_port = chrome.tabs.connect(id);
-        tab_port.onMessage.addListener(postMessageFactory);
-
-        widgetsInfo.collectWidgetsData();
-
-        console.log(id, info, tab); // @TODO remove temp log
-    }
-});
-
-chrome.tabs.onActivated.addListener(function (info) {
-    window.id = info.tabId;
-    widgetsInfo.returnWidgetsData();
-});
-
-function postMessageFactory (obj) {
-    if (obj && obj.method) {
-        if (obj.data) {
-            widgetsInfo[obj.method](obj.data);
-        } else {
-            widgetsInfo[obj.method]();
-        }
-    }
-}
-
-widgetsInfoClass = function () {};
-widgetsInfoClass.prototype = {
+ewiBackgroundClass = function () {};
+ewiBackgroundClass.prototype = {
     storedWidgetsData: {},
     widgetsData: [],
+
+    init: function () {
+        var self = this;
+
+        chrome.extension.onConnect.addListener(function(port) {
+            window.popup_port = port;
+            popup_port.onMessage.addListener(postMessageFactory);
+        });
+
+        chrome.tabs.onUpdated.addListener(function (id, info, tab) {
+            if (info && info.status && (info.status.toLowerCase() === 'complete')) {
+                if(!id || !tab || !tab.url || !(tab.url.indexOf('http') + 1)) {
+                    return;
+                }
+
+                window.id = id;
+                window.tab_port = chrome.tabs.connect(id);
+                tab_port.onMessage.addListener(postMessageFactory);
+
+                self.collectWidgetsData();
+
+                console.log(id, info, tab); // @TODO remove temp log
+            }
+        });
+
+        chrome.tabs.onActivated.addListener(function (info) {
+            window.id = info.tabId;
+            self.returnWidgetsData();
+        });
+
+        function postMessageFactory (obj) {
+            if (obj && obj.method) {
+                if (obj.data) {
+                    self[obj.method](obj.data);
+                } else {
+                    self[obj.method]();
+                }
+            }
+        }
+    },
 
     setBadge: function (count) {
         if (count) {
@@ -68,14 +70,13 @@ widgetsInfoClass.prototype = {
             this.setBadge(0);
         }
 
-        // console.log(widgetsData); // @TODO remove temp log
-        // console.log(popup_port); // @TODO remove temp log
-
-        // popup_port.postMessage({method: 'popupWidgetsData', data: widgetsData});
+        popup_port.postMessage({method: 'setWidgetsData', data: this.widgetsData});
     },
 
-    getWidgetsData: function () {
-        popup_port.postMessage({method: 'widgetsDataToPopup', data: this.widgetsData});
+    requestWidgetsData: function () {
+        if (this.widgetsData.length) {
+            popup_port.postMessage({method: 'setWidgetsData', data: this.widgetsData});
+        }
     },
 
     storeWidgetsData: function (data) {
@@ -83,4 +84,5 @@ widgetsInfoClass.prototype = {
     }
 };
 
-widgetsInfo = new widgetsInfoClass();
+ewiBackground = new ewiBackgroundClass();
+ewiBackground.init();

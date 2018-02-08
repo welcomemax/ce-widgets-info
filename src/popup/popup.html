@@ -19,7 +19,15 @@
             </header>
 
             <main>
-                <div ng-if="!loaded" class="loader"></div>
+                <div ng-if="!widgetsData.length" class="widgets-empty">
+                    <div class="widgets-empty-text">
+                        Widgets weren't detected on the current page
+                    </div>
+                    <div class="widgets-empty-reload">
+                        <div ng-if="!reloaded" ng-click="reload()" class="widgets-empty-reload-button">Try again</div>
+                        <div ng-if="reloaded" class="widgets-empty-reload-status">Still nothing here</div>
+                    </div>
+                </div>
 
                 <div ng-if="loaded">
                     <div ng-repeat="widgetData in widgetsData" class="widget"
@@ -40,17 +48,12 @@
 
                         <pre class="widget-settings">{{widgetData.settings | json}}</pre>
                     </div>
+
+
                 </div>
 
-                <div ng-if="!widgetsData.length" class="widgets-empty">
-                    <div class="widgets-empty-text">
-                        Widgets weren't detected on the current page
-                    </div>
-                    <div class="widgets-empty-reload">
-                        <div ng-if="!reloaded" ng-click="reload()" class="widgets-empty-reload-button">Try again</div>
-                        <div ng-if="reloaded" class="widgets-empty-reload-status">Still nothing here</div>
-                    </div>
-
+                <div ng-if="!loaded" class="loader-container">
+                    <div class="loader"></div>
                 </div>
             </main>
 
