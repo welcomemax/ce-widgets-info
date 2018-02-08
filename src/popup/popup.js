@@ -1,5 +1,9 @@
 var popup = angular.module('popup', []);
 
+popup.config(['$compileProvider', function ($compileProvider) {
+    $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|local|data|chrome-extension):/);
+}]);
+
 popup.controller('popupController', ['$scope', '$timeout', function ($scope, $timeout) {
     $scope.widgetsData = [];
     $scope.loaded = false;
@@ -14,8 +18,6 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
 
         $scope.bg_port = chrome.extension.connect();
         $scope.bg_port.onMessage.addListener(function (obj) {
-            console.log(obj)
-
             if (obj && obj.method) {
                 if (obj.data) {
                     $scope[obj.method](obj.data);
@@ -37,10 +39,10 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
 
     $scope.setWidgetsData = function (data) {
         $scope.$apply(function(){
-            console.log(data)
-
             $scope.widgetsData = data;
             $scope.loaded = true;
+
+            console.log(data)
         })
     };
 

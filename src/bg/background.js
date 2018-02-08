@@ -2,6 +2,7 @@ ewiBackgroundClass = function () {};
 ewiBackgroundClass.prototype = {
     storedWidgetsData: {},
     widgetsData: [],
+    sites: {},
     tabs: {},
     tab: {},
     tab_port: false,
@@ -17,15 +18,36 @@ ewiBackgroundClass.prototype = {
 
         chrome.tabs.onUpdated.addListener(function (id, info, tab) {
             if (info && info.status && (info.status.toLowerCase() === 'complete')) {
-                if(!id || !tab || !tab.url || !(tab.url.indexOf('http') + 1)) {
+                if (!id || !tab || !tab.url || !(tab.url.indexOf('http') + 1)) {
                     return;
                 }
 
                 self.tab = tab;
-                self.tab.site = tab.url.match(/^(?:https?:)?(?:\/\/)?(?:w+\.)?([^\/\?]+)/)[1];
 
-                if (!self.tabs[self.tab.id]) {
-                    self.tabs[self.tab.id] = self.tab;
+                var site = tab.url.match(/^(?:https?:)?(?:\/\/)?(?:w+\.)?([^\/\?]+)/)[1]
+
+                if (!self.tabs[tab.id]) {
+                    self.tabs[tab.id] = {
+                        id: tab.id,
+                        site: site,
+                        url: tab.url,
+                        title: tab.title,
+                        favIconUrl: tab.favIconUrl
+                    };
+                }
+
+                if (!self.sites[site]) {
+                    self.sites[site] = {
+                        site: site,
+                        pages: {}
+                    };
+                }
+
+                if (!self.sites[site].pages[tab.url]) {
+                    self.sites[site].pages[tab.url] = {
+                        url: tab.url,
+                        widgetsData: []
+                    }
                 }
 
                 self.tab_port = chrome.tabs.connect(self.tab.id);

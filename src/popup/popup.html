@@ -26,12 +26,17 @@
                          ng-click="moveToWidget(widgetData.id)">
                         <div class="widget-header">
                             <div class="widget-header-app">
-                                {{widgetData.app_name}}
-                                <b class="widget-header-app-version"
-                                   ng-if="widgetData.version.curr"
-                                   ng-class="widgetData.version.last == '1.0.0' || widgetData.version.curr == widgetData.version.last ? 'widget-header-app-version-actual' : ''">
-                                    ver. {{widgetData.version.curr}}
-                                </b>
+                                <div class="widget-header-app-icon">
+                                    <img src="img/apps/{{widgetData.app_slug}}.svg">
+                                </div>
+                                <div class="widget-header-app-title">
+                                    {{widgetData.app_name}}
+                                    <sup class="widget-header-app-version"
+                                         ng-if="widgetData.version.curr"
+                                         ng-class="widgetData.version.last == '1.0.0' || widgetData.version.curr == widgetData.version.last ? 'widget-header-app-version-actual' : ''">
+                                        ver. {{widgetData.version.curr}}
+                                    </sup>
+                                </div>
                             </div>
                             <div class="widget-header-type">{{widgetData.app_type}}</div>
                         </div>

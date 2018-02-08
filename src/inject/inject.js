@@ -75,6 +75,7 @@ ewiInjectClass.prototype = {
             settings: data.settings,
             $el: data.$el,
             app_type: data.app_type,
+            app_slug: curr_app.app_slug,
             app_name: curr_app.app_name,
             version: curr_app.version
         };
