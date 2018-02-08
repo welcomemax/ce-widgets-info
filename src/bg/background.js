@@ -75,7 +75,7 @@ widgetsInfoClass.prototype = {
     },
 
     getWidgetsData: function () {
-        popup_port.postMessage({method: 'getWidgetsData', data: this.widgetsData});
+        popup_port.postMessage({method: 'widgetsDataToPopup', data: this.widgetsData});
     },
 
     storeWidgetsData: function (data) {

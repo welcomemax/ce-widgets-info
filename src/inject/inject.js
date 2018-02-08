@@ -458,15 +458,18 @@ widgetsInfoClass.prototype = {
             if (xhr.status === 200) {
                 var responseRegex = /\/\*\*\/collect\((.*)\);/;
                 var responseJSON = JSON.parse(xhr.responseText.match(responseRegex)[1]);
-                var responseData = responseJSON.data.widgets[widget.publicID].data;
+                var responseWidget = responseJSON.data.widgets[widget.publicID];
 
-                self.pushWidget({
-                    publicID: widget.publicID,
-                    app_type: widget.app_type,
-                    app_name: responseData.app,
-                    settings: responseData.settings,
-                    $el: widget.$el
-                })
+                if (responseWidget.status) {
+                    self.pushWidget({
+                        publicID: widget.publicID,
+                        app_type: widget.app_type,
+                        app_name: responseWidget.data.app,
+                        settings: responseWidget.data.settings,
+                        $el: widget.$el
+                    })
+                }
+
             }
         }
     },

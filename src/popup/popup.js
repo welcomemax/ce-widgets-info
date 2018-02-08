@@ -1,14 +1,4 @@
-// var bgWindow = chrome.extension.getBackgroundPage();
-// var widgetsData = bgWindow.widgetsData;
-
 var popup = angular.module('popup', []);
-
-
-
-// doesn't work for some reasons
-// chrome.browserAction.onClicked.addListener(function () {
-//     $scope.togglePopupActive();
-// });
 
 popup.controller('popupController', ['$scope', '$timeout', function ($scope, $timeout) {
     $scope.widgetsData = [];
@@ -22,18 +12,8 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
     this.$onInit = function () {
         $scope.togglePopupActive();
 
-
-        // chrome.runtime.onConnect.addListener(function (port) {
-        //     port.onMessage.addListener(postMessageFactory);
-        // });
-
-        var port = chrome.extension.connect({
-            name: "Sample Communication"
-        });
-        port.onMessage.addListener(postMessageFactory);
-        port.postMessage({method: 'getWidgetsData'});
-
-        function postMessageFactory (obj) {
+        $scope.bg_port = chrome.extension.connect();
+        $scope.bg_port.onMessage.addListener(function (obj) {
             if (obj && obj.method) {
                 if (obj.data) {
                     $scope[obj.method](obj.data);
@@ -41,7 +21,8 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
                     $scope[obj.method]();
                 }
             }
-        }
+        });
+        $scope.bg_port.postMessage({method: 'getWidgetsData'});
 
         chrome.tabs.query({
             currentWindow: true,
@@ -50,21 +31,13 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
             $scope.tab = tabs[0];
             $scope.tab_port = chrome.tabs.connect($scope.tab.id);
         });
-
-        $scope.$watch('widgetsData', function() {
-            console.log('widgetsData changed')
-        });
-
-        // $scope.widgetsData = widgetsData; // @replace with port.onMessage.addListener
     };
 
-    $scope.getWidgetsData = function (data) {
-        console.log(data)
-
-        $scope.widgetsData = data;
-        $scope.loaded = true;
-
-        console.log($scope)
+    $scope.widgetsDataToPopup = function (data) {
+        $scope.$apply(function(){
+            $scope.widgetsData = data;
+            $scope.loaded = true;
+        })
     };
 
     $scope.togglePopupActive = function () {
