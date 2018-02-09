@@ -78,6 +78,6 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
 
 popup.directive('widgetsCount', function() {
     return {
-        template: '<b>{{widgetsData.length}}</b> widget{{widgetsData.length > 1 ? "s" : ""}} detected'
+        template: '<span class="widgets-count-counter">{{widgetsData.length}}</span> widget{{widgetsData.length > 1 ? "s" : ""}} detected'
     };
 });

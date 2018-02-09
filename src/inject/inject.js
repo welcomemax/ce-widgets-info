@@ -1,6 +1,6 @@
 ewiInjectClass = function () {};
 ewiInjectClass.prototype = {
-    debug: true,
+    debug: false,
 
     widgets: [],
     widgetsCounter: 0,
@@ -58,8 +58,7 @@ ewiInjectClass.prototype = {
         };
 
         this.appsData.forEach(function(app) {
-            app.aliases.names.push(app.app_name);
-            app.aliases.names.forEach(function (alias) {
+            app.aliases.forEach(function (alias) {
                 if (data.app_name.toLowerCase().indexOf(alias) + 1) {
                     curr_app = app;
                 }
@@ -68,6 +67,10 @@ ewiInjectClass.prototype = {
 
         if (data.app_name && curr_app.app_name === 'Unknown') {
             curr_app.app_name = data.app_name;
+        }
+
+        if (data.app_type !== "Code Canyon") {
+            curr_app.version.curr = curr_app.version.last;
         }
 
         var widgetData = {
@@ -188,8 +191,7 @@ ewiInjectClass.prototype = {
             var src = $curr.getAttribute('src');
             if (src) {
                 self.appsData.forEach(function(app) {
-                    app.aliases.src.push(app.app_slug);
-                    app.aliases.src.forEach(function(alias) {
+                    app.aliases.forEach(function(alias) {
                         if (src.indexOf(alias) + 1) {
                             version = src.split('?ver=')[1];
 

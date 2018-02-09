@@ -19,7 +19,7 @@ body {
     }
 
     .popup header {
-        padding: 6px 16px 8px 16px;
+        padding: 10px 16px 12px 16px;
     }
 
         .popup header h1 {
@@ -30,6 +30,14 @@ body {
         .popup header .widgets-count {
             font-size: 12px;
         }
+
+            .popup header .widgets-count-counter {
+                padding: 4px 8px;
+                margin-right: 2px;
+                border-radius: 2px;
+                background: #38393a;
+                color: #fff;
+            }
 
     .popup footer {
         padding: 8px 16px 6px 16px;
@@ -77,13 +85,13 @@ body {
             }
 
     .popup main {
-        display: flex;
         background: #38393a;
         color: #ffffff;
         overflow: hidden;
         max-height: 0;
         opacity: 0;
         transition: max-height .3s .2s, opacity .3s .4s;
+        border-left: 1px solid #303131;
     }
 
     .popup-active main {
@@ -96,6 +104,7 @@ body {
             min-height: 100px;
             align-items: center;
             display: flex;
+            flex-direction: row;
         }
 
         .popup main .loader {
@@ -172,52 +181,94 @@ body {
                 }
 
         .widget {
-            padding: 0 16px;
             border-bottom: 1px solid #303131;
+            border-right: 1px solid #303131;
         }
-
-            .widget:hover {
-                background: rgba(0,0,0,.1);
-            }
 
             .widget .widget-header {
                 display: flex;
+                align-items: center;
                 justify-content: space-between;
                 line-height: 24px;
-                margin: 8px 0;
+                padding: 8px 16px;
+                position: relative;
+                cursor: pointer;
+                border-bottom: 1px solid #303131;
+                height: 44px;
+                box-sizing: border-box;
             }
 
                 .widget .widget-header .widget-header-app {
                     display: flex;
+                    align-items: center;
                 }
 
                     .widget .widget-header .widget-header-app-icon {
                         margin-right: 8px;
-                        width: 24px;
-                        height: 24px;
+                        width: 32px;
+                        height: 32px;
                     }
-
-                        .widget .widget-header .widget-header-app-icon img {
-                            width: 24px;
-                            height: 24px;
-                        }
 
                     .widget .widget-header .widget-header-app-title {
                         font-size: 14px;
+                        text-shadow: -1px 1px 0 rgba(0, 0, 0, 1);
                     }
 
                     .widget .widget-header .widget-header-app-version {
                         font-size: 10px;
                         color: #FF6162;
+                        text-shadow: -1px 1px 0 rgba(0, 0, 0, .1);
                     }
 
                         .widget .widget-header .widget-header-app-version.widget-header-app-version-actual {
-                            color: #4ee600;
+                            color: #43b300;
                         }
 
                 .widget .widget-header .widget-header-type {
                     font-size: 10px;
+                    color: #b2b4b7;
                 }
+
+                .widget .widget-header:hover {
+                    background: #303131;
+                }
+
+                    .widget .widget-header:hover .widget-header-tooltip {
+                        opacity: 1;
+                        bottom: -14px;
+                    }
+
+                    .widget .widget-header .widget-header-tooltip {
+                        position: absolute;
+                        bottom: -8px;
+                        left: 56px;
+                        padding: 4px 12px;
+                        color: #fff;
+                        line-height: 12px;
+                        font-size: 11px;
+                        background: #272727;
+                        border-radius: 2px;
+                        transition: opacity .3s, bottom .3s, padding .3s;
+                        opacity: 0;
+                        display: flex;
+                        align-items: center;
+                    }
+
+                        .widget .widget-header .widget-header-tooltip .widget-header-tooltip-icon {
+                            width: 12px;
+                            height: 12px;
+                            margin-left: 4px;
+                            fill: #fff;
+                            transition: margin .3s;
+                        }
+
+                            .widget .widget-header .widget-header-tooltip:hover .widget-header-tooltip-icon {
+                                margin-left: 8px;
+                            }
+
+                            .widget .widget-header .widget-header-tooltip:hover {
+                                padding: 4px 8px 4px 12px;
+                            }
 
             .widget .widget-settings {
                 width: 284px;
@@ -229,5 +280,5 @@ body {
                 padding: 4px 8px;
                 overflow-x: hidden;
                 overflow-y: auto;
-                margin: 8px 0;
+                margin: 8px 16px;
             }
