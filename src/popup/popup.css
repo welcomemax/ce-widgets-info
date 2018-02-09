@@ -10,15 +10,16 @@ body {
 
     .popup header,
     .popup footer {
-        padding: 8px 16px;
         display: flex;
         background: #ffffff;
         color: #38393a;
         line-height: 16px;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .popup header {
-        justify-content: space-between;
+        padding: 6px 16px 8px 16px;
     }
 
         .popup header h1 {
@@ -31,14 +32,45 @@ body {
         }
 
     .popup footer {
-        justify-content: flex-end;
+        padding: 8px 16px 6px 16px;
     }
 
-        .popup footer label{
+        .popup footer .control-btn {
+            font-size: 12px;
+            padding: 4px 12px 4px 18px;
+            margin-left: -18px;
+            transition: color .3s .1s, background .3s, padding .3s .2s;
+            border-radius: 2px;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+        }
+
+            .popup footer .control-btn:hover {
+                background: #38393a;
+                color: #fff;
+                padding: 4px 12px 4px 20px;
+            }
+
+            .popup footer .control-btn-icon {
+                width: 16px;
+                height: 16px;
+                margin-right: 4px;
+                fill: #38393a;
+                transition: fill .3s;
+            }
+
+                .popup footer .control-btn:hover .control-btn-icon {
+                    fill: #fff;
+                }
+
+        .popup footer .control-checkbox {
+            cursor: pointer;
             font-size: 12px;
         }
 
-            .popup footer label input{
+            .popup footer label input {
                 position: relative;
                 bottom: -2px;
                 margin: 0 4px 0 0;
@@ -113,8 +145,9 @@ body {
                     background: #fff;
                     border: 1px solid #fff;
                     border-radius: 2px;
-                    display: inline-block;
                     transition: color .3s .1s, background .3s;
+                    display: inline-flex;
+                    align-items: center;
                 }
 
                     .popup main .widgets-empty .widgets-empty-reload .widgets-empty-reload-button:hover {
@@ -122,12 +155,24 @@ body {
                         background: #38393a;
                     }
 
+                        .popup main .widgets-empty .widgets-empty-reload .widgets-empty-reload-button .widgets-empty-reload-button-icon {
+                            width: 16px;
+                            height: 16px;
+                            margin-right: 4px;
+                            fill: #38393a;
+                            transition: fill .3s;
+                        }
+
+                            .popup main .widgets-empty .widgets-empty-reload .widgets-empty-reload-button:hover .widgets-empty-reload-button-icon {
+                                fill: #fff;
+                            }
+
                 .popup main .widgets-empty .widgets-empty-reload .widgets-empty-reload-status {
                     padding: 5px 12px;
                 }
 
         .widget {
-            padding: 8px 16px;
+            padding: 0 16px;
             border-bottom: 1px solid #303131;
         }
 
@@ -138,17 +183,18 @@ body {
             .widget .widget-header {
                 display: flex;
                 justify-content: space-between;
-                line-height: 16px;
+                line-height: 24px;
+                margin: 8px 0;
             }
 
                 .widget .widget-header .widget-header-app {
-                    position: relative;
+                    display: flex;
                 }
 
                     .widget .widget-header .widget-header-app-icon {
-                        position: absolute;
-                        top: -1px;
-                        left: 0;
+                        margin-right: 8px;
+                        width: 24px;
+                        height: 24px;
                     }
 
                         .widget .widget-header .widget-header-app-icon img {
@@ -157,7 +203,6 @@ body {
                         }
 
                     .widget .widget-header .widget-header-app-title {
-                        padding-left: 32px;
                         font-size: 14px;
                     }
 
@@ -184,4 +229,5 @@ body {
                 padding: 4px 8px;
                 overflow-x: hidden;
                 overflow-y: auto;
+                margin: 8px 0;
             }

@@ -27,7 +27,7 @@
                         <div class="widget-header">
                             <div class="widget-header-app">
                                 <div class="widget-header-app-icon">
-                                    <img src="img/apps/{{widgetData.app_slug}}.svg">
+                                    <img ng-if="widgetData.app_slug" src="img/apps/{{widgetData.app_slug}}.svg">
                                 </div>
                                 <div class="widget-header-app-title">
                                     {{widgetData.app_name}}
@@ -49,7 +49,10 @@
                             Widgets weren't detected on the current page
                         </div>
                         <div class="widgets-empty-reload">
-                            <div ng-if="!reloaded" ng-click="reload()" class="widgets-empty-reload-button">Try again</div>
+                            <div ng-if="!reloaded" ng-click="reload()" class="widgets-empty-reload-button">
+                                <svg class="widgets-empty-reload-button-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-reload"></use> </svg>
+                                Try again
+                            </div>
                             <div ng-if="reloaded" class="widgets-empty-reload-status">Still nothing here</div>
                         </div>
                     </div>
@@ -61,8 +64,18 @@
             </main>
 
             <footer>
-                <label><input ng-model="settings.highlight" type="checkbox" checked>Highlight all widgets</label>
+                <div class="control-btn control-clear">
+                    <svg class="control-btn-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-reload"></use> </svg>
+                    Clear cache
+                </div>
+                <label class="control-checkbox control-highlight"><input ng-model="settings.highlight" type="checkbox" checked>Highlight all widgets</label>
             </footer>
         </div>
+
+        <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; height: 0; width: 0;">
+            <symbol viewBox="0 0 41 34" id="icon-reload">
+                <path d="M33.949,16C33.429,7.08,26.051,0,17,0C7.611,0,0,7.611,0,17s7.611,17,17,17v-6c-6.075,0-11-4.925-11-11  S10.925,6,17,6c5.737,0,10.443,4.394,10.949,10h-6.849L31,25.899L40.899,16H33.949z"></path>
+            </symbol>
+        </svg>
     </body>
 </html>

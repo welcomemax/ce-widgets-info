@@ -113,7 +113,7 @@ ewiInjectClass.prototype = {
 
             if (publicID) {
                 self.widgets.push({
-                    app_type: 'eapps',
+                    app_type: 'Elfsight Apps',
                     $el: $curr,
                     publicID: publicID
                 });
@@ -133,7 +133,7 @@ ewiInjectClass.prototype = {
                 self.widgetsData.push({ // @TODO change temp widgetsData to widgets
                     id: self.widgetsCounter++,
                     publicID: publicID,
-                    app_type: 'esapps',
+                    app_type: 'Shopify',
                     // shop: Shopify.shop // @TODO wait until Shopify can be accessed
                     settings: {"widgetData": "currently unavailable for shopify"}, // @TODO remove temp
                     $el: $curr
@@ -159,7 +159,7 @@ ewiInjectClass.prototype = {
                 var optionsJSON = JSON.parse(decodeURIComponent(options));
 
                 self.pushWidget({
-                    app_type: 'CodeCanyon',
+                    app_type: 'Code Canyon',
                     app_name: app_name,
                     settings: optionsJSON,
                     $el: $curr
@@ -245,7 +245,7 @@ ewiInjectClass.prototype = {
             var $curr = $tags[i];
 
             self.widgets.push({
-                app_type: 'eapps',
+                app_type: 'Elfsight Apps',
                 $el: $curr,
                 publicID: $curr.dataset.id
             });
@@ -303,7 +303,7 @@ ewiInjectClass.prototype = {
         for (var i = 0; i < self.widgets.length; i++) {
             var widget = self.widgets[i];
 
-            if (widget.app_type === 'eapps' || widget.app_type === 'esapps') {
+            if (widget.app_type === 'Elfsight Apps' || widget.app_type === 'Shopify') {
                 self.getPlatformData(widget);
             }
         }
@@ -314,9 +314,9 @@ ewiInjectClass.prototype = {
         var self = this;
 
         var platformUrl;
-        if (widget.app_type === 'eapps') {
+        if (widget.app_type === 'Elfsight Apps') {
             platformUrl = self.eappsUrl + '&w=' + widget.publicID;
-        } else if (widget.app_type === 'esapps' && widget.shop) {
+        } else if (widget.app_type === 'Shopify' && widget.shop) {
             platformUrl = self.eappsUrl + '&shop=' + widget.shop + '&w=' + widget.publicID; // @TODO wait until can get shop
         }
 
