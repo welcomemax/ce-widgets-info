@@ -21,8 +21,21 @@ ewiInjectClass.prototype = {
 
     appsData: [],
 
+    // loadScript: function() {
+    //     var actualCode = '(' + function() {
+    //         console.log(Shopify)
+    //     } + ')();';
+    //
+    //     var script = document.createElement('script');
+    //     script.textContent = actualCode;
+    //     (document.head||document.documentElement).appendChild(script);
+    //     script.parentNode.removeChild(script);
+    // },
+
     init: function () {
         var self = this;
+
+        // self.loadScript();
 
         chrome.runtime.onConnect.addListener(function (port) {
             window.port = port;
@@ -69,7 +82,7 @@ ewiInjectClass.prototype = {
             curr_app.app_name = data.app_name;
         }
 
-        if (data.app_type !== "Code Canyon") {
+        if (data.app_type !== "CodeCanyon") {
             curr_app.version.curr = curr_app.version.last;
         }
 
@@ -108,7 +121,6 @@ ewiInjectClass.prototype = {
             /**
              * EAPPS
              */
-
             regMatches = $curr.className.match(self.eappsRegex);
             if (regMatches) {
                 publicID = regMatches[1];
@@ -162,7 +174,7 @@ ewiInjectClass.prototype = {
                 var optionsJSON = JSON.parse(decodeURIComponent(options));
 
                 self.pushWidget({
-                    app_type: 'Code Canyon',
+                    app_type: 'CodeCanyon',
                     app_name: app_name,
                     settings: optionsJSON,
                     $el: $curr

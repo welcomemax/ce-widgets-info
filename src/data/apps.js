@@ -34,6 +34,7 @@ var apps = [{
 }, {
     app_slug: 'google-maps',
     app_name: 'Google Maps',
+    app_data: 'EappsGoogleMaps',
     app_type: '',
     version: {
         last: '1.1.0',

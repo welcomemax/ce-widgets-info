@@ -39,6 +39,7 @@
         "src/inject/inject.css"
       ],
       "js": [
+        "src/libs/jquery.min.js",
         "src/inject/inject.js"
       ],
       "run_at": "document_idle"

@@ -1,0 +1,21 @@
+{
+  "name": "ce-widgets-info",
+  "version": "0.1.0",
+  "description": "Internal tool",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://code.elfsight.com/tools/ce-widgets-info.git"
+  },
+  "author": "Isaev Maxim (@welcomemax)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://code.elfsight.com/tools/ce-widgets-info/issues"
+  },
+  "homepage": "https://code.elfsight.com/tools/ce-widgets-info#readme",
+  "devDependencies": {
+    "angular": "^1.7.2",
+    "jquery": "^3.3.1"
+  }
+}
