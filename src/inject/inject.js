@@ -7,7 +7,7 @@ ewiInjectClass.prototype = {
 
     eappsRegex: /^elfsight-app-(.*)$/,
     esappsRegex: /^elfsight-sapp-(.*)$/,
-    optionsRegex: /^elfsight(.*)Options$/,
+    optionsRegex: /^elfsight(.*?)Options$/,
 
     eappsUrl: 'https://apps.elfsight.com/p/boot/?callback=collect',
     esappsUrl: 'https://shy.elfsight.com/p/boot/?callback=collect',
@@ -21,21 +21,41 @@ ewiInjectClass.prototype = {
 
     appsData: [],
 
-    // loadScript: function() {
-    //     var actualCode = '(' + function() {
-    //         console.log(Shopify)
-    //     } + ')();';
-    //
-    //     var script = document.createElement('script');
-    //     script.textContent = actualCode;
-    //     (document.head||document.documentElement).appendChild(script);
-    //     script.parentNode.removeChild(script);
-    // },
+    injectScript: function(file_path) {
+        var script = document.createElement('script');
+        script.setAttribute('type', 'text/javascript');
+        script.setAttribute('src', file_path);
+        document.head.appendChild(script);
+    },
 
-    init: function () {
+    test: function() {
+        console.log('method test fired')
+    },
+
+    postMessageFactory: function() {
         var self = this;
 
-        // self.loadScript();
+        window.addEventListener('message', function(obj) {
+            if (obj.data) {
+                obj = obj.data;
+            }
+
+            if (obj && obj.method) {
+                if (obj.data) {
+                    self[obj.method](obj.data);
+                } else {
+                    self[obj.method]();
+                }
+            }
+        })
+    },
+
+    init: function() {
+        var self = this;
+
+        self.injectScript(chrome.runtime.getURL('src/content/content.js'));
+        self.postMessageFactory();
+        // window.addEventListener('message', self.postMessageFactory);
 
         chrome.runtime.onConnect.addListener(function (port) {
             window.port = port;
@@ -169,6 +189,11 @@ ewiInjectClass.prototype = {
                 }
             }
 
+            regMatches = $curr.className.match(self.esappsRegex);
+            if (regMatches) {
+                publicID = regMatches[1];
+            }
+
             if (app_name) {
                 var options = $curr.dataset[datasetKeys[0]];
                 var optionsJSON = JSON.parse(decodeURIComponent(options));
@@ -179,6 +204,9 @@ ewiInjectClass.prototype = {
                     settings: optionsJSON,
                     $el: $curr
                 });
+
+                // console.log($($curr))
+                // console.log($($curr).data())
 
                 app_name = null;
             }
