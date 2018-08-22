@@ -1,6 +1,6 @@
 ewiInjectClass = function () {};
 ewiInjectClass.prototype = {
-    debug: true,
+    debug: false,
 
     widgets: [],
     widgetsCounter: 0,
@@ -25,16 +25,13 @@ ewiInjectClass.prototype = {
         var self = this;
 
         self.injectScript(chrome.runtime.getURL('src/content/content.js'));
+        self.postMessageFactory();
 
         chrome.storage.sync.get(function(data) {
             self.appsData = data.apps;
 
-            self.postMessageFactory();
-
             self.collectScripts();
             self.collectWidgets();
-
-            // @TODO init wrap on popup open
             self.wrapWidgets();
 
             if (self.debug) {
@@ -56,24 +53,12 @@ ewiInjectClass.prototype = {
 
         for (var i = 0; i < data.length; i++) {
             var widget = data[i];
-            var curr_app;
 
-            this.appsData.forEach(function(app) {
-                if (widget.func.indexOf(app.func) + 1) {
-                    curr_app = app;
-                }
-            });
-
-            self.widgetsData.push({
-                id: this.widgetsCounter++,
+            self.widgets.push({
                 app_type: 'CodeCanyon',
-                app_slug: curr_app.slug,
-                app_name: curr_app.name,
-                settings: widget.settings,
-                $el: document.getElementById(widget.el_id)
+                app_name: widget.id,
+                settings: widget.settings
             });
-
-            self.wrapWidgets();
         }
     },
 
@@ -194,6 +179,37 @@ ewiInjectClass.prototype = {
                 });
 
                 publicID = null;
+            }
+
+            var datasetKeys = Object.keys($curr.dataset);
+
+            /**
+             * CodeCanyon
+             */
+            if (datasetKeys[0]) {
+                var appNameMatches = datasetKeys[0].match(self.optionsRegex);
+                if (appNameMatches) {
+                    var app_name = datasetKeys[0].match(self.optionsRegex)[1];
+                }
+            }
+
+            regMatches = $curr.className.match(self.esappsRegex);
+            if (regMatches) {
+                publicID = regMatches[1];
+            }
+
+            if (app_name) {
+                var options = $curr.dataset[datasetKeys[0]];
+                var optionsJSON = JSON.parse(decodeURIComponent(options));
+
+                self.pushWidget({
+                    app_type: 'CodeCanyon',
+                    app_name: app_name,
+                    settings: optionsJSON,
+                    $el: $curr
+                });
+
+                app_name = null;
             }
 
             self.checkDataAttr($curr);
@@ -376,24 +392,21 @@ ewiInjectClass.prototype = {
         var self = this;
 
         for (var i = 0; i < self.widgetsData.length; i++) {
-            if (!self.widgetsData[i].wrapped) {
-                var app_name = self.widgetsData[i].app_name,
-                    $curr = self.widgetsData[i].$el,
-                    $wrap = document.createElement('div'),
-                    $label = document.createElement('div');
+            var app_name = self.widgetsData[i].app_name,
+                $curr = self.widgetsData[i].$el,
+                $wrap = document.createElement('div'),
+                $label = document.createElement('div');
 
-                $curr.parentNode.insertBefore($wrap, $curr);
+            $curr.parentNode.insertBefore($wrap, $curr);
 
-                $wrap.classList.add('elfsight-widget-wrap');
-                $wrap.appendChild($curr);
-                $wrap.appendChild($label);
+            $wrap.classList.add('elfsight-widget-wrap');
+            $wrap.appendChild($curr);
+            $wrap.appendChild($label);
 
-                $label.classList.add('elfsight-widget-label');
-                $label.innerHTML = app_name;
+            $label.classList.add('elfsight-widget-label');
+            $label.innerHTML = app_name;
 
-                self.widgetsData[i].$wrap = $wrap;
-                self.widgetsData[i].wrapped = true;
-            }
+            self.widgetsData[i].$wrap = $wrap;
         }
     },
 
@@ -427,7 +440,8 @@ ewiInjectClass.prototype = {
 
             console.log('\n----------------| ' + widget.app_name + ' detected' + ' |----------------');
 
-            Object.keys(widget).forEach(function (key) {
+            var widget_keys = Object.keys(widget);
+            widget_keys.forEach(function (key) {
                 var value = widget[key];
 
                 console.log(format_key(key), value, '\n');

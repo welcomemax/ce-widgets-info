@@ -1,39 +1,33 @@
-setTimeout(function(){
+// setTimeout(function(){
     // jQueryDefer(function() {
-        jQuery(function(){
-            var $divs = jQuery('div')
+        jQuery(function() {
             var widgetsData = [];
             var optionsRegExp = /^elfsight(.*?)Options$/;
 
-            $divs.each(function() {
+            jQuery('div').each(function() {
+                var self = this;
                 var data = jQuery(this).data();
 
                 if (!jQuery.isEmptyObject(data)) {
-                    var dataKeys = Object.keys(data);
-
-                    // if (dataKeys.some(function(key) {
-                    //         return key.match(optionsRegExp);
-                    //     })) {
-                    //     widgetsData[dataKeys[0]] = data;
-                    // }
-
-                    dataKeys.forEach(function(key){
+                    Object.keys(data).forEach(function(key) {
                         if (key.match(optionsRegExp)) {
-                            widgetsData[dataKeys[0]] = JSON.parse(decodeURIComponent(data[key]));
+                            widgetsData.push({
+                                func: Object.keys(data)[0],
+                                el_id: jQuery(self).attr('id'),
+                                settings: JSON.parse(decodeURIComponent(data[key]))
+                            })
                         }
                     })
                 }
             });
 
-            console.log(widgetsData)
-
             window.postMessage({
-                'method': 'test',
+                'method': 'getDataFromContent',
                 'data': widgetsData
             }, '*');
-        })
+        });
     // })
-}, 3000)
+// }, 3000)
 
 // function jQueryDefer(callback) {
 //     if (window.jQuery) {
