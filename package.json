@@ -1,6 +1,6 @@
 {
   "name": "ce-widgets-info",
-  "version": "0.1.0",
+  "version": "0.0.7",
   "description": "Internal tool",
   "main": "index.js",
   "scripts": {},
