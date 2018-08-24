@@ -1,9 +1,10 @@
 {
   "name": "ce-widgets-info",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "Internal tool",
   "scripts": {
-    "dev": "cross-env NODE_ENV=dev webpack-dev-server --progress --mode development",
+    "dev": "cross-env NODE_ENV=dev webpack --watch --progress --mode development",
+    "popup": "webpack-dev-server",
     "build": "webpack -p --progress --mode production"
   },
   "repository": {

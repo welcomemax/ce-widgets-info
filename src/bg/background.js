@@ -1,4 +1,5 @@
 require('./background.html');
+require('./data.js');
 
 ewiBackgroundClass = function () {};
 ewiBackgroundClass.prototype = {

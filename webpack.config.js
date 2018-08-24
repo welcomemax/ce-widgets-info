@@ -16,6 +16,7 @@ module.exports = function() {
 
         output: {
             path: path.join(__dirname, 'dist'),
+            publicPath: 'dist',
             filename: '[name].js'
         },
 
@@ -72,11 +73,7 @@ module.exports = function() {
         }
     };
 
-    if (IS_DEV) {
-        config.plugins.push(
-            new webpack.HotModuleReplacementPlugin()
-        );
-    } else {
+    if (!IS_DEV) {
         config.plugins.push(
             // new UglifyJsPlugin({
             //     parallel: true,

@@ -5,41 +5,64 @@ var apps = [{
     aliases: ['instagramfeed', 'instashow']
 }, {
     slug: 'instalink',
-    name: 'Instagram Widget'
+    name: 'Instagram Widget',
+    func: 'instalink'
 }, {
     slug: 'instagram-testimonials',
-    name: 'Instagram Testimonials'
+    name: 'Instagram Testimonials',
+    func: 'EappsInstagramTestimonials'
 }, {
     slug: 'yottie',
-    name: 'Yottie'
+    name: 'Yottie',
+    func: 'yottie'
 }, {
     slug: 'google-maps',
     name: 'Google Maps',
     func: 'EappsGoogleMaps'
 }, {
     slug: 'pricing-table',
-    name: 'Pricing Table'
+    name: 'Pricing Table',
+    func: 'EappsPricingTable'
 }, {
     slug: 'social-icons',
-    name: 'Social Media Icons'
+    name: 'Social Media Icons',
+    func: 'EappsMediaIcons'
 }, {
     slug: 'social-share-buttons',
-    name: 'Social Share Buttons'
+    name: 'Social Share Buttons',
+    func: 'EappsSocialShareButtons'
 }, {
     slug: 'facebook-feed',
-    name: 'Facebook Feed'
+    name: 'Facebook Feed',
+    func: 'EappsFacebookFeed'
 }, {
     slug: 'facebook-comments',
-    name: 'Facebook Comments'
+    name: 'Facebook Comments',
+    func: 'EappsFacebookComments'
 }, {
     slug: 'facebook-like-button',
-    name: 'Facebook Like Button'
+    name: 'Facebook Like Button',
+    func: 'EappsFacebookLikeButton'
 }, {
     slug: 'facebook-share-button',
-    name: 'Facebook Share Button'
+    name: 'Facebook Share Button',
+    func: 'EappsFacebookShareButton'
+}, {
+    slug: 'testimonials-slider',
+    name: 'TestimonialsSlider',
+    func: 'EappsTestimonialsSlider'
+}, {
+    slug: 'faq',
+    name: 'FAQ',
+    func: 'EappsFaq'
 }, {
     slug: 'contact-form',
-    name: 'Contact Form'
+    name: 'Contact Form',
+    func: 'EappsContactForm'
+}, {
+    slug: 'form-builder',
+    name: 'Form Builder',
+    func: 'EappsFormBuilder'
 }];
 
 function formatAppsData(apps) {

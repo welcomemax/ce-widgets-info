@@ -2,283 +2,243 @@ body
     font-family -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
     margin 0
 
+.popup
+    min-width 300px
+    background #38393a
 
-.popup {
-    min-width: 300px;
-    background: #38393a;
-}
+    header
+    footer
+        display flex
+        background #ffffff
+        color #38393a
+        line-height 16px
+        justify-content space-between
+        align-items center
 
-    .popup header,
-    .popup footer {
-        display: flex;
-        background: #ffffff;
-        color: #38393a;
-        line-height: 16px;
-        justify-content: space-between;
-        align-items: center;
-    }
 
-    .popup header {
-        padding: 10px 16px 12px 16px;
-    }
+    header
+        padding 10px 16px 12px 16px
 
-        .popup header h1 {
-            font-size: 14px;
-            margin: 0;
-        }
+        h1
+            font-size 14px
+            margin 0
 
-        .popup header .widgets-count {
-            font-size: 12px;
-        }
+        .widgets-count
+            font-size 12px
 
-            .popup header .widgets-count-counter {
-                padding: 4px 8px;
-                margin-right: 2px;
-                border-radius: 2px;
-                background: #38393a;
-                color: #fff;
-            }
+            &-counter
+                padding 4px 8px
+                margin-right 2px
+                border-radius 2px
+                background #38393a
+                color #fff
 
-    .popup footer {
-        padding: 8px 16px 6px 16px;
-    }
+    footer
+        padding 8px 16px 6px 16px
 
-        .popup footer .control-btn {
-            font-size: 12px;
-            padding: 4px 12px 4px 18px;
-            margin-left: -18px;
-            transition: color .3s .1s, background .3s, padding .3s .2s;
-            border-radius: 2px;
-            cursor: pointer;
-            user-select: none;
-            display: flex;
-            align-items: center;
-        }
+        .control-btn
+            font-size 12px
+            padding 4px 12px 4px 18px
+            margin-left -18px
+            transition color .3s .1s, background .3s, padding .3s .2s
+            border-radius 2px
+            cursor pointer
+            user-select none
+            display flex
+            align-items center
 
-            .popup footer .control-btn:hover {
-                background: #38393a;
-                color: #fff;
-                padding: 4px 12px 4px 20px;
-            }
+            &:hover
+                background #38393a
+                color #fff
+                padding 4px 12px 4px 20px
 
-            .popup footer .control-btn-icon {
-                width: 16px;
-                height: 16px;
-                margin-right: 4px;
-                fill: #38393a;
-                transition: fill .3s;
-            }
+                .control-btn-icon
+                    fill #fff
 
-                .popup footer .control-btn:hover .control-btn-icon {
-                    fill: #fff;
-                }
+            &-icon
+                width 16px
+                height 16px
+                margin-right 4px
+                fill #38393a
+                transition fill .3s
 
-        .popup footer .control-checkbox {
-            cursor: pointer;
-            font-size: 12px;
-        }
+        .control-checkbox
+            cursor pointer
+            font-size 12px
 
-            .popup footer label input {
-                position: relative;
-                bottom: -2px;
-                margin: 0 4px 0 0;
-            }
+            input
+                position relative
+                bottom -2px
+                margin 0 4px 0 0
 
-    .popup main {
-        background: #38393a;
-        color: #ffffff;
-        overflow: hidden;
-        max-height: 0;
-        opacity: 0;
-        transition: max-height .3s .2s, opacity .3s .4s;
-        border-left: 1px solid #303131;
-    }
+    main
+        background #38393a
+        color #ffffff
+        overflow hidden
+        max-height 0
+        opacity 0
+        transition max-height .3s .2s, opacity .3s .4s
+        border-left 1px solid #303131
 
-    .popup-active main {
-        max-height: 700px;
-        opacity: 1;
-    }
+        .popup-active &
+            max-height 700px
+            opacity 1
 
-        .popup main .container {
-            width: 100%;
-            min-height: 100px;
-            align-items: center;
-            display: flex;
-            flex-direction: row;
-        }
+        .container
+            width 100%
+            min-height 100px
+            align-items center
+            display flex
+            flex-direction row
 
-        .popup main .loader {
-            box-sizing: border-box;
-            display: block;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            border-radius: 50%;
-            border-style: solid;
-            border-top-color: transparent;
-            animation: popup-loader 1s infinite linear;
-            opacity: 1;
-            visibility: visible;
-            width: 32px;
-            height: 32px;
-            margin: -16px 0 0 -16px;
-            border-width: 2px;
-            z-index: 1;
-        }
+        .loader
+            box-sizing border-box
+            display block
+            position absolute
+            top 50%
+            left 50%
+            border-radius 50%
+            border-style solid
+            border-top-color transparent
+            animation popup-loader 1s infinite linear
+            opacity 1
+            visibility visible
+            width 32px
+            height 32px
+            margin -16px 0 0 -16px
+            border-width 2px
+            z-index 1
 
-        @keyframes popup-loader {
-            0% {
-                transform: rotate(0deg);
-            }
+        .widgets-empty
+            text-align center
+            font-size 12px
+            width 100%
 
-            100% {
-                transform: rotate(360deg);
-            }
-        }
+            &-text
+            &-reload
+                margin 8px 16px
 
-        .popup main .widgets-empty{
-            text-align: center;
-            font-size: 12px;
-            width: 100%;
-        }
+            &-reload
+                &-button
+                    cursor pointer
+                    padding 4px 12px
+                    color #38393a
+                    background #fff
+                    border 1px solid #fff
+                    border-radius 2px
+                    transition color .3s .1s, background .3s
+                    display inline-flex
+                    align-items center
 
-            .popup main .widgets-empty .widgets-empty-text,
-            .popup main .widgets-empty .widgets-empty-reload {
-                margin: 8px 16px;
-            }
+                    &:hover
+                        color #fff
+                        background #38393a
 
-                .popup main .widgets-empty .widgets-empty-reload .widgets-empty-reload-button {
-                    cursor: pointer;
-                    padding: 4px 12px;
-                    color: #38393a;
-                    background: #fff;
-                    border: 1px solid #fff;
-                    border-radius: 2px;
-                    transition: color .3s .1s, background .3s;
-                    display: inline-flex;
-                    align-items: center;
-                }
+                        &-icon
+                            fill #fff
 
-                    .popup main .widgets-empty .widgets-empty-reload .widgets-empty-reload-button:hover {
-                        color: #fff;
-                        background: #38393a;
-                    }
+                    &-icon
+                        width 16px
+                        height 16px
+                        margin-right 4px
+                        fill #38393a
+                        transition fill .3s
 
-                        .popup main .widgets-empty .widgets-empty-reload .widgets-empty-reload-button .widgets-empty-reload-button-icon {
-                            width: 16px;
-                            height: 16px;
-                            margin-right: 4px;
-                            fill: #38393a;
-                            transition: fill .3s;
-                        }
+                &-status
+                    padding 6px 12px
 
-                            .popup main .widgets-empty .widgets-empty-reload .widgets-empty-reload-button:hover .widgets-empty-reload-button-icon {
-                                fill: #fff;
-                            }
+.widget
+    border-bottom 1px solid #303131
+    border-right 1px solid #303131
 
-                .popup main .widgets-empty .widgets-empty-reload .widgets-empty-reload-status {
-                    padding: 6px 12px;
-                }
+    &-header
+        display flex
+        align-items center
+        justify-content space-between
+        line-height 24px
+        padding 8px 16px
+        position relative
+        cursor pointer
+        border-bottom 1px solid #303131
+        height 52px
+        box-sizing border-box
 
-        .widget {
-            border-bottom: 1px solid #303131;
-            border-right: 1px solid #303131;
-        }
+        &-app
+            display flex
+            align-items center
 
-            .widget .widget-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                line-height: 24px;
-                padding: 8px 16px;
-                position: relative;
-                cursor: pointer;
-                border-bottom: 1px solid #303131;
-                height: 52px;
-                box-sizing: border-box;
-            }
+            &-icon
+                margin-right 8px
+                width 32px
+                height 32px
 
-                .widget .widget-header .widget-header-app {
-                    display: flex;
-                    align-items: center;
-                }
+            &-title
+                font-size 14px
+                text-shadow -1px 1px 0 rgba(0, 0, 0, 1)
 
-                    .widget .widget-header .widget-header-app-icon {
-                        margin-right: 8px;
-                        width: 32px;
-                        height: 32px;
-                    }
+            &-version
+                font-size 10px
+                color #FF6162
+                text-shadow -1px 1px 0 rgba(0, 0, 0, .1)
 
-                    .widget .widget-header .widget-header-app-title {
-                        font-size: 14px;
-                        text-shadow: -1px 1px 0 rgba(0, 0, 0, 1);
-                    }
+                &-actual
+                    color #43b300
 
-                    .widget .widget-header .widget-header-app-version {
-                        font-size: 10px;
-                        color: #FF6162;
-                        text-shadow: -1px 1px 0 rgba(0, 0, 0, .1);
-                    }
+        &-type
+            font-size 10px
+            color #b2b4b7
 
-                        .widget .widget-header .widget-header-app-version.widget-header-app-version-actual {
-                            color: #43b300;
-                        }
+        &:hover
+            background #303131
 
-                .widget .widget-header .widget-header-type {
-                    font-size: 10px;
-                    color: #b2b4b7;
-                }
+            &-tooltip
+                opacity 1
+                bottom -14px
 
-                .widget .widget-header:hover {
-                    background: #303131;
-                }
+        &-tooltip
+            position absolute
+            bottom -8px
+            left 56px
+            padding 4px 12px
+            color #fff
+            line-height 12px
+            font-size 11px
+            background #272727
+            border-radius 2px
+            transition opacity .3s, bottom .3s, padding .3s
+            opacity 0
+            display flex
+            align-items center
 
-                    .widget .widget-header:hover .widget-header-tooltip {
-                        opacity: 1;
-                        bottom: -14px;
-                    }
+            &-icon
+                width 12px
+                height 12px
+                margin-left 4px
+                fill #fff
+                transition margin .3s
 
-                    .widget .widget-header .widget-header-tooltip {
-                        position: absolute;
-                        bottom: -8px;
-                        left: 56px;
-                        padding: 4px 12px;
-                        color: #fff;
-                        line-height: 12px;
-                        font-size: 11px;
-                        background: #272727;
-                        border-radius: 2px;
-                        transition: opacity .3s, bottom .3s, padding .3s;
-                        opacity: 0;
-                        display: flex;
-                        align-items: center;
-                    }
+            &:hover
+                padding 4px 8px 4px 12px
 
-                        .widget .widget-header .widget-header-tooltip .widget-header-tooltip-icon {
-                            width: 12px;
-                            height: 12px;
-                            margin-left: 4px;
-                            fill: #fff;
-                            transition: margin .3s;
-                        }
+                &-icon
+                    margin-left 8px
 
-                            .widget .widget-header .widget-header-tooltip:hover .widget-header-tooltip-icon {
-                                margin-left: 8px;
-                            }
+    &-settings
+        width 284px
+        max-height 200px
+        background #ffffff
+        color #38393a
+        border 1px solid #303131
+        border-radius 3px
+        padding 4px 8px
+        overflow-x hidden
+        overflow-y auto
+        margin 8px 16px
 
-                            .widget .widget-header .widget-header-tooltip:hover {
-                                padding: 4px 8px 4px 12px;
-                            }
 
-            .widget .widget-settings {
-                width: 284px;
-                max-height: 200px;
-                background: #ffffff;
-                color: #38393a;
-                border: 1px solid #303131;
-                border-radius: 3px;
-                padding: 4px 8px;
-                overflow-x: hidden;
-                overflow-y: auto;
-                margin: 8px 16px;
-            }
+@keyframes popup-loader
+    0%
+        transform rotate(0deg)
+
+    100%
+        transform rotate(360deg)

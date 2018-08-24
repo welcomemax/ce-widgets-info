@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Widgets Info</title>
+
+        <script src="popup.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <div class="popup"
+             ng-app="popup"
+             ng-controller="popupController as app"
+             ng-class="popupActive ? 'popup-active' : ''">
+
+            <header>
+                <h1>Elfsight Widgets Info</h1>
+                <widgets-count ng-if="widgetsData.length" class="widgets-count"></widgets-count>
+            </header>
+
+            <main>
+                <div ng-if="loaded" class="container">
+                    <div ng-repeat="widgetData in widgetsData" class="widget">
+                        <div class="widget-header"
+                             ng-mouseenter="highlightWidget(widgetData.id, true)"
+                             ng-mouseleave="highlightWidget(widgetData.id, false)"
+                             ng-click="moveToWidget(widgetData.id)">
+                            <div class="widget-header-app">
+                                <img ng-if="widgetData.app_slug" class="widget-header-app-icon" src="img/apps/{{widgetData.app_slug}}.svg"/>
+                                <div class="widget-header-app-title">
+                                    {{widgetData.app_name}}
+                                    <sup class="widget-header-app-version"
+                                         ng-if="widgetData.version.curr"
+                                         ng-class="widgetData.version.last == '1.0.0' || widgetData.version.curr == widgetData.version.last ? 'widget-header-app-version-actual' : ''">
+                                        ver. {{widgetData.version.curr}}
+                                    </sup>
+                                </div>
+                            </div>
+                            <div class="widget-header-type">{{widgetData.app_type}}</div>
+
+                            <div class="widget-header-tooltip">
+                                Move to widget
+                                <svg class="widget-header-tooltip-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-forward"></use> </svg>
+                            </div>
+                        </div>
+
+                        <pre class="widget-settings">{{widgetData.settings | json}}</pre>
+                    </div>
+
+                    <div ng-if="!widgetsData.length" class="widgets-empty">
+                        <div class="widgets-empty-text">
+                            Widgets weren't detected on the current page
+                        </div>
+                        <div class="widgets-empty-reload">
+                            <div ng-if="!reloaded" ng-click="reload()" class="widgets-empty-reload-button">
+                                <svg class="widgets-empty-reload-button-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-reload"></use> </svg>
+                                Try again
+                            </div>
+                            <div ng-if="reloaded" class="widgets-empty-reload-status">Still nothing here</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="!loaded" class="container">
+                    <div class="loader"></div>
+                </div>
+            </main>
+
+            <footer>
+                <div class="control-btn control-clear">
+                    <svg class="control-btn-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-reload"></use> </svg>
+                    Clear cache
+                </div>
+                <label class="control-checkbox control-highlight"><input ng-model="settings.highlight" type="checkbox" checked>Highlight all widgets</label>
+            </footer>
+        </div>
+
+        <!--<svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; height: 0; width: 0;">-->
+            <!--<symbol viewBox="0 0 50 50" id="icon-forward">-->
+                <!--<path points="15,2.75 12.914,4.836 33.078,25 12.914,45.164 15,47.25 37.25,25 "></path>-->
+            <!--</symbol>-->
+        <!--</svg>-->
+        <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; height: 0; width: 0;">
+            <symbol viewBox="0 0 50 50" id="icon-forward">
+                <rect fill="none" height="50" width="50"></rect><polygon points="15,2.75 12.914,4.836 33.078,25 12.914,45.164 15,47.25 37.25,25"></polygon>
+            </symbol>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; height: 0; width: 0;">
+            <symbol viewBox="0 0 41 34" id="icon-reload">
+                <path d="M33.949,16C33.429,7.08,26.051,0,17,0C7.611,0,0,7.611,0,17s7.611,17,17,17v-6c-6.075,0-11-4.925-11-11  S10.925,6,17,6c5.737,0,10.443,4.394,10.949,10h-6.849L31,25.899L40.899,16H33.949z"></path>
+            </symbol>
+        </svg>
+    </body>
+</html>
