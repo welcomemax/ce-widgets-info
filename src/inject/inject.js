@@ -1,3 +1,5 @@
+require('./inject.styl');
+
 ewiInjectClass = function () {};
 ewiInjectClass.prototype = {
     debug: true,
@@ -24,7 +26,7 @@ ewiInjectClass.prototype = {
     init: function() {
         var self = this;
 
-        self.injectScript(chrome.runtime.getURL('src/content/content.js'));
+        self.injectScript(chrome.runtime.getURL('dist/content.js'));
 
         chrome.storage.sync.get(function(data) {
             self.appsData = data.apps;

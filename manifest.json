@@ -19,14 +19,14 @@
   },
 
   "background": {
-    "page": "src/bg/background.html",
+    "page": "dist/background.html",
     "persistent": true
   },
 
   "browser_action": {
     "default_icon": "icons/icon19-x2.png",
     "default_title": "Widgets Info",
-    "default_popup": "src/popup/popup.html"
+    "default_popup": "dist/popup.html"
   },
 
   "content_scripts": [
@@ -35,18 +35,14 @@
         "http://*/*",
         "https://*/*"
       ],
-      "css": [
-        "src/inject/inject.css"
-      ],
       "js": [
-        "src/libs/jquery.min.js",
-        "src/inject/inject.js"
+        "dist/inject.js"
       ],
       "run_at": "document_idle"
     }
   ],
 
   "web_accessible_resources": [
-    "src/content/content.js"
+    "dist/content.js"
   ]
 }

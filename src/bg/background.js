@@ -1,3 +1,5 @@
+require('./background.html');
+
 ewiBackgroundClass = function () {};
 ewiBackgroundClass.prototype = {
     storedWidgetsData: {},

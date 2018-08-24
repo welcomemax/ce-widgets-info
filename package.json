@@ -2,8 +2,10 @@
   "name": "ce-widgets-info",
   "version": "0.1.0",
   "description": "Internal tool",
-  "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "dev": "cross-env NODE_ENV=dev webpack-dev-server --progress --mode development",
+    "build": "webpack -p --progress --mode production"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://code.elfsight.com/tools/ce-widgets-info.git"
@@ -15,7 +17,21 @@
   },
   "homepage": "https://code.elfsight.com/tools/ce-widgets-info#readme",
   "devDependencies": {
-    "angular": "^1.7.2",
-    "jquery": "^3.3.1"
+    "angular": "^1.7.3",
+    "babel-core": "6.26.3",
+    "babel-loader": "7.1.5",
+    "babel-plugin-syntax-dynamic-import": "6.18.0",
+    "babel-preset-env": "1.7.0",
+    "clean-webpack-plugin": "0.1.19",
+    "cross-env": "5.2.0",
+    "css-loader": "1.0.0",
+    "file-loader": "^2.0.0",
+    "html-webpack-plugin": "3.2.0",
+    "style-loader": "0.22.1",
+    "stylus-loader": "^3.0.2",
+    "url-loader": "1.1.1",
+    "webpack": "4.17.1",
+    "webpack-cli": "3.1.0",
+    "webpack-dev-server": "3.1.5"
   }
 }

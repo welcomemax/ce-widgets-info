@@ -1,3 +1,8 @@
+require('angular');
+
+require('./popup.styl');
+require('./popup.html');
+
 var popup = angular.module('popup', []);
 
 popup.config(['$compileProvider', function ($compileProvider) {
