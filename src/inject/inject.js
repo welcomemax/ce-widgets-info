@@ -73,15 +73,16 @@ ewiInjectClass.prototype = {
                 settings: widget.settings,
                 $el: document.getElementById(widget.el_id)
             });
+        });
 
-            self.wrapWidgets();
-        })
+        self.wrapWidgets();
+        self.getWidgetsData();
     },
 
     postMessageFactory: function() {
-        var self = this;
+        let self = this;
 
-        var factory = function(obj) {
+        let factory = function(obj) {
             if (obj && obj.method) {
                 if (obj.data) {
                     self[obj.method](obj.data);
@@ -105,7 +106,7 @@ ewiInjectClass.prototype = {
     },
 
     pushWidget: function(data) {
-        var curr_app = {
+        let curr_app = {
             name: 'Unknown',
             version: {last: '1.0.0', curr: false}
         };
@@ -126,7 +127,7 @@ ewiInjectClass.prototype = {
             curr_app.version.curr = curr_app.version.last;
         }
 
-        var widgetData = {
+        let widgetData = {
             id: this.widgetsCounter++,
             settings: data.settings,
             $el: data.$el,
@@ -144,18 +145,18 @@ ewiInjectClass.prototype = {
     },
 
     collectWidgets: function() {
-        var self = this;
+        let self = this;
 
         // @TODO jQuery widgets support
         // @TODO Weebly Apps widgets support
         // @TODO old Weebly InstaShow widgets support https://elf-test-2.weebly.com/
         // @TODO separate spaghetti with methods
 
-        var $curr, regMatches, publicID;
+        let $curr, regMatches, publicID;
 
-        var $divs = document.getElementsByTagName('div');
+        let $divs = document.getElementsByTagName('div');
 
-        for (var i = 0; i < $divs.length; i++) {
+        for (let i = 0; i < $divs.length; i++) {
             $curr = $divs[i];
 
             /**
@@ -376,7 +377,7 @@ ewiInjectClass.prototype = {
     wrapWidgets: function () {
         let self = this;
 
-        for (var i = 0; i < self.widgetsData.length; i++) {
+        for (let i = 0; i < self.widgetsData.length; i++) {
             if (!self.widgetsData[i].wrapped) {
                 let app_name = self.widgetsData[i].app_name,
                     $curr = self.widgetsData[i].$el,
@@ -401,7 +402,7 @@ ewiInjectClass.prototype = {
     },
 
     highlightWidgets: function (data) {
-        for (var i = 0; i < this.widgetsData.length; i++) {
+        for (let i = 0; i < this.widgetsData.length; i++) {
             let $wrap = this.widgetsData[i].$wrap;
 
             if ($wrap) {
@@ -419,7 +420,7 @@ ewiInjectClass.prototype = {
     },
 
     moveToWidget: function (data) {
-        var $wrap = this.widgetsData[data.id].$wrap;
+        let $wrap = this.widgetsData[data.id].$wrap;
 
         $wrap.scrollIntoView({
             behavior: "smooth",
@@ -429,13 +430,13 @@ ewiInjectClass.prototype = {
     },
 
     logWidgetsData: function () {
-        for (var i = 0; i < this.widgetsData.length; i++) {
-            var widget = this.widgetsData[i];
+        for (let i = 0; i < this.widgetsData.length; i++) {
+            let widget = this.widgetsData[i];
 
             console.log('\n----------------| ' + widget.app_name + ' detected' + ' |----------------');
 
             Object.keys(widget).forEach(function (key) {
-                var value = widget[key];
+                let value = widget[key];
 
                 console.log(format_key(key), value, '\n');
             });
@@ -443,7 +444,7 @@ ewiInjectClass.prototype = {
             console.log('---------------------------------------------' + widget.app_name.replace(/./g, '-') + '\n\n');
 
             function format_key (key) {
-                for (var i = 0; i < 10 - key.trim().length; i++) {
+                for (let i = 0; i < 10 - key.trim().length; i++) {
                     key = ' ' + key;
                 }
 

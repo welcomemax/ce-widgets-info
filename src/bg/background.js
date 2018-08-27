@@ -25,26 +25,27 @@ ewiBackgroundClass.prototype = {
                 }
 
                 self.tab = tab;
+                self.tab.site = tab.url.match(/^(?:https?:)?(?:\/\/)?(?:w+\.)?([^\/\?]+)/)[1];
 
                 if (!self.tabs[tab.id]) {
                     self.tabs[tab.id] = {
                         id: tab.id,
-                        site: tab.url.match(/^(?:https?:)?(?:\/\/)?(?:w+\.)?([^\/\?]+)/)[1],
+                        site: tab.site,
                         url: tab.url,
                         title: tab.title,
                         favIconUrl: tab.favIconUrl
-                    };
+                    }
                 }
 
-                if (!self.sites[site]) {
-                    self.sites[site] = {
-                        site: site,
+                if (!self.sites[tab.site]) {
+                    self.sites[tab.site] = {
+                        site: tab.site,
                         pages: {}
-                    };
+                    }
                 }
 
-                if (!self.sites[site].pages[tab.url]) {
-                    self.sites[site].pages[tab.url] = {
+                if (!self.sites[tab.site].pages[tab.url]) {
+                    self.sites[tab.site].pages[tab.url] = {
                         url: tab.url,
                         widgetsData: []
                     }
@@ -53,7 +54,9 @@ ewiBackgroundClass.prototype = {
                 self.tab_port = chrome.tabs.connect(self.tab.id);
                 self.tab_port.onMessage.addListener(postMessageFactory);
 
-                self.collectWidgetsData();
+                // setTimeout(() => {
+                    self.collectWidgetsData();
+                // }, 1000);
             }
         });
 

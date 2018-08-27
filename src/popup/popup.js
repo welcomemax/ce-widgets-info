@@ -1,11 +1,14 @@
-require('angular');
+import angular from 'angular';
 
 require('./popup.styl');
 require('./popup.html');
 
+import jsonFormatter from 'jsonformatter'
+import 'jsonformatter/dist/json-formatter.css'
+
 const DEBUG = true;
 
-var popup = angular.module('popup', []);
+var popup = angular.module('popup', [jsonFormatter]);
 
 popup.config(['$compileProvider', function ($compileProvider) {
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|local|data|chrome-extension):/);

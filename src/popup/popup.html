@@ -42,7 +42,8 @@
                             </div>
                         </div>
 
-                        <pre class="widget-settings">{{widgetData.settings | json}}</pre>
+                        <json-formatter json="widgetData.settings" open="1" class="widget-settings"></json-formatter>
+                        <!--<pre class="widget-settings">{{widgetData.settings | json}}</pre>-->
                     </div>
 
                     <div ng-if="!widgetsData.length" class="widgets-empty">

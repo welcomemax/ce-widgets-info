@@ -5,7 +5,7 @@ const IS_DEV = (process.env.NODE_ENV === 'dev');
 
 module.exports = function() {
     const config = {
-        devtool: IS_DEV ? 'cheap-module-eval-source-map' : undefined,
+        devtool: IS_DEV ? 'source-map' : undefined,
 
         entry: {
             popup: path.join(__dirname, 'src/popup/popup.js'),
@@ -36,7 +36,7 @@ module.exports = function() {
                 {
                     test: /\.js$/,
                     loader: 'babel-loader',
-                    exclude: /(node_modules)/,
+                    // exclude: /(node_modules)/,
                     options: {
                         compact: true
                     }
@@ -53,6 +53,10 @@ module.exports = function() {
                             }
                         }
                     ]
+                },
+                {
+                    test: /\.css$/,
+                    loader: ['style-loader', 'css-loader']
                 },
                 {
                     test: /\.(jpe?g|png|gif)$/,
