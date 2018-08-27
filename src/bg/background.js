@@ -1,4 +1,3 @@
-require('./background.html');
 require('./data.js');
 
 ewiBackgroundClass = function () {};
@@ -12,7 +11,7 @@ ewiBackgroundClass.prototype = {
     popup_port: false,
 
     init: function () {
-        var self = this;
+        let self = this;
 
         chrome.extension.onConnect.addListener(function(port) {
             this.popup_port = port;
@@ -27,12 +26,10 @@ ewiBackgroundClass.prototype = {
 
                 self.tab = tab;
 
-                var site = tab.url.match(/^(?:https?:)?(?:\/\/)?(?:w+\.)?([^\/\?]+)/)[1]
-
                 if (!self.tabs[tab.id]) {
                     self.tabs[tab.id] = {
                         id: tab.id,
-                        site: site,
+                        site: tab.url.match(/^(?:https?:)?(?:\/\/)?(?:w+\.)?([^\/\?]+)/)[1],
                         url: tab.url,
                         title: tab.title,
                         favIconUrl: tab.favIconUrl

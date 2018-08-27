@@ -16,8 +16,8 @@
                 <widgets-count ng-if="widgetsData.length" class="widgets-count"></widgets-count>
             </header>
 
-            <main>
-                <div ng-if="loaded" class="container">
+            <main class="popup-main">
+                <div ng-if="loaded" class="popup-main-container">
                     <div ng-repeat="widgetData in widgetsData" class="widget">
                         <div class="widget-header"
                              ng-mouseenter="highlightWidget(widgetData.id, true)"
@@ -59,7 +59,7 @@
                     </div>
                 </div>
 
-                <div ng-if="!loaded" class="container">
+                <div ng-if="!loaded" class="popup-main-container">
                     <div class="loader"></div>
                 </div>
             </main>

@@ -5,7 +5,7 @@ const IS_DEV = (process.env.NODE_ENV === 'dev');
 
 module.exports = function() {
     const config = {
-        devtool: IS_DEV ? 'eval' : undefined,
+        devtool: IS_DEV ? 'cheap-module-eval-source-map' : undefined,
 
         entry: {
             popup: path.join(__dirname, 'src/popup/popup.js'),
@@ -15,8 +15,7 @@ module.exports = function() {
         },
 
         output: {
-            path: path.join(__dirname, 'dist'),
-            publicPath: 'dist',
+            path: path.join(__dirname, 'extension/dist'),
             filename: '[name].js'
         },
 

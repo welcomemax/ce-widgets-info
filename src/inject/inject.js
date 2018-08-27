@@ -24,11 +24,11 @@ ewiInjectClass.prototype = {
     appsData: [],
 
     init: function() {
-        var self = this;
+        let self = this;
 
         self.injectScript(chrome.runtime.getURL('dist/content.js'));
 
-        chrome.storage.sync.get(function(data) {
+        chrome.storage.sync.get((data) => {
             self.appsData = data.apps;
 
             self.postMessageFactory();
@@ -46,21 +46,20 @@ ewiInjectClass.prototype = {
     },
 
     injectScript: function(file_path) {
-        var script = document.createElement('script');
-        script.setAttribute('type', 'text/javascript');
-        script.setAttribute('src', file_path);
+        let script = document.createElement('script');
+            script.setAttribute('type', 'text/javascript');
+            script.setAttribute('src', file_path);
 
         document.head.appendChild(script);
     },
 
     getDataFromContent: function(data) {
-        var self = this;
+        let self = this;
 
-        for (var i = 0; i < data.length; i++) {
-            var widget = data[i];
-            var curr_app;
+        data.forEach((widget) => {
+            let curr_app;
 
-            this.appsData.forEach(function(app) {
+            self.appsData.forEach((app) => {
                 if (widget.func.indexOf(app.func) + 1) {
                     curr_app = app;
                 }
@@ -76,7 +75,7 @@ ewiInjectClass.prototype = {
             });
 
             self.wrapWidgets();
-        }
+        })
     },
 
     postMessageFactory: function() {
@@ -207,15 +206,15 @@ ewiInjectClass.prototype = {
     },
 
     collectScripts: function() {
-        var self = this;
+        let self = this;
 
-        var version = false;
-        var $scripts = document.getElementsByTagName('script');
+        let version = false;
+        let $scripts = document.getElementsByTagName('script');
 
-        for (var i = 0; i < $scripts.length; i++) {
-            var $curr = $scripts[i];
+        for (let i = 0; i < $scripts.length; i++) {
+            let $curr = $scripts[i];
 
-            var src = $curr.getAttribute('src');
+            let src = $curr.getAttribute('src');
             if (src) {
                 self.appsData.forEach(function(app) {
                     app.aliases.forEach(function(alias) {
@@ -235,16 +234,16 @@ ewiInjectClass.prototype = {
     },
 
     parseScriptVersion: function(src) {
-        var xhr = new XMLHttpRequest();
+        let xhr = new XMLHttpRequest();
 
         xhr.open('GET', src, false); // @TODO async && fix on localhost
         xhr.send();
 
         if (xhr.status === 200) {
-            var versionCopyrightRegex = /version:\s?(.*)/i;
-            var versionCodeRegex = /version:"(.*?)"/;
+            let versionCopyrightRegex = /version:\s?(.*)/i;
+            let versionCodeRegex = /version:"(.*?)"/;
 
-            var matches, copyrightVersion, codeVersion;
+            let matches, copyrightVersion, codeVersion;
 
             matches = xhr.responseText.match(versionCopyrightRegex);
             if (matches) {
@@ -266,12 +265,12 @@ ewiInjectClass.prototype = {
      * OLD EAPPS
      */
     checkTagNames: function () {
-        var self = this;
+        let self = this;
 
-        var $tags = document.getElementsByTagName('elfsight-app');
+        let $tags = document.getElementsByTagName('elfsight-app');
 
-        for (var i = 0; i < $tags.length; i++) {
-            var $curr = $tags[i];
+        for (let i = 0; i < $tags.length; i++) {
+            let $curr = $tags[i];
 
             self.widgets.push({
                 app_type: 'Elfsight Apps',
@@ -285,12 +284,12 @@ ewiInjectClass.prototype = {
      * data-is, data-it, data-yt
      */
     checkDataAttr: function ($curr) {
-        var self = this;
+        let self = this;
 
-        var dataset = $curr.dataset,
+        let dataset = $curr.dataset,
             dataset_keys = Object.keys(dataset);
 
-        var settings = {},
+        let settings = {},
             app_name, data_prefix;
 
         if (dataset_keys[0]) {
@@ -310,8 +309,8 @@ ewiInjectClass.prototype = {
             }
 
             if (data_prefix && app_name) {
-                for (var i = 1; i < dataset_keys.length; i++) {
-                    var option = dataset_keys[i].replace(data_prefix, '').toLowerCase();
+                for (let i = 1; i < dataset_keys.length; i++) {
+                    let option = dataset_keys[i].replace(data_prefix, '').toLowerCase();
 
                     settings[option] = dataset[dataset_keys[i]];
                 }
@@ -327,10 +326,10 @@ ewiInjectClass.prototype = {
     },
 
     collectWidgetsData: function () {
-        var self = this;
+        let self = this;
 
-        for (var i = 0; i < self.widgets.length; i++) {
-            var widget = self.widgets[i];
+        for (let i = 0; i < self.widgets.length; i++) {
+            let widget = self.widgets[i];
 
             if (widget.app_type === 'Elfsight Apps' || widget.app_type === 'Shopify') {
                 self.getPlatformData(widget);
@@ -338,11 +337,11 @@ ewiInjectClass.prototype = {
         }
     },
 
-    // @TODO refactor, try to catch network requests to eapps platform
+    // @TODO refactor, try to catch network requests with chrome.webRequest
     getPlatformData: function (widget) {
-        var self = this;
+        let self = this;
 
-        var platformUrl;
+        let platformUrl;
         if (widget.app_type === 'Elfsight Apps') {
             platformUrl = self.eappsUrl + '&w=' + widget.publicID;
         } else if (widget.app_type === 'Shopify' && widget.shop) {
@@ -350,15 +349,15 @@ ewiInjectClass.prototype = {
         }
 
         if (platformUrl) {
-            var xhr = new XMLHttpRequest();
+            let xhr = new XMLHttpRequest();
 
             xhr.open('GET', platformUrl, false); // @TODO async & send for all (batch) eapps widgets
             xhr.send();
 
             if (xhr.status === 200) {
-                var responseRegex = /\/\*\*\/collect\((.*)\);/;
-                var responseJSON = JSON.parse(xhr.responseText.match(responseRegex)[1]);
-                var responseWidget = responseJSON.data.widgets[widget.publicID];
+                let responseRegex = /\/\*\*\/collect\((.*)\);/;
+                let responseJSON = JSON.parse(xhr.responseText.match(responseRegex)[1]);
+                let responseWidget = responseJSON.data.widgets[widget.publicID];
 
                 if (responseWidget.status) {
                     self.pushWidget({
@@ -375,42 +374,48 @@ ewiInjectClass.prototype = {
     },
 
     wrapWidgets: function () {
-        var self = this;
+        let self = this;
 
         for (var i = 0; i < self.widgetsData.length; i++) {
             if (!self.widgetsData[i].wrapped) {
-                var app_name = self.widgetsData[i].app_name,
+                let app_name = self.widgetsData[i].app_name,
                     $curr = self.widgetsData[i].$el,
                     $wrap = document.createElement('div'),
                     $label = document.createElement('div');
 
-                $curr.parentNode.insertBefore($wrap, $curr);
+                if ($curr) {
+                    $curr.parentNode.insertBefore($wrap, $curr);
 
-                $wrap.classList.add('elfsight-widget-wrap');
-                $wrap.appendChild($curr);
-                $wrap.appendChild($label);
+                    $wrap.classList.add('elfsight-widget-wrap');
+                    $wrap.appendChild($curr);
+                    $wrap.appendChild($label);
 
-                $label.classList.add('elfsight-widget-label');
-                $label.innerHTML = app_name;
+                    $label.classList.add('elfsight-widget-label');
+                    $label.innerHTML = app_name;
 
-                self.widgetsData[i].$wrap = $wrap;
-                self.widgetsData[i].wrapped = true;
+                    self.widgetsData[i].$wrap = $wrap;
+                    self.widgetsData[i].wrapped = true;
+                }
             }
         }
     },
 
     highlightWidgets: function (data) {
         for (var i = 0; i < this.widgetsData.length; i++) {
-            var $wrap = this.widgetsData[i].$wrap;
+            let $wrap = this.widgetsData[i].$wrap;
 
-            $wrap.classList.toggle('elfsight-widget-highlight', data.state);
+            if ($wrap) {
+                $wrap.classList.toggle('elfsight-widget-highlight', data.state);
+            }
         }
     },
 
     highlightWidget: function (data) {
-        var $wrap = this.widgetsData[data.id].$wrap;
+        let $wrap = this.widgetsData[data.id].$wrap;
 
-        $wrap.classList.toggle('elfsight-widget-highlight', data.state);
+        if ($wrap) {
+            $wrap.classList.toggle('elfsight-widget-highlight', data.state);
+        }
     },
 
     moveToWidget: function (data) {
