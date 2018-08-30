@@ -54,6 +54,15 @@ ewiBackgroundClass.prototype = {
                 self.tab_port = chrome.tabs.connect(self.tab.id);
                 self.tab_port.onMessage.addListener(postMessageFactory);
 
+                // @TODO move to separate class
+                if (self.tab.site === 'partners.shopify.com' && tab.url.match(/managed_stores\/new/)) {
+                    self.shopify_setManagedStore({
+                        store_url: self.getQueryParam('store_url', tab.url),
+                        permissions: self.getQueryParam('permissions', tab.url).split(','),
+                        message: self.getQueryParam('message', tab.url)
+                    });
+                }
+
                 // setTimeout(() => {
                     self.collectWidgetsData();
                 // }, 1000);
@@ -114,8 +123,26 @@ ewiBackgroundClass.prototype = {
         }
     },
 
+    // @TODO move to utils class
+    getQueryParam: function(name, url) {
+        name = name.replace(/[\[\]]/g, '\\$&');
+
+        let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+
+        if (!results) return null;
+        if (!results[2]) return '';
+
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    },
+
+    // @TODO move to separate class
+    shopify_setManagedStore: function(data) {
+        this.tab_port.postMessage({method: 'shopify_setManagedStore', data: data});
+    },
+
     requestWidgetsData: function () {
-        popup_port.postMessage({method: 'setWidgetsData', data: this.widgetsData});
+        this.popup_port.postMessage({method: 'setWidgetsData', data: this.widgetsData});
     },
 
     storeWidgetsData: function (data) {

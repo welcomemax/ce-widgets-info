@@ -455,6 +455,23 @@ ewiInjectClass.prototype = {
 
     getWidgetsData: function () {
         port.postMessage({method: 'returnWidgetsData', data: this.widgetsData});
+    },
+
+    // @TODO move to separate class
+    shopify_setManagedStore: function(data) {
+        let shop_domain_input = document.getElementById('shop_domain'),
+            collaborator_message_input = document.getElementById('collaborator_relationship_request_message');
+
+        shop_domain_input.value = data.store_url;
+        collaborator_message_input.value = data.message;
+
+        data.permissions.forEach((permission) => {
+            let collaborator_relationship_inputs = document.querySelectorAll('input[name="collaborator_relationship[allow_' + permission + ']"]');
+
+            collaborator_relationship_inputs.forEach((input) => {
+                input.checked = true;
+            })
+        });
     }
 };
 
