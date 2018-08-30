@@ -13,22 +13,22 @@ ewiBackgroundClass.prototype = {
     init: function () {
         let self = this;
 
-        chrome.extension.onConnect.addListener(function(port) {
+        chrome.extension.onConnect.addListener((port) => {
             this.popup_port = port;
             this.popup_port.onMessage.addListener(postMessageFactory);
         });
 
-        chrome.tabs.onUpdated.addListener(function (id, info, tab) {
+        chrome.tabs.onUpdated.addListener((id, info, tab) => {
             if (info && info.status && (info.status.toLowerCase() === 'complete')) {
                 if (!id || !tab || !tab.url || !(tab.url.indexOf('http') + 1)) {
                     return;
                 }
 
-                self.tab = tab;
-                self.tab.site = tab.url.match(/^(?:https?:)?(?:\/\/)?(?:w+\.)?([^\/\?]+)/)[1];
+                this.tab = tab;
+                this.tab.site = tab.url.match(/^(?:https?:)?(?:\/\/)?(?:w+\.)?([^\/\?]+)/)[1];
 
-                if (!self.tabs[tab.id]) {
-                    self.tabs[tab.id] = {
+                if (!this.tabs[tab.id]) {
+                    this.tabs[tab.id] = {
                         id: tab.id,
                         site: tab.site,
                         url: tab.url,
@@ -37,50 +37,48 @@ ewiBackgroundClass.prototype = {
                     }
                 }
 
-                if (!self.sites[tab.site]) {
-                    self.sites[tab.site] = {
+                if (!this.sites[tab.site]) {
+                    this.sites[tab.site] = {
                         site: tab.site,
                         pages: {}
                     }
                 }
 
-                if (!self.sites[tab.site].pages[tab.url]) {
-                    self.sites[tab.site].pages[tab.url] = {
+                if (!this.sites[tab.site].pages[tab.url]) {
+                    this.sites[tab.site].pages[tab.url] = {
                         url: tab.url,
                         widgetsData: []
                     }
                 }
 
-                self.tab_port = chrome.tabs.connect(self.tab.id);
-                self.tab_port.onMessage.addListener(postMessageFactory);
+                this.tab_port = chrome.tabs.connect(self.tab.id);
+                this.tab_port.onMessage.addListener(postMessageFactory);
 
                 // @TODO move to separate class
-                if (self.tab.site === 'partners.shopify.com' && tab.url.match(/managed_stores\/new/)) {
-                    self.shopify_setManagedStore({
-                        store_url: self.getQueryParam('store_url', tab.url),
-                        permissions: self.getQueryParam('permissions', tab.url).split(','),
-                        message: self.getQueryParam('message', tab.url)
+                if (this.tab.site === 'partners.shopify.com' && this.tab.url.match(/managed_stores\/new/)) {
+                    this.shopify_setManagedStore({
+                        store_url: this.getQueryParam('store_url', tab.url),
+                        permissions: this.getQueryParam('permissions', tab.url).split(','),
+                        message: this.getQueryParam('message', tab.url)
                     });
                 }
 
-                // setTimeout(() => {
-                    self.collectWidgetsData();
-                // }, 1000);
+                this.collectWidgetsData();
             }
         });
 
-        chrome.tabs.onActivated.addListener(function (info) {
-            self.tab = self.tabs[info.tabId];
+        chrome.tabs.onActivated.addListener((info) => {
+            this.tab = this.tabs[info.tabId];
 
-            self.returnWidgetsData();
+            this.returnWidgetsData();
         });
 
-        function postMessageFactory (obj) {
+        let postMessageFactory = (obj) => {
             if (obj && obj.method) {
                 if (obj.data) {
-                    self[obj.method](obj.data);
+                    this[obj.method](obj.data);
                 } else {
-                    self[obj.method]();
+                    this[obj.method]();
                 }
             }
         }
