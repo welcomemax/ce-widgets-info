@@ -1,14 +1,17 @@
-import angular from 'angular';
+import 'angular';
 
-require('./popup.styl');
-require('./popup.html');
+import 'angular-ui-carousel';
+import 'angular-ui-carousel/dist/ui-carousel.css';
+import 'jsonformatter';
+import 'jsonformatter/dist/json-formatter.css';
 
-import jsonFormatter from 'jsonformatter'
-import 'jsonformatter/dist/json-formatter.css'
+import './popup.styl';
+import './popup.html';
+
 
 const DEBUG = true;
 
-var popup = angular.module('popup', [jsonFormatter]);
+var popup = angular.module('popup', ['jsonFormatter', 'ui.carousel']);
 
 popup.config(['$compileProvider', function ($compileProvider) {
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|local|data|chrome-extension):/);
@@ -63,6 +66,7 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
     };
 
     $scope.highlightWidget = function (id, state) {
+        console.log(id)
         $scope.tab_port.postMessage({
             method: 'highlightWidget',
             data: {id: id, state: state}

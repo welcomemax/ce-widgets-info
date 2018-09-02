@@ -18,33 +18,40 @@
 
             <main class="popup-main">
                 <div ng-if="loaded" class="popup-main-container">
-                    <div ng-repeat="widgetData in widgetsData" class="widget">
-                        <div class="widget-header"
-                             ng-mouseenter="highlightWidget(widgetData.id, true)"
-                             ng-mouseleave="highlightWidget(widgetData.id, false)"
-                             ng-click="moveToWidget(widgetData.id)">
-                            <div class="widget-header-app">
-                                <img ng-if="widgetData.app_slug" class="widget-header-app-icon" src="img/apps/{{widgetData.app_slug}}.svg"/>
-                                <div class="widget-header-app-title">
-                                    {{widgetData.app_name}}
-                                    <sup class="widget-header-app-version"
-                                         ng-if="widgetData.version.curr"
-                                         ng-class="widgetData.version.last == '1.0.0' || widgetData.version.curr == widgetData.version.last ? 'widget-header-app-version-actual' : ''">
-                                        ver. {{widgetData.version.curr}}
-                                    </sup>
+                    <ui-carousel
+                            slides="widgetsData"
+                            dots="true">
+
+                        <carousel-item>
+                            <div class="widget">
+                                <div class="widget-header"
+                                     ng-mouseenter="highlightWidget(item.id, true)"
+                                     ng-mouseleave="highlightWidget(item.id, false)"
+                                     ng-click="moveToWidget(item.id)">
+                                    <div class="widget-header-app">
+                                        <img class="widget-header-app-icon" src="img/apps/{{item.app_slug}}.svg" alt="{{item.app_name}}"/>
+                                        <div class="widget-header-app-title">
+                                            {{item.app_name}}
+                                            <sup class="widget-header-app-version"
+                                                 ng-if="item.version.curr"
+                                                 ng-class="item.version.last == '1.0.0' || item.version.curr == item.version.last ? 'widget-header-app-version-actual' : ''">
+                                                ver. {{item.version.curr}}
+                                            </sup>
+                                        </div>
+                                    </div>
+                                    <div class="widget-header-type">{{item.app_type}}</div>
+
+                                    <div class="widget-header-tooltip">
+                                        Move to widget
+                                        <svg class="widget-header-tooltip-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-forward"></use> </svg>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="widget-header-type">{{widgetData.app_type}}</div>
 
-                            <div class="widget-header-tooltip">
-                                Move to widget
-                                <svg class="widget-header-tooltip-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-forward"></use> </svg>
+                                <json-formatter json="item.settings" open="1" class="widget-settings"></json-formatter>
+                                <!--<pre class="widget-settings">{{item.settings | json}}</pre>-->
                             </div>
-                        </div>
-
-                        <json-formatter json="widgetData.settings" open="1" class="widget-settings"></json-formatter>
-                        <!--<pre class="widget-settings">{{widgetData.settings | json}}</pre>-->
-                    </div>
+                        </carousel-item>
+                    </ui-carousel>
 
                     <div ng-if="!widgetsData.length" class="widgets-empty">
                         <div class="widgets-empty-text">

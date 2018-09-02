@@ -19,6 +19,8 @@
   "homepage": "https://code.elfsight.com/tools/ce-widgets-info#readme",
   "devDependencies": {
     "angular": "^1.7.3",
+    "angular-carousel": "^1.1.0",
+    "angular-touch": "^1.7.3",
     "babel-core": "6.26.3",
     "babel-loader": "7.1.5",
     "babel-plugin-syntax-dynamic-import": "6.18.0",
@@ -29,12 +31,14 @@
     "style-loader": "0.22.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
+    "svg-url-loader": "^2.3.2",
     "url-loader": "1.1.1",
     "webpack": "4.17.1",
     "webpack-cli": "3.1.0",
     "webpack-dev-server": "3.1.5"
   },
   "dependencies": {
+    "angular-ui-carousel": "^0.1.10",
     "jsonformatter": "^0.7.0"
   }
 }

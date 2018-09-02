@@ -148,9 +148,6 @@ body
                     padding 6px 12px
 
 .widget
-    border-bottom 1px solid #303131
-    border-right 1px solid #303131
-
     &-header
         display flex
         align-items center
@@ -224,11 +221,9 @@ body
                     margin-left 8px
 
     &-settings
-        width 284px
         max-height 200px
         background #ffffff
         color #38393a
-        border 1px solid #303131
         border-radius 3px
         padding 4px 8px
         overflow-x hidden
@@ -242,6 +237,32 @@ body
             width 6px
         &::-webkit-scrollbar-thumb
             background-color #888
+
+.ui-carousel
+    width 400px
+
+    & .carousel-dots
+        bottom -18px
+
+        li button:before
+            color #fff
+
+    & .carousel-prev
+    & .carousel-next
+        & .carousel-btn
+            cursor pointer
+            margin-top 25px
+
+            i:before
+                color #000
+
+    & .carousel-prev
+        & .carousel-btn
+            left 0
+
+    & .carousel-next
+        & .carousel-btn
+            right 0
 
 @keyframes popup-loader
     0%

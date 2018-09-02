@@ -58,6 +58,20 @@ module.exports = function() {
                     test: /\.css$/,
                     loader: ['style-loader', 'css-loader']
                 },
+                // {
+                //     test: /\.svg/,
+                //     use: {
+                //         loader: 'svg-url-loader',
+                //         options: {}
+                //     }
+                // },
+                {
+                    test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+                    loader: 'file-loader',
+                    options: {
+                        name: '[path][name].[ext]'
+                    }
+                },
                 {
                     test: /\.(jpe?g|png|gif)$/,
                     loader: 'file-loader',
