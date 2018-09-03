@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Widgets Info</title>
+        <title>Widgets Info Popup</title>
 
         <script src="popup.js" type="text/javascript"></script>
     </head>
@@ -18,40 +18,50 @@
 
             <main class="popup-main">
                 <div ng-if="loaded" class="popup-main-container">
-                    <ui-carousel
-                            slides="widgetsData"
-                            dots="true">
+                    <div ng-if="widgetsData.length">
+                        <ui-carousel slides="widgetsData" dots="true">
+                            <carousel-item>
+                                <div class="widget">
+                                    <div class="widget-header"
+                                         ng-mouseenter="$parent.$parent.highlightWidget(item.id, true)"
+                                         ng-mouseleave="$parent.$parent.highlightWidget(item.id, false)"
+                                         ng-click="$parent.$parent.moveToWidget(item.id)">
+                                        <div class="widget-header-app">
+                                            <img class="widget-header-app-icon" src="img/apps/{{item.app_slug}}.svg" alt="{{item.app_name}}"/>
+                                            <div class="widget-header-app-title">
+                                                {{item.app_name}}
+                                                <sup class="widget-header-app-version"
+                                                     ng-if="item.version.curr"
+                                                     ng-class="item.version.last == '1.0.0' || item.version.curr == item.version.last ? 'widget-header-app-version-actual' : ''">
+                                                    ver. {{item.version.curr}}
+                                                </sup>
+                                            </div>
+                                        </div>
+                                        <div class="widget-header-type">{{item.app_type}}</div>
 
-                        <carousel-item>
-                            <div class="widget">
-                                <div class="widget-header"
-                                     ng-mouseenter="highlightWidget(item.id, true)"
-                                     ng-mouseleave="highlightWidget(item.id, false)"
-                                     ng-click="moveToWidget(item.id)">
-                                    <div class="widget-header-app">
-                                        <img class="widget-header-app-icon" src="img/apps/{{item.app_slug}}.svg" alt="{{item.app_name}}"/>
-                                        <div class="widget-header-app-title">
-                                            {{item.app_name}}
-                                            <sup class="widget-header-app-version"
-                                                 ng-if="item.version.curr"
-                                                 ng-class="item.version.last == '1.0.0' || item.version.curr == item.version.last ? 'widget-header-app-version-actual' : ''">
-                                                ver. {{item.version.curr}}
-                                            </sup>
+                                        <div class="widget-header-tooltip">
+                                            Move to widget
+                                            <svg class="widget-header-tooltip-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-forward"></use> </svg>
                                         </div>
                                     </div>
-                                    <div class="widget-header-type">{{item.app_type}}</div>
 
-                                    <div class="widget-header-tooltip">
-                                        Move to widget
-                                        <svg class="widget-header-tooltip-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-forward"></use> </svg>
+                                    <div class="widget-settings-container">
+                                        <div class="widget-settings-toggle" ng-click="settingsFormatted = !settingsFormatted">
+                                            <svg class="widget-settings-toggle-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-view"></use> </svg>
+                                        </div>
+                                        <json-formatter ng-show="settingsFormatted" json="item.settings" open="1" class="widget-settings"></json-formatter>
+                                        <pre ng-show="!settingsFormatted"  class="widget-settings">{{item.settings | json}}</pre>
                                     </div>
                                 </div>
-
-                                <json-formatter json="item.settings" open="1" class="widget-settings"></json-formatter>
-                                <!--<pre class="widget-settings">{{item.settings | json}}</pre>-->
-                            </div>
-                        </carousel-item>
-                    </ui-carousel>
+                            </carousel-item>
+                            <carousel-prev>
+                                <a class="carousel-btn"><</a>
+                            </carousel-prev>
+                            <carousel-next>
+                                <a class="carousel-btn">></a>
+                            </carousel-next>
+                        </ui-carousel>
+                    </div>
 
                     <div ng-if="!widgetsData.length" class="widgets-empty">
                         <div class="widgets-empty-text">
@@ -73,11 +83,15 @@
             </main>
 
             <footer>
-                <div class="control-btn control-clear">
+                <div class="control-btn control-btn-left control-clear" ng-click="reload()">
                     <svg class="control-btn-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-reload"></use> </svg>
                     Clear cache
                 </div>
-                <label class="control-checkbox control-highlight"><input ng-model="settings.highlight" type="checkbox" checked>Highlight all widgets</label>
+                <div class="control-btn control-btn-right control-options" ng-click="openOptions()">
+                    Options
+                    <svg class="control-btn-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-options"></use> </svg>
+                </div>
+                <!--<label class="control-checkbox control-highlight"><input ng-model="settings.highlight" type="checkbox" checked>Highlight all widgets</label>-->
             </footer>
         </div>
 
@@ -94,6 +108,17 @@
         <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; height: 0; width: 0;">
             <symbol viewBox="0 0 41 34" id="icon-reload">
                 <path d="M33.949,16C33.429,7.08,26.051,0,17,0C7.611,0,0,7.611,0,17s7.611,17,17,17v-6c-6.075,0-11-4.925-11-11  S10.925,6,17,6c5.737,0,10.443,4.394,10.949,10h-6.849L31,25.899L40.899,16H33.949z"></path>
+            </symbol>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; height: 0; width: 0;">
+            <symbol viewBox="0 0 48 48" id="icon-options">
+                <path d="M38.86 25.95c.08-.64.14-1.29.14-1.95s-.06-1.31-.14-1.95l4.23-3.31c.38-.3.49-.84.24-1.28l-4-6.93c-.25-.43-.77-.61-1.22-.43l-4.98 2.01c-1.03-.79-2.16-1.46-3.38-1.97l-.75-5.3c-.09-.47-.5-.84-1-.84h-8c-.5 0-.91.37-.99.84l-.75 5.3c-1.22.51-2.35 1.17-3.38 1.97l-4.98-2.01c-.45-.17-.97 0-1.22.43l-4 6.93c-.25.43-.14.97.24 1.28l4.22 3.31c-.08.64-.14 1.29-.14 1.95s.06 1.31.14 1.95l-4.22 3.31c-.38.3-.49.84-.24 1.28l4 6.93c.25.43.77.61 1.22.43l4.98-2.01c1.03.79 2.16 1.46 3.38 1.97l.75 5.3c.08.47.49.84.99.84h8c.5 0 .91-.37.99-.84l.75-5.3c1.22-.51 2.35-1.17 3.38-1.97l4.98 2.01c.45.17.97 0 1.22-.43l4-6.93c.25-.43.14-.97-.24-1.28l-4.22-3.31zm-14.86 5.05c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"></path>
+            </symbol>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; height: 0; width: 0;">
+            <symbol viewBox="0 0 32 32" id="icon-view">
+                <path d="M16.333,13.759L16.333,13.759c-0.006-0.001-0.012-0.001-0.018-0.001c-0.006,0-0.012,0-0.018,0v0.001    c-1.21,0.03-2.183,1.02-2.183,2.237s0.972,2.208,2.183,2.237v0.002c0.006,0,0.012-0.002,0.018-0.002    c0.005,0,0.011,0.002,0.018,0.002v-0.002c1.219-0.029,2.183-1.02,2.183-2.237S17.552,13.789,16.333,13.759z" fill="#515151"></path>
+                <path d="M29.586,14.186c-2.76-2.246-7.407-5.51-13.253-5.621v0c-0.006,0-0.012,0-0.018,0c-0.006,0-0.012,0-0.018,0    v0C10.453,8.676,5.801,11.94,3.041,14.186c-0.132,0.107-1.036,0.8-1.051,1.686c-0.011,0.624,0.28,1.085,0.699,1.471    c2.255,2.181,7.176,6.059,13.609,6.087v0.002c0.006,0,0.012,0,0.018,0c0.005,0,0.011,0,0.018,0v-0.002    c6.445-0.028,11.351-3.906,13.607-6.087c0.419-0.386,0.709-0.847,0.697-1.471C30.621,14.986,29.719,14.293,29.586,14.186z     M16.315,21.752c-3.162-0.021-5.719-2.59-5.719-5.756s2.557-5.735,5.719-5.755c3.17,0.02,5.718,2.589,5.718,5.755    S19.485,21.73,16.315,21.752z" fill="#515151"></path>
             </symbol>
         </svg>
     </body>

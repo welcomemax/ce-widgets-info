@@ -11,7 +11,8 @@ module.exports = function() {
             popup: path.join(__dirname, 'src/popup/popup.js'),
             background: path.join(__dirname, 'src/bg/background.js'),
             inject: path.join(__dirname, 'src/inject/inject.js'),
-            content: path.join(__dirname, 'src/content/content.js')
+            content: path.join(__dirname, 'src/content/content.js'),
+            options: path.join(__dirname, 'src/options/options.js')
         },
 
         output: {
@@ -69,7 +70,7 @@ module.exports = function() {
                     test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
                     loader: 'file-loader',
                     options: {
-                        name: '[path][name].[ext]'
+                        name: 'assets/[name].[ext]'
                     }
                 },
                 {

@@ -81,246 +81,10 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/popup/popup.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/options/options.js");
 /******/ })
 /************************************************************************/
 /******/ ({
-
-/***/ "./node_modules/angular-ui-carousel/dist/fonts/ui-carousel.eot":
-/*!*********************************************************************!*\
-  !*** ./node_modules/angular-ui-carousel/dist/fonts/ui-carousel.eot ***!
-  \*********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/ui-carousel.eot";
-
-/***/ }),
-
-/***/ "./node_modules/angular-ui-carousel/dist/fonts/ui-carousel.svg":
-/*!*********************************************************************!*\
-  !*** ./node_modules/angular-ui-carousel/dist/fonts/ui-carousel.svg ***!
-  \*********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/ui-carousel.svg";
-
-/***/ }),
-
-/***/ "./node_modules/angular-ui-carousel/dist/fonts/ui-carousel.ttf":
-/*!*********************************************************************!*\
-  !*** ./node_modules/angular-ui-carousel/dist/fonts/ui-carousel.ttf ***!
-  \*********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/ui-carousel.ttf";
-
-/***/ }),
-
-/***/ "./node_modules/angular-ui-carousel/dist/fonts/ui-carousel.woff":
-/*!**********************************************************************!*\
-  !*** ./node_modules/angular-ui-carousel/dist/fonts/ui-carousel.woff ***!
-  \**********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "assets/ui-carousel.woff";
-
-/***/ }),
-
-/***/ "./node_modules/angular-ui-carousel/dist/ui-carousel.css":
-/*!***************************************************************!*\
-  !*** ./node_modules/angular-ui-carousel/dist/ui-carousel.css ***!
-  \***************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(/*! !../../css-loader!./ui-carousel.css */ "./node_modules/css-loader/index.js!./node_modules/angular-ui-carousel/dist/ui-carousel.css");
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(/*! ../../style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {}
-
-/***/ }),
-
-/***/ "./node_modules/angular-ui-carousel/dist/ui-carousel.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/angular-ui-carousel/dist/ui-carousel.js ***!
-  \**************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-(function(angular){// Create all modules and define dependencies to make sure they exist
-// and are loaded in the correct order to satisfy dependency injection
-// before all nested files are concatenated by Gulp
-// Config
-angular.module('ui.carousel.config',[]).value('ui.carousel.config',{debug:true});// Modules
-angular.module('ui.carousel.providers',[]);angular.module('ui.carousel.controllers',[]);angular.module('ui.carousel.directives',[]);angular.module('ui.carousel',['ui.carousel.config','ui.carousel.directives','ui.carousel.controllers','ui.carousel.providers']);})(angular);'use strict';/**
- * angular-ui-carousel
- * for example:
- * length = 8, show = 4, scroll = 3, current = 0
- *          ---------
- *          |       |
- *  |4|5|6|7|0|1|2|3|4|5|6|7|1|2|3|4
- *          |       |
- *          ---------
- * rectangle is visible for users
- */angular.module('ui.carousel.controllers').controller('CarouselController',['$scope','$element','$timeout','$q','Carousel','$window',function($scope,$element,$timeout,$q,Carousel,$window){var _this=this;/**
-   * Initial carousel
-   *
-   * Mirgate to angularjs 1.6
-   * @see https://docs.angularjs.org/guide/migration#commit-bcd0d4
-   */this.$onInit=function(){_this.initOptions();_this.initRanges();_this.setProps();_this.setupInfinite();};/**
-   * Init option based on directive config
-   */this.initOptions=function(){_this.options=angular.extend({},Carousel.getOptions());// TODO customize attribute from directive
-if(_this.initialSlide!==undefined){_this.options.initialSlide=_this.initialSlide;}if(_this.fade!==undefined){_this.options.fade=_this.fade;}if(_this.autoplay!==undefined){_this.options.autoplay=_this.autoplay;}if(_this.autoplaySpeed!==undefined){_this.options.autoplaySpeed=_this.autoplaySpeed;}if(_this.cssEase!==undefined){_this.options.cssEase=_this.cssEase;}if(_this.speed!==undefined){_this.options.speed=_this.speed;}if(_this.infinite!==undefined){_this.options.infinite=_this.infinite;}if(_this.arrows!==undefined){_this.options.arrows=_this.arrows;}if(_this.dots!==undefined){_this.options.dots=_this.dots;}if(_this.visiblePrev!==undefined){_this.options.visiblePrev=_this.visiblePrev;}if(_this.visibleNext!==undefined){_this.options.visibleNext=_this.visibleNext;}// TODO write more options for fade mode
-// In fade mode we have to setting slides-to-show and slides-to-scroll
-// to 1 slide
-if(_this.options.fade){_this.options.slidesToShow=1;_this.options.slidesToScroll=1;}else{if(_this.show){_this.options.slidesToShow=_this.show;}if(_this.scroll){_this.options.slidesToScroll=_this.scroll;}}};/**
-   * init variables, slides, ..
-   */this.initRanges=function(){if(!_this.slides){_this.slides=[];}_this.isCarouselReady=false;_this.isTrackMoving=false;_this.track=$element.find('.track');_this.width=1;// Fake width
-_this.currentSlide=_this.options.initialSlide;_this.trackStyle={};_this.slideStyle={};_this.isVisibleDots=false;_this.isVisiblePrev=_this.options.visiblePrev;_this.isVisibleNext=_this.options.visibleNext;_this.isClickablePrev=false;_this.isClickableNext=false;_this.animType=null;_this.transformType=null;_this.transitionType=null;};/**
-   * Init UI and carousel track
-   */this.initUI=function(){_this.width=$element[0].clientWidth;// Update track width first
-_this.initTrack();// Then item style
-$timeout(function(){_this.updateItemStyle();},200);};/**
-   * update common style for each carousel item
-   */this.updateItemStyle=function(){_this.itemWidth=_this.width/_this.options.slidesToShow;_this.slideStyle={'width':_this.itemWidth+'px'};};/**
-   * init carousel track
-   * also make Carousel is Ready
-   */this.initTrack=function(){var itemWidth=_this.width/_this.options.slidesToShow;var trackWidth=itemWidth*_this.slidesInTrack.length;_this.trackStyle.width=trackWidth+'px';_this.slideHandler(_this.currentSlide).finally(function(){_this.isCarouselReady=true;if(!_this.options.fade){_this.refreshTrackStyle();}// onInit callback
-if(_this.onInit){_this.onInit();}}).catch(function(){// Catch err
-});};/**
-   * @see https://github.com/kenwheeler/slick/blob/master/slick/slick.js#L680
-   *
-   * Sync slide to place it should be
-   * for example:
-   * - 9 total, 3 show, 3 scroll, current 1
-   *   => next index = 3 (previous index counted = 0)
-   *
-   * and scroll to next page:
-   * - 6 total, 1 show, 1 scroll, current 0 => next index = 1
-   * - 9 total, 3 show, 3 scroll, current 1 => next index = 3
-   * - 9 total, 3 show, 3 scroll, current 3 => next index = 6
-   * - 9 total, 3 show, 3 scroll, current 8 => next index = 3
-   * - 8 total, 4 show, 3 scroll, current 1 => next index = 4
-   */this.next=function(){if(!_this.isClickableNext){return false;}var indexOffset=_this.getIndexOffset();var slideOffset=indexOffset===0?_this.options.slidesToScroll:indexOffset;_this.slideHandler(_this.currentSlide+slideOffset).catch(function(){// Catch err
-});};/**
-   * move to previous slide
-   * same calculate with next
-   * @see next function
-   */this.prev=function(){if(!_this.isClickablePrev){return false;}var indexOffset=_this.getIndexOffset();var slideOffset=indexOffset===0?_this.options.slidesToScroll:_this.options.slidesToShow-indexOffset;_this.slideHandler(_this.currentSlide-slideOffset).catch(function(){// Catch err
-});};/**
-   * Get index offset
-   */this.getIndexOffset=function(){var scrollOffset=_this.slides.length%_this.options.slidesToScroll!==0;var indexOffset=scrollOffset?0:(_this.slides.length-_this.currentSlide)%_this.options.slidesToScroll;return indexOffset;};/**
-   * move to page
-   * @params int page
-   * Page counter from 0 (start = 0)
-   */this.movePage=function(page){var target=_this.options.slidesToScroll*page;_this.slideHandler(target).catch(function(){// Catch err
-});};/**
-   * hanlder carousel
-   * @description move carousel to correct page
-   *
-   * @params int index
-   */this.slideHandler=function(index){// TODO prevent when slides not exists
-if(!_this.slides){return $q.reject('Carousel not fully setup');}// TODO Prevent when track is moving
-if(_this.isTrackMoving){return $q.reject('Track is moving');}var len=_this.slides.length;var show=_this.options.slidesToShow;if(len<=show){_this.correctTrack();return $q.reject('Length of slides smaller than slides to show');}// We need target to destination
-// and a anim slide to translate track
-//
-// anim = animSlide (which we use to move)
-// target = targetSlide
-var anim=index;var target=null;if(anim<0){if(len%_this.options.slidesToScroll!==0){target=len-len%_this.options.slidesToScroll;}else{target=len+anim;}}else if(anim>=len){if(len%_this.options.slidesToScroll!==0){target=0;}else{target=anim-len;}}else{target=anim;}if(_this.onBeforeChange){// @see https://docs.angularjs.org/guide/directive
-_this.onBeforeChange({currentSlide:_this.currentSlide,target:target});}// Fade handler
-if(_this.options.fade){_this.currentSlide=target;// XXX
-// afterChange method
-// fire after faded
-// Should be revised
-$timeout(function(){_this.autoplayTrack();if(_this.onAfterChange){_this.onAfterChange({currentSlide:_this.currentSlide});}},_this.options.speed);return $q.when('Handler fade');}// No-fade handler
-var itemWidth=_this.width/_this.options.slidesToShow;var left=-1*target*itemWidth;if(_this.options.infinite){left=-1*(anim+show)*itemWidth;}_this.isTrackMoving=true;return _this.moveTrack(left).then(function(){_this.isTrackMoving=false;_this.currentSlide=target;_this.autoplayTrack();if(target!==anim){_this.correctTrack();}if(!_this.options.infinite){if(_this.currentSlide===0){_this.isClickablePrev=false;_this.isClickableNext=true;}else if(_this.currentSlide===_this.slidesInTrack.length-_this.options.slidesToShow){_this.isClickableNext=false;_this.isClickablePrev=true;}else{_this.isClickablePrev=true;_this.isClickableNext=true;}}// XXX
-// afterChange method
-// fire after 200ms wakeup and correct track
-// Should be revised
-$timeout(function(){if(_this.onAfterChange){_this.onAfterChange({currentSlide:_this.currentSlide});}},200);});};/**
-   * moveTrack
-   * move track to left position using css3 translate
-   * for example left: -1000px
-   */this.moveTrack=function(left){var deferred=$q.defer();if(_this.options.vertical===false){_this.trackStyle[_this.animType]='translate3d('+left+'px, 0px, 0px)';}else{_this.trackStyle[_this.animType]='translate3d(0px, '+left+'px, 0px)';}$timeout(function(){deferred.resolve('Track moved');},_this.options.speed);return deferred.promise;};/**
-   * correctTrack
-   * @description correct track after move to animSlide we have to move track
-   * to exactly its position
-   */this.correctTrack=function(){if(_this.options.infinite){(function(){var left=0;if(_this.slides.length>_this.options.slidesToShow){left=-1*(_this.currentSlide+_this.options.slidesToShow)*_this.itemWidth;}// Move without anim
-_this.trackStyle[_this.transitionType]=_this.transformType+' '+0+'ms '+_this.options.cssEase;_this.isTrackMoving=true;$timeout(function(){_this.trackStyle[_this.animType]='translate3d('+left+'px, 0, 0px)';// Revert animation
-$timeout(function(){_this.refreshTrackStyle();_this.isTrackMoving=false;},200);});})();}};/**
-   * Refresh track style
-   */this.refreshTrackStyle=function(){_this.trackStyle[_this.transitionType]=_this.transformType+' '+_this.options.speed+'ms '+_this.options.cssEase;};/**
-   * autoplay track
-   * @description autoplay = true
-   */this.autoplayTrack=function(){if(_this.options.autoplay){if(_this.timeout){$timeout.cancel(_this.timeout);}_this.timeout=$timeout(function(){_this.next();$timeout.cancel(_this.timeout);_this.timeout=null;},_this.options.autoplaySpeed);}};this.getSlideStyle=function(index){var style=_this.slideStyle;if(_this.options.fade){var left=-1*index*_this.itemWidth;var uniqueStyle={position:'relative',top:'0px',left:left+'px','z-index':index===_this.currentSlide?10:9,opacity:index===_this.currentSlide?1:0};if(index>=_this.currentSlide-1&&index<=_this.currentSlide+1){uniqueStyle.transition='opacity 250ms linear';}style=angular.extend(style,uniqueStyle);}return style;};/**
-   * setupInfinite
-   * To make carouse infinite we need close number of slidesToShow elements to
-   * previous elements and to after elements
-   *
-   * length = 8, show = 4, scroll = 3, current = 0
-   *          ---------
-   *          |       |
-   *  |4|5|6|7|0|1|2|3|4|5|6|7|1|2|3|4
-   *          |       |
-   *          ---------
-   */this.setupInfinite=function(){// Clone
-var len=_this.slides.length;var show=_this.options.slidesToShow;var tmpTrack=angular.copy(_this.slides);if(_this.options.infinite&&_this.options.fade===false){if(len>show){var number=show;for(var i=0;i<number;i++){tmpTrack.push(angular.copy(_this.slides[i]));}for(var _i=len-1;_i>=len-show;_i--){tmpTrack.unshift(angular.copy(_this.slides[_i]));}}}_this.slidesInTrack=tmpTrack;};/**
-   * get number of dosts
-   *
-   * @return Array
-   */this.getDots=function(){if(!_this.slides){return[];}var dots=Math.ceil(_this.slides.length/_this.options.slidesToScroll);var res=[];for(var i=0;i<dots;i++){res.push(i);}return res;};/**
-   * set carousel property
-   *
-   * - animType
-   * - transformType
-   * - transitionType
-   */this.setProps=function(){var bodyStyle=document.body.style;/* eslint-disable */if(bodyStyle.OTransform!==undefined){_this.animType='OTransform';_this.transformType='-o-transform';_this.transitionType='OTransition';}if(bodyStyle.MozTransform!==undefined){_this.animType='MozTransform';_this.transformType='-moz-transform';_this.transitionType='MozTransition';}if(bodyStyle.webkitTransform!==undefined){_this.animType='webkitTransform';_this.transformType='-webkit-transform';_this.transitionType='webkitTransition';}if(bodyStyle.msTransform!==undefined){_this.animType='msTransform';_this.transformType='-ms-transform';_this.transitionType='msTransition';}if(bodyStyle.transform!==undefined&&_this.animType!==false){_this.animType='transform';_this.transformType='transform';_this.transitionType='transition';}/* eslint-enable */_this.transformsEnabled=true;};/**
-   * Refresh carousel
-   */this.refreshCarousel=function(){if(_this.slides&&_this.slides.length&&_this.slides.length>_this.options.slidesToShow){_this.isVisibleDots=true;_this.isVisiblePrev=true;_this.isVisibleNext=true;_this.isClickablePrev=true;_this.isClickableNext=true;}else{_this.isVisibleDots=false;_this.isVisiblePrev=_this.options.visiblePrev||false;_this.isVisibleNext=_this.options.visibleNext||false;_this.isClickablePrev=false;_this.isClickableNext=false;}// Re-init UI
-_this.initUI();};/**
-   * refresh model
-   */$scope.$watchCollection('ctrl.slides',function(slides){if(!slides){return;}// Init carousel
-if(_this.currentSlide>slides.length-1){_this.currentSlide=slides.length-1;}_this.setupInfinite();_this.refreshCarousel();});/**
-   * update when resize
-   *
-   * @see https://github.com/mihnsen/ui-carousel/issues/10
-   * @author tarkant
-   */angular.element($window).on('resize',this.refreshCarousel);/**
-   * cleanup when done
-   *
-   * @see https://github.com/mihnsen/ui-carousel/issues/10
-   * @author tarkant
-   */$scope.$on('$destroy',function(){angular.element($window).off('resize');});// Prior to v1.5, we need to call `$onInit()` manually.
-// (Bindings will always be pre-assigned in these versions.)
-if(angular.version.major===1&&angular.version.minor<5){this.$onInit();}}]);'use strict';angular.module('ui.carousel.directives').directive('uiCarousel',['$compile','$templateCache','$sce',function($compile,$templateCache,$sce){return{restrict:'AE',bindToController:true,scope:{name:'=?',slides:'=',show:'=?slidesToShow',scroll:'=?slidesToScroll',classes:'@',fade:'=?',onChange:'=?',disableArrow:'=?',autoplay:'=?',autoplaySpeed:'=?',cssEase:'=?',speed:'=?',infinite:'=?',arrows:'=?',dots:'=?',initialSlide:'=?',visibleNext:'=?',visiblePrev:'=?',// Method
-onBeforeChange:'&',onAfterChange:'&',onInit:'&'},link:function link($scope,el){var template=angular.element($templateCache.get('ui-carousel/carousel.template.html'));// dynamic injections to override the inner layers' components
-var injectComponentMap={'carousel-item':'.carousel-item','carousel-prev':'.carousel-prev','carousel-next':'.carousel-next'};var templateInstance=template.clone();angular.forEach(injectComponentMap,function(innerSelector,outerSelector){var outerElement=el[0].querySelector(outerSelector);if(outerElement){angular.element(templateInstance[0].querySelector(innerSelector)).html(outerElement.innerHTML);}});var compiledElement=$compile(templateInstance)($scope);el.addClass('ui-carousel').html('').append(compiledElement);},controller:'CarouselController',controllerAs:'ctrl'};}]);'use strict';angular.module('ui.carousel.providers').provider('Carousel',function(){var _this=this;this.options={// Init like Slick carousel
-// XXX Should be revised
-arrows:true,autoplay:false,autoplaySpeed:3000,cssEase:'ease',dots:false,easing:'linear',fade:false,infinite:true,initialSlide:0,slidesToShow:1,slidesToScroll:1,speed:500,visiblePrev:false,visibleNext:false,// Not available right now
-draggable:true,lazyLoad:'ondemand',swipe:true,swipeToSlide:false,touchMove:true,vertical:false,verticalSwiping:false};this.$get=[function(){return{setOptions:function setOptions(options){_this.options=angular.extend(_this.options,options);},getOptions:function getOptions(){return _this.options;}};}];});'use strict';(function(module){try{module=angular.module('ui.carousel');}catch(e){module=angular.module('ui.carousel',[]);}module.run(['$templateCache',function($templateCache){$templateCache.put('ui-carousel/carousel.template.html','<div class="carousel-wrapper" ng-show="ctrl.isCarouselReady"><div class="track-wrapper"><div class="track" ng-style="ctrl.trackStyle"><div class="slide" ng-repeat="item in ctrl.slidesInTrack track by $index" ng-style="ctrl.getSlideStyle($index)"><div class="carousel-item"></div></div></div></div><div class="carousel-prev" ng-if="!ctrl.disableArrow" ng-show="ctrl.isVisiblePrev &amp;&amp; ctrl.options.arrows" ng-class="{\'carousel-disable\': !ctrl.isClickablePrev}" ng-click="ctrl.prev()"><button class="carousel-btn"><i class="ui-icon-prev"></i></button></div><div class="carousel-next" ng-if="!ctrl.disableArrow" ng-show="ctrl.isVisibleNext &amp;&amp; ctrl.options.arrows" ng-class="{\'carousel-disable\': !ctrl.isClickableNext}" ng-click="ctrl.next()"><button class="carousel-btn"><i class="ui-icon-next"></i></button></div><ul class="carousel-dots" ng-show="ctrl.isVisibleDots &amp;&amp; ctrl.options.dots"><li ng-repeat="dot in ctrl.getDots()" ng-class="{ \'carousel-active\': dot == ctrl.currentSlide/ctrl.options.slidesToScroll }" ng-click="ctrl.movePage(dot)"><button>{{ dot }}</button></li></ul></div>');}]);})();
-
-/***/ }),
 
 /***/ "./node_modules/angular/angular.js":
 /*!*****************************************!*\
@@ -20118,49 +19882,10 @@ __webpack_require__(/*! ./angular */ "./node_modules/angular/angular.js");module
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/index.js!./node_modules/angular-ui-carousel/dist/ui-carousel.css":
-/*!*****************************************************************************************!*\
-  !*** ./node_modules/css-loader!./node_modules/angular-ui-carousel/dist/ui-carousel.css ***!
-  \*****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var escape = __webpack_require__(/*! ../../css-loader/lib/url/escape.js */ "./node_modules/css-loader/lib/url/escape.js");
-exports = module.exports = __webpack_require__(/*! ../../css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, ".v-middle, .ui-carousel .carousel-btn {\n  display: block;\n  position: absolute;\n  top: 50%;\n  -webkit-transform: translate(0, -50%);\n  -ms-transform: translate(0, -50%);\n  -o-transform: translate(0, -50%);\n  transform: translate(0, -50%); }\n\n@font-face {\n  font-family: \"ui-carousel\";\n  src: url(" + escape(__webpack_require__(/*! ./fonts/ui-carousel.eot */ "./node_modules/angular-ui-carousel/dist/fonts/ui-carousel.eot")) + ");\n  src: url(" + escape(__webpack_require__(/*! ./fonts/ui-carousel.eot */ "./node_modules/angular-ui-carousel/dist/fonts/ui-carousel.eot")) + "?#iefix) format(\"embedded-opentype\"), url(" + escape(__webpack_require__(/*! ./fonts/ui-carousel.woff */ "./node_modules/angular-ui-carousel/dist/fonts/ui-carousel.woff")) + ") format(\"woff\"), url(" + escape(__webpack_require__(/*! ./fonts/ui-carousel.ttf */ "./node_modules/angular-ui-carousel/dist/fonts/ui-carousel.ttf")) + ") format(\"truetype\"), url(" + escape(__webpack_require__(/*! ./fonts/ui-carousel.svg */ "./node_modules/angular-ui-carousel/dist/fonts/ui-carousel.svg")) + "#ui-carousel) format(\"svg\");\n  font-weight: normal;\n  font-style: normal; }\n\n[data-icon]:before {\n  font-family: \"ui-carousel\" !important;\n  content: attr(data-icon);\n  font-style: normal !important;\n  font-weight: normal !important;\n  font-variant: normal !important;\n  text-transform: none !important;\n  speak: none;\n  line-height: 1;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale; }\n\n[class^=\"ui-icon-\"]:before,\n[class*=\" ui-icon-\"]:before {\n  font-family: \"ui-carousel\" !important;\n  font-style: normal !important;\n  font-weight: normal !important;\n  font-variant: normal !important;\n  text-transform: none !important;\n  speak: none;\n  line-height: 1;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale; }\n\n.ui-icon-prev:before {\n  content: \"a\"; }\n\n.ui-icon-next:before {\n  content: \"b\"; }\n\n.ui-icon-dot:before {\n  content: \"c\"; }\n\n.ui-carousel {\n  display: block;\n  margin-bottom: 30px; }\n  .ui-carousel .carousel-wrapper {\n    position: relative; }\n  .ui-carousel .track-wrapper {\n    position: relative;\n    display: block;\n    overflow: hidden;\n    margin: 0;\n    padding: 0; }\n  .ui-carousel .track {\n    position: relative;\n    display: block;\n    float: left; }\n  .ui-carousel .slide {\n    float: left;\n    height: 100%;\n    min-height: 1px; }\n  .ui-carousel .carousel-btn {\n    position: absolute;\n    z-index: 10;\n    background-color: transparent;\n    outline: none;\n    border: none;\n    font-size: 20px;\n    opacity: .75; }\n    .ui-carousel .carousel-btn:hover {\n      opacity: 1; }\n  .ui-carousel .carousel-prev .carousel-btn {\n    left: -25px; }\n  .ui-carousel .carousel-next .carousel-btn {\n    right: -25px; }\n  .ui-carousel .carousel-disable {\n    opacity: 0.5; }\n    .ui-carousel .carousel-disable .carousel-btn:hover {\n      opacity: .75; }\n\n.carousel-dots {\n  position: absolute;\n  bottom: -30px;\n  display: block;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n  list-style: none;\n  text-align: center; }\n  .carousel-dots li {\n    position: relative;\n    display: inline-block;\n    width: 15px;\n    height: 15px;\n    margin: 0 5px;\n    padding: 0;\n    cursor: pointer; }\n    .carousel-dots li button {\n      font-size: 0;\n      line-height: 0;\n      display: block;\n      width: 15px;\n      height: 15px;\n      padding: 5px;\n      cursor: pointer;\n      color: transparent;\n      border: 0;\n      outline: none;\n      background: transparent; }\n      .carousel-dots li button:before {\n        font-family: ui-carousel;\n        font-size: 9px;\n        line-height: 15px;\n        position: absolute;\n        top: 0px;\n        left: 0px;\n        width: 15px;\n        height: 15px;\n        content: \"c\";\n        text-align: center;\n        opacity: 0.25;\n        color: black;\n        -webkit-font-smoothing: antialiased; }\n    .carousel-dots li.carousel-active button:before {\n      opacity: .75; }\n", ""]);
-
-// exports
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/index.js!./node_modules/jsonformatter/dist/json-formatter.css":
-/*!**************************************************************************************!*\
-  !*** ./node_modules/css-loader!./node_modules/jsonformatter/dist/json-formatter.css ***!
-  \**************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(/*! ../../css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "/*!\n * jsonformatter\n * \n * Version: 0.6.0 - 2016-08-27T12:58:03.339Z\n * License: Apache-2.0\n */\n\n\n.json-formatter-row {\n  font-family: monospace;\n}\n.json-formatter-row,\n.json-formatter-row a,\n.json-formatter-row a:hover {\n  color: black;\n  text-decoration: none;\n}\n.json-formatter-row .json-formatter-row {\n  margin-left: 1em;\n}\n.json-formatter-row .children.empty {\n  opacity: 0.5;\n  margin-left: 1em;\n}\n.json-formatter-row .children.empty.object:after {\n  content: \"No properties\";\n}\n.json-formatter-row .children.empty.array:after {\n  content: \"[]\";\n}\n.json-formatter-row .string {\n  color: green;\n  white-space: pre;\n  word-wrap: break-word;\n}\n.json-formatter-row .number {\n  color: blue;\n}\n.json-formatter-row .boolean {\n  color: red;\n}\n.json-formatter-row .null {\n  color: #855A00;\n}\n.json-formatter-row .undefined {\n  color: #ca0b69;\n}\n.json-formatter-row .function {\n  color: #FF20ED;\n}\n.json-formatter-row .date {\n  background-color: rgba(0, 0, 0, 0.05);\n}\n.json-formatter-row .url {\n  text-decoration: underline;\n  color: blue;\n  cursor: pointer;\n}\n.json-formatter-row .bracket {\n  color: blue;\n}\n.json-formatter-row .key {\n  color: #00008B;\n  cursor: pointer;\n}\n.json-formatter-row .constructor-name {\n  cursor: pointer;\n}\n.json-formatter-row .toggler {\n  font-size: 0.8em;\n  line-height: 1.2em;\n  vertical-align: middle;\n  opacity: 0.6;\n  cursor: pointer;\n}\n.json-formatter-row .toggler:after {\n  display: inline-block;\n  transition: transform 100ms ease-in;\n  content: \"\\25BA\";\n}\n.json-formatter-row .toggler.open:after {\n  transform: rotate(90deg);\n}\n.json-formatter-row > a > .thumbnail-text {\n  opacity: 0;\n  transition: opacity 0.15s ease-in;\n  font-style: italic;\n}\n.json-formatter-row:hover > a > .thumbnail-text {\n  opacity: 0.6;\n}\n.json-formatter-dark.json-formatter-row {\n  font-family: monospace;\n}\n.json-formatter-dark.json-formatter-row,\n.json-formatter-dark.json-formatter-row a,\n.json-formatter-dark.json-formatter-row a:hover {\n  color: white;\n  text-decoration: none;\n}\n.json-formatter-dark.json-formatter-row .json-formatter-row {\n  margin-left: 1em;\n}\n.json-formatter-dark.json-formatter-row .children.empty {\n  opacity: 0.5;\n  margin-left: 1em;\n}\n.json-formatter-dark.json-formatter-row .children.empty.object:after {\n  content: \"No properties\";\n}\n.json-formatter-dark.json-formatter-row .children.empty.array:after {\n  content: \"[]\";\n}\n.json-formatter-dark.json-formatter-row .string {\n  color: #31F031;\n  white-space: pre;\n  word-wrap: break-word;\n}\n.json-formatter-dark.json-formatter-row .number {\n  color: #66C2FF;\n}\n.json-formatter-dark.json-formatter-row .boolean {\n  color: #EC4242;\n}\n.json-formatter-dark.json-formatter-row .null {\n  color: #EEC97D;\n}\n.json-formatter-dark.json-formatter-row .undefined {\n  color: #ef8fbe;\n}\n.json-formatter-dark.json-formatter-row .function {\n  color: #FD48CB;\n}\n.json-formatter-dark.json-formatter-row .date {\n  background-color: rgba(255, 255, 255, 0.05);\n}\n.json-formatter-dark.json-formatter-row .url {\n  text-decoration: underline;\n  color: #027BFF;\n  cursor: pointer;\n}\n.json-formatter-dark.json-formatter-row .bracket {\n  color: #9494FF;\n}\n.json-formatter-dark.json-formatter-row .key {\n  color: #23A0DB;\n  cursor: pointer;\n}\n.json-formatter-dark.json-formatter-row .constructor-name {\n  cursor: pointer;\n}\n.json-formatter-dark.json-formatter-row .toggler {\n  font-size: 0.8em;\n  line-height: 1.2em;\n  vertical-align: middle;\n  opacity: 0.6;\n  cursor: pointer;\n}\n.json-formatter-dark.json-formatter-row .toggler:after {\n  display: inline-block;\n  transition: transform 100ms ease-in;\n  content: \"\\25BA\";\n}\n.json-formatter-dark.json-formatter-row .toggler.open:after {\n  transform: rotate(90deg);\n}\n.json-formatter-dark.json-formatter-row > a > .thumbnail-text {\n  opacity: 0;\n  transition: opacity 0.15s ease-in;\n  font-style: italic;\n}\n.json-formatter-dark.json-formatter-row:hover > a > .thumbnail-text {\n  opacity: 0.6;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/index.js?-url!./node_modules/stylus-loader/index.js?!./src/popup/popup.styl":
-/*!****************************************************************************************************!*\
-  !*** ./node_modules/css-loader?-url!./node_modules/stylus-loader??ref--5-2!./src/popup/popup.styl ***!
-  \****************************************************************************************************/
+/***/ "./node_modules/css-loader/index.js?-url!./node_modules/stylus-loader/index.js?!./src/options/options.styl":
+/*!********************************************************************************************************!*\
+  !*** ./node_modules/css-loader?-url!./node_modules/stylus-loader??ref--5-2!./src/options/options.styl ***!
+  \********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20169,7 +19894,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "body {\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";\n  margin: 0;\n}\n.popup {\n  min-width: 300px;\n  background: #38393a;\n}\n.popup header,\n.popup footer {\n  display: flex;\n  background: #fff;\n  color: #38393a;\n  line-height: 16px;\n  justify-content: space-between;\n  align-items: center;\n}\n.popup header {\n  padding: 10px 16px 12px 16px;\n}\n.popup header h1 {\n  font-size: 14px;\n  margin: 0;\n}\n.popup header .widgets-count {\n  font-size: 12px;\n}\n.popup header .widgets-count-counter {\n  padding: 4px 8px;\n  margin-right: 2px;\n  border-radius: 2px;\n  background: #38393a;\n  color: #fff;\n}\n.popup footer {\n  padding: 8px 16px 6px 16px;\n}\n.popup footer .control-btn {\n  font-size: 12px;\n  padding: 4px 12px 4px 18px;\n  transition: color 0.3s 0.1s, background 0.3s, padding 0.3s 0.2s;\n  border-radius: 2px;\n  cursor: pointer;\n  user-select: none;\n  display: flex;\n  align-items: center;\n}\n.popup footer .control-btn-left {\n  margin-left: -18px;\n  padding: 4px 12px 4px 18px;\n}\n.popup footer .control-btn-left .control-btn-icon {\n  margin-right: 4px;\n}\n.popup footer .control-btn-left:hover {\n  padding: 4px 12px 4px 20px;\n}\n.popup footer .control-btn-right {\n  margin-right: -18px;\n  padding: 4px 18px 4px 12px;\n}\n.popup footer .control-btn-right .control-btn-icon {\n  margin-left: 4px;\n}\n.popup footer .control-btn-right:hover {\n  padding: 4px 20px 4px 12px;\n}\n.popup footer .control-btn:hover {\n  background: #38393a;\n  color: #fff;\n}\n.popup footer .control-btn:hover .control-btn-icon {\n  fill: #fff;\n}\n.popup footer .control-btn-icon {\n  width: 16px;\n  height: 16px;\n  fill: #38393a;\n  transition: fill 0.3s;\n}\n.popup footer .control-checkbox {\n  cursor: pointer;\n  font-size: 12px;\n}\n.popup footer .control-checkbox input {\n  position: relative;\n  bottom: -2px;\n  margin: 0 4px 0 0;\n}\n.popup-main {\n  background: #38393a;\n  color: #fff;\n  overflow: hidden;\n  max-height: 0;\n  opacity: 0;\n  transition: max-height 0.3s 0.2s, opacity 0.3s 0.4s;\n  border-left: 1px solid #303131;\n}\n.popup-active .popup-main {\n  max-height: 700px;\n  opacity: 1;\n}\n.popup-main-container {\n  width: 100%;\n  min-height: 100px;\n  align-items: center;\n  display: flex;\n  flex-direction: row;\n}\n.popup-main .loader {\n  box-sizing: border-box;\n  display: block;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  border-radius: 50%;\n  border-style: solid;\n  border-top-color: transparent;\n  animation: popup-loader 1s infinite linear;\n  opacity: 1;\n  visibility: visible;\n  width: 32px;\n  height: 32px;\n  margin: -16px 0 0 -16px;\n  border-width: 2px;\n  z-index: 1;\n}\n.popup-main .widgets-empty {\n  text-align: center;\n  font-size: 12px;\n  width: 100%;\n}\n.popup-main .widgets-empty-text,\n.popup-main .widgets-empty-reload {\n  margin: 8px 16px;\n}\n.popup-main .widgets-empty-reload-button {\n  cursor: pointer;\n  padding: 4px 12px;\n  color: #38393a;\n  background: #fff;\n  border: 1px solid #fff;\n  border-radius: 2px;\n  transition: color 0.3s 0.1s, background 0.3s;\n  display: inline-flex;\n  align-items: center;\n}\n.popup-main .widgets-empty-reload-button:hover {\n  color: #fff;\n  background: #38393a;\n}\n.popup-main .widgets-empty-reload-button:hover-icon {\n  fill: #fff;\n}\n.popup-main .widgets-empty-reload-button-icon {\n  width: 16px;\n  height: 16px;\n  margin-right: 4px;\n  fill: #38393a;\n  transition: fill 0.3s;\n}\n.popup-main .widgets-empty-reload-status {\n  padding: 6px 12px;\n}\n.widget-header {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  line-height: 24px;\n  padding: 8px 16px;\n  position: relative;\n  cursor: pointer;\n  border-bottom: 1px solid #303131;\n  height: 52px;\n  box-sizing: border-box;\n  z-index: 2;\n  background: #38393a;\n  transition: background 0.3s;\n}\n.widget-header-app {\n  display: flex;\n  align-items: center;\n}\n.widget-header-app-icon {\n  margin-right: 8px;\n  width: 32px;\n  height: 32px;\n}\n.widget-header-app-title {\n  font-size: 14px;\n  text-shadow: -1px 1px 0 #000;\n}\n.widget-header-app-version {\n  font-size: 10px;\n  color: #ff6162;\n  text-shadow: -1px 1px 0 rgba(0,0,0,0.1);\n}\n.widget-header-app-version-actual {\n  color: #43b300;\n}\n.widget-header-type {\n  font-size: 10px;\n  color: #b2b4b7;\n}\n.widget-header:hover {\n  background: #303131;\n}\n.widget-header-tooltip {\n  position: absolute;\n  bottom: -8px;\n  left: 56px;\n  padding: 4px 12px;\n  color: #fff;\n  line-height: 12px;\n  font-size: 11px;\n  background: #272727;\n  border-radius: 2px;\n  transition: opacity 0.3s, bottom 0.3s, padding 0.3s;\n  opacity: 0;\n  display: flex;\n  align-items: center;\n}\n.widget-header:hover .widget-header-tooltip {\n  opacity: 1;\n  bottom: -14px;\n}\n.widget-header-tooltip:hover {\n  padding: 4px 8px 4px 12px;\n}\n.widget-header-tooltip-icon {\n  width: 12px;\n  height: 12px;\n  margin-left: 4px;\n  fill: #fff;\n  transition: margin 0.3s;\n}\n.widget-header-tooltip:hover .widget-header-tooltip-icon {\n  margin-left: 8px;\n}\n.widget-settings {\n  max-height: 200px;\n  background: #fff;\n  border: 1px solid #38393a;\n  color: #38393a;\n  border-radius: 3px;\n  padding: 4px 8px;\n  overflow-x: hidden;\n  overflow-y: auto;\n  font-size: 11px;\n  margin: 0;\n}\n.widget-settings::-webkit-scrollbar-track {\n  background-color: #f0f0f0;\n}\n.widget-settings::-webkit-scrollbar {\n  width: 6px;\n}\n.widget-settings::-webkit-scrollbar-thumb {\n  background-color: #888;\n}\n.widget-settings-container {\n  padding: 8px 16px;\n  background: #38393a;\n  position: relative;\n}\n.widget-settings-toggle {\n  position: absolute;\n  right: 32px;\n  top: 16px;\n  width: 16px;\n  height: 16px;\n  cursor: pointer;\n  z-index: 10;\n}\n.widget-settings-toggle:hover .widget-settings-toggle-icon {\n  fill: #000;\n}\n.widget-settings-toggle-icon {\n  width: 16px;\n  height: 16px;\n  fill: #38393a;\n  transition: fill 0.3s;\n}\n.ui-carousel {\n  width: 400px;\n}\n.ui-carousel .carousel-dots {\n  bottom: -18px;\n}\n.ui-carousel .carousel-dots li button:before {\n  color: #fff;\n}\n.ui-carousel .carousel-prev,\n.ui-carousel .carousel-next {\n  position: absolute;\n  width: 16px;\n  height: 100%;\n  padding: 16px 0;\n  top: 0;\n  cursor: pointer;\n  transition: background 0.3s;\n}\n.ui-carousel .carousel-prev .carousel-btn,\n.ui-carousel .carousel-next .carousel-btn {\n  color: #fff;\n  transition: left 0.3s, right 0.3s, opacity 0.3s;\n  opacity: 0.2;\n}\n.ui-carousel .carousel-prev {\n  left: -2px;\n}\n.ui-carousel .carousel-prev:hover {\n  background: linear-gradient(to right, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);\n}\n.ui-carousel .carousel-prev:hover .carousel-btn {\n  opacity: 1;\n}\n.ui-carousel .carousel-prev .carousel-btn {\n  left: 2px;\n}\n.ui-carousel .carousel-next {\n  right: -2px;\n}\n.ui-carousel .carousel-next:hover {\n  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 100%);\n}\n.ui-carousel .carousel-next:hover .carousel-btn {\n  opacity: 1;\n}\n.ui-carousel .carousel-next .carousel-btn {\n  right: 2px;\n}\n@-moz-keyframes popup-loader {\n  0% {\n    transform: rotate(0deg);\n  }\n  100% {\n    transform: rotate(360deg);\n  }\n}\n@-webkit-keyframes popup-loader {\n  0% {\n    transform: rotate(0deg);\n  }\n  100% {\n    transform: rotate(360deg);\n  }\n}\n@-o-keyframes popup-loader {\n  0% {\n    transform: rotate(0deg);\n  }\n  100% {\n    transform: rotate(360deg);\n  }\n}\n@keyframes popup-loader {\n  0% {\n    transform: rotate(0deg);\n  }\n  100% {\n    transform: rotate(360deg);\n  }\n}\n", ""]);
+exports.push([module.i, "body {\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";\n  margin: 0;\n}\n", ""]);
 
 // exports
 
@@ -20196,96 +19921,6 @@ list.i=function(modules,mediaQuery){if(typeof modules==="string")modules=[[null,
 if(typeof item[0]!=="number"||!alreadyImportedModules[item[0]]){if(mediaQuery&&!item[2]){item[2]=mediaQuery;}else if(mediaQuery){item[2]="("+item[2]+") and ("+mediaQuery+")";}list.push(item);}}};return list;};function cssWithMappingToString(item,useSourceMap){var content=item[1]||'';var cssMapping=item[3];if(!cssMapping){return content;}if(useSourceMap&&typeof btoa==='function'){var sourceMapping=toComment(cssMapping);var sourceURLs=cssMapping.sources.map(function(source){return'/*# sourceURL='+cssMapping.sourceRoot+source+' */';});return[content].concat(sourceURLs).concat([sourceMapping]).join('\n');}return[content].join('\n');}// Adapted from convert-source-map (MIT)
 function toComment(sourceMap){// eslint-disable-next-line no-undef
 var base64=btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));var data='sourceMappingURL=data:application/json;charset=utf-8;base64,'+base64;return'/*# '+data+' */';}
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/lib/url/escape.js":
-/*!***************************************************!*\
-  !*** ./node_modules/css-loader/lib/url/escape.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports=function escape(url){if(typeof url!=='string'){return url;}// If url is already wrapped in quotes, remove them
-if(/^['"].*['"]$/.test(url)){url=url.slice(1,-1);}// Should url be wrapped?
-// See https://drafts.csswg.org/css-values-3/#urls
-if(/["'() \t\n]/.test(url)){return'"'+url.replace(/"/g,'\\"').replace(/\n/g,'\\n')+'"';}return url;};
-
-/***/ }),
-
-/***/ "./node_modules/jsonformatter/dist/json-formatter.css":
-/*!************************************************************!*\
-  !*** ./node_modules/jsonformatter/dist/json-formatter.css ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(/*! !../../css-loader!./json-formatter.css */ "./node_modules/css-loader/index.js!./node_modules/jsonformatter/dist/json-formatter.css");
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(/*! ../../style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {}
-
-/***/ }),
-
-/***/ "./node_modules/jsonformatter/dist/json-formatter.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/jsonformatter/dist/json-formatter.js ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/*!
- * jsonformatter
- * 
- * Version: 0.6.0 - 2016-08-27T12:58:03.306Z
- * License: Apache-2.0
- */angular.module('jsonFormatter',['RecursionHelper']).provider('JSONFormatterConfig',function JSONFormatterConfigProvider(){// Default values for hover preview config
-var hoverPreviewEnabled=false;var hoverPreviewArrayCount=100;var hoverPreviewFieldCount=5;return{get hoverPreviewEnabled(){return hoverPreviewEnabled;},set hoverPreviewEnabled(value){hoverPreviewEnabled=!!value;},get hoverPreviewArrayCount(){return hoverPreviewArrayCount;},set hoverPreviewArrayCount(value){hoverPreviewArrayCount=parseInt(value,10);},get hoverPreviewFieldCount(){return hoverPreviewFieldCount;},set hoverPreviewFieldCount(value){hoverPreviewFieldCount=parseInt(value,10);},$get:function(){return{hoverPreviewEnabled:hoverPreviewEnabled,hoverPreviewArrayCount:hoverPreviewArrayCount,hoverPreviewFieldCount:hoverPreviewFieldCount};}};}).directive('jsonFormatter',['RecursionHelper','JSONFormatterConfig',function jsonFormatterDirective(RecursionHelper,JSONFormatterConfig){function escapeString(str){return str.replace('"','\"');}// From http://stackoverflow.com/a/332429
-function getObjectName(object){if(object===undefined){return'';}if(object===null){return'Object';}if(typeof object==='object'&&!object.constructor){return'Object';}//ES6 default gives name to constructor 
-if(object.__proto__!==undefined&&object.__proto__.constructor!==undefined&&object.__proto__.constructor.name!==undefined){return object.__proto__.constructor.name;}var funcNameRegex=/function (.{1,})\(/;var results=funcNameRegex.exec(object.constructor.toString());if(results&&results.length>1){return results[1];}else{return'';}}function getType(object){if(object===null){return'null';}return typeof object;}function getValuePreview(object,value){var type=getType(object);if(type==='null'||type==='undefined'){return type;}if(type==='string'){value='"'+escapeString(value)+'"';}if(type==='function'){// Remove content of the function
-return object.toString().replace(/[\r\n]/g,'').replace(/\{.*\}/,'')+'{…}';}return value;}function getPreview(object){var value='';if(angular.isObject(object)){value=getObjectName(object);if(angular.isArray(object))value+='['+object.length+']';}else{value=getValuePreview(object,object);}return value;}function link(scope){scope.isArray=function(){return angular.isArray(scope.json);};scope.isObject=function(){return angular.isObject(scope.json);};scope.getKeys=function(){if(scope.isObject()){return Object.keys(scope.json).map(function(key){if(key===''){return'""';}return key;});}};scope.type=getType(scope.json);scope.hasKey=typeof scope.key!=='undefined';scope.getConstructorName=function(){return getObjectName(scope.json);};if(scope.type==='string'){// Add custom type for date
-if(new Date(scope.json).toString()!=='Invalid Date'){scope.isDate=true;}// Add custom type for URLs
-if(scope.json.indexOf('http')===0){scope.isUrl=true;}}scope.isEmptyObject=function(){return scope.getKeys()&&!scope.getKeys().length&&scope.isOpen&&!scope.isArray();};// If 'open' attribute is present
-scope.isOpen=!!scope.open;scope.toggleOpen=function(){scope.isOpen=!scope.isOpen;};scope.childrenOpen=function(){if(scope.open>1){return scope.open-1;}return 0;};scope.openLink=function(isUrl){if(isUrl){window.location.href=scope.json;}};scope.parseValue=function(value){return getValuePreview(scope.json,value);};scope.showThumbnail=function(){return!!JSONFormatterConfig.hoverPreviewEnabled&&scope.isObject()&&!scope.isOpen;};scope.getThumbnail=function(){if(scope.isArray()){// if array length is greater then 100 it shows "Array[101]"
-if(scope.json.length>JSONFormatterConfig.hoverPreviewArrayCount){return'Array['+scope.json.length+']';}else{return'['+scope.json.map(getPreview).join(', ')+']';}}else{var keys=scope.getKeys();// the first five keys (like Chrome Developer Tool)
-var narrowKeys=keys.slice(0,JSONFormatterConfig.hoverPreviewFieldCount);// json value schematic information
-var kvs=narrowKeys.map(function(key){return key+':'+getPreview(scope.json[key]);});// if keys count greater then 5 then show ellipsis
-var ellipsis=keys.length>=5?'…':'';return'{'+kvs.join(', ')+ellipsis+'}';}};}return{templateUrl:'json-formatter.html',restrict:'E',replace:true,scope:{json:'=',key:'=',open:'='},compile:function(element){// Use the compile function from the RecursionHelper,
-// And return the linking function(s) which it returns
-return RecursionHelper.compile(element,link);}};}]);// Export to CommonJS style imports. Exporting this string makes this valid:
-// angular.module('myApp', [require('jsonformatter')]);
-if(true){module.exports='jsonFormatter';}'use strict';// from http://stackoverflow.com/a/18609594
-angular.module('RecursionHelper',[]).factory('RecursionHelper',['$compile',function($compile){return{/**
-     * Manually compiles the element, fixing the recursion loop.
-     * @param element
-     * @param [link] A post-link function, or an object with function(s)
-     * registered via pre and post properties.
-     * @returns An object containing the linking functions.
-     */compile:function(element,link){// Normalize the link parameter
-if(angular.isFunction(link)){link={post:link};}// Break the recursion loop by removing the contents
-var contents=element.contents().remove();var compiledContents;return{pre:link&&link.pre?link.pre:null,/**
-         * Compiles and re-adds the contents
-         */post:function(scope,element){// Compile the contents
-if(!compiledContents){compiledContents=$compile(contents);}// Re-add the compiled contents to the element
-compiledContents(scope,function(clone){element.append(clone);});// Call the post-linking function, if any
-if(link&&link.post){link.post.apply(null,arguments);}}};}};}]);angular.module("jsonFormatter").run(["$templateCache",function($templateCache){$templateCache.put("json-formatter.html","<div ng-init=\"isOpen = open && open > 0\" class=\"json-formatter-row\"><a ng-click=\"toggleOpen()\"><span class=\"toggler {{isOpen ? \'open\' : \'\'}}\" ng-if=\"isObject()\"></span> <span class=\"key\" ng-if=\"hasKey\"><span class=\"key-text\">{{key}}</span><span class=\"colon\">:</span></span> <span class=\"value\"><span ng-if=\"isObject()\"><span class=\"constructor-name\">{{getConstructorName(json)}}</span> <span ng-if=\"isArray()\"><span class=\"bracket\">[</span><span class=\"number\">{{json.length}}</span><span class=\"bracket\">]</span></span></span> <span ng-if=\"!isObject()\" ng-click=\"openLink(isUrl)\" class=\"{{type}}\" ng-class=\"{date: isDate, url: isUrl}\">{{parseValue(json)}}</span></span> <span ng-if=\"showThumbnail()\" class=\"thumbnail-text\">{{getThumbnail()}}</span></a><div class=\"children\" ng-if=\"getKeys().length && isOpen\"><json-formatter ng-repeat=\"key in getKeys() track by $index\" json=\"json[key]\" key=\"key\" open=\"childrenOpen()\"></json-formatter></div><div class=\"children empty object\" ng-if=\"isEmptyObject()\"></div><div class=\"children empty array\" ng-if=\"getKeys() && !getKeys().length && isOpen && isArray()\"></div></div>");}]);
 
 /***/ }),
 
@@ -20755,21 +20390,21 @@ return fixedCss;};
 
 /***/ }),
 
-/***/ "./src/popup/popup.html":
-/*!******************************!*\
-  !*** ./src/popup/popup.html ***!
-  \******************************/
+/***/ "./src/options/options.html":
+/*!**********************************!*\
+  !*** ./src/options/options.html ***!
+  \**********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "popup.html";
+module.exports = __webpack_require__.p + "options.html";
 
 /***/ }),
 
-/***/ "./src/popup/popup.js":
-/*!****************************!*\
-  !*** ./src/popup/popup.js ***!
-  \****************************/
+/***/ "./src/options/options.js":
+/*!********************************!*\
+  !*** ./src/options/options.js ***!
+  \********************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -20777,43 +20412,23 @@ module.exports = __webpack_require__.p + "popup.html";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var angular__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! angular */ "./node_modules/angular/index.js");
 /* harmony import */ var angular__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(angular__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var angular_ui_carousel__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! angular-ui-carousel */ "./node_modules/angular-ui-carousel/dist/ui-carousel.js");
-/* harmony import */ var angular_ui_carousel__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(angular_ui_carousel__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var angular_ui_carousel_dist_ui_carousel_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! angular-ui-carousel/dist/ui-carousel.css */ "./node_modules/angular-ui-carousel/dist/ui-carousel.css");
-/* harmony import */ var angular_ui_carousel_dist_ui_carousel_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(angular_ui_carousel_dist_ui_carousel_css__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var jsonformatter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jsonformatter */ "./node_modules/jsonformatter/dist/json-formatter.js");
-/* harmony import */ var jsonformatter__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jsonformatter__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var jsonformatter_dist_json_formatter_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! jsonformatter/dist/json-formatter.css */ "./node_modules/jsonformatter/dist/json-formatter.css");
-/* harmony import */ var jsonformatter_dist_json_formatter_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(jsonformatter_dist_json_formatter_css__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _popup_styl__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./popup.styl */ "./src/popup/popup.styl");
-/* harmony import */ var _popup_styl__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_popup_styl__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _popup_html__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./popup.html */ "./src/popup/popup.html");
-/* harmony import */ var _popup_html__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_popup_html__WEBPACK_IMPORTED_MODULE_6__);
-const DEBUG=true;let popup=angular.module('popup',['jsonFormatter','ui.carousel']);popup.config(['$compileProvider',function($compileProvider){$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|local|data|chrome-extension):/);}]);popup.controller('popupController',['$scope','$timeout',function($scope,$timeout){$scope.widgetsData=[];$scope.loaded=false;$scope.settingsFormatted=true;$scope.popupActive=false;$scope.settings={highlight:true};this.$onInit=function(){$scope.togglePopupActive();$scope.bg_port=chrome.extension.connect();$scope.bg_port.onMessage.addListener(function(obj){if(obj&&obj.method){if(obj.data){$scope[obj.method](obj.data);}else{$scope[obj.method]();}}});$scope.bg_port.postMessage({method:'requestWidgetsData'});chrome.tabs.query({currentWindow:true,active:true},function(tabs){$scope.tab=tabs[0];$scope.tab_port=chrome.tabs.connect($scope.tab.id);});};$scope.setWidgetsData=function(data){$scope.$apply(function(){$scope.widgetsData=data;$scope.loaded=true;// may be a fix for ngClick in carousel item
-// if ($scope.widgetsData.length) {
-//     $scope.widgetsData.forEach((item) => {
-//         item.moveTo = $scope.moveToWidget;
-//     })
-// }
-});};$scope.togglePopupActive=function(){$timeout(function(){$scope.popupActive=!$scope.popupActive;});};// @TODO fix in carousel item
-$scope.highlightWidget=function(id,state){$scope.tab_port.postMessage({method:'highlightWidget',data:{id:id,state:state}});};// @TODO fix in carousel item
-$scope.moveToWidget=function(id){console.log('moveTo',id);$scope.tab_port.postMessage({method:'moveToWidget',data:{id:id}});};$scope.reload=function(){$scope.reloaded=true;$scope.bg_port.postMessage({method:'reload',data:{tab:$scope.tab}});};$scope.openOptions=function(){// if (chrome.runtime.openOptionsPage) {
-//     chrome.runtime.openOptionsPage();
-// } else {
-chrome.tabs.create({url:"dist/options.html"});// }
-};}]);popup.directive('widgetsCount',function(){return{template:`<span class="widgets-count-counter">{{widgetsData.length}}</span> widget{{widgetsData.length > 1 ? "s" : ""}} detected`};});
+/* harmony import */ var _options_styl__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./options.styl */ "./src/options/options.styl");
+/* harmony import */ var _options_styl__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_options_styl__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _options_html__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./options.html */ "./src/options/options.html");
+/* harmony import */ var _options_html__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_options_html__WEBPACK_IMPORTED_MODULE_2__);
+let options=angular.module('popup');options.config(['$compileProvider',function($compileProvider){$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|local|data|chrome-extension):/);}]);options.controller('optionsController',['$scope',function($scope){}]);
 
 /***/ }),
 
-/***/ "./src/popup/popup.styl":
-/*!******************************!*\
-  !*** ./src/popup/popup.styl ***!
-  \******************************/
+/***/ "./src/options/options.styl":
+/*!**********************************!*\
+  !*** ./src/options/options.styl ***!
+  \**********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(/*! !../../node_modules/css-loader?-url!../../node_modules/stylus-loader??ref--5-2!./popup.styl */ "./node_modules/css-loader/index.js?-url!./node_modules/stylus-loader/index.js?!./src/popup/popup.styl");
+var content = __webpack_require__(/*! !../../node_modules/css-loader?-url!../../node_modules/stylus-loader??ref--5-2!./options.styl */ "./node_modules/css-loader/index.js?-url!./node_modules/stylus-loader/index.js?!./src/options/options.styl");
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -20836,4 +20451,4 @@ if(false) {}
 /***/ })
 
 /******/ });
-//# sourceMappingURL=popup.js.map
+//# sourceMappingURL=options.js.map

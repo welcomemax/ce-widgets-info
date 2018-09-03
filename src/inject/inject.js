@@ -420,6 +420,8 @@ ewiInjectClass.prototype = {
     },
 
     moveToWidget: function (data) {
+        console.log('moveToWidget', data)
+
         let $wrap = this.widgetsData[data.id].$wrap;
 
         $wrap.scrollIntoView({
