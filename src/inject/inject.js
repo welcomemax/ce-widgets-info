@@ -16,6 +16,8 @@ ewiInjectClass.prototype = {
 
     widgetsData: [],
 
+    port: false,
+
     pageData: {
         url: '',
         cms: ''
@@ -97,9 +99,9 @@ ewiInjectClass.prototype = {
         });
 
         chrome.runtime.onConnect.addListener(function(port) {
-            window.port = port;
+            self.port = port;
 
-            port.onMessage.addListener(function (obj) {
+            self.port.onMessage.addListener(function (obj) {
                 factory(obj);
             })
         });
@@ -456,7 +458,9 @@ ewiInjectClass.prototype = {
     },
 
     getWidgetsData: function () {
-        port.postMessage({method: 'returnWidgetsData', data: this.widgetsData});
+        if (this.port) {
+            this.port.postMessage({method: 'returnWidgetsData', data: this.widgetsData});
+        }
     },
 
     // @TODO move to separate class
