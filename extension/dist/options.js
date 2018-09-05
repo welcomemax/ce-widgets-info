@@ -20416,7 +20416,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _options_styl__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_options_styl__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _options_html__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./options.html */ "./src/options/options.html");
 /* harmony import */ var _options_html__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_options_html__WEBPACK_IMPORTED_MODULE_2__);
-let options=angular.module('popup');options.config(['$compileProvider',function($compileProvider){$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|local|data|chrome-extension):/);}]);options.controller('optionsController',['$scope',function($scope){}]);
+let options=angular.module('popup');options.config(['$compileProvider',function($compileProvider){$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|local|data|chrome-extension):/);}]);options.controller('optionsController',['$scope',function($scope){this.$onInit=function(){$scope.bg_port=chrome.extension.connect();$scope.bg_port.onMessage.addListener(function(obj){if(obj&&obj.method){if(obj.data){$scope[obj.method](obj.data);}else{$scope[obj.method]();}}});};}]);
 
 /***/ }),
 

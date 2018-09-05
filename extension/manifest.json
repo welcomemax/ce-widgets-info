@@ -37,14 +37,14 @@
         "https://*/*"
       ],
       "js": [
-        "dist/inject.js"
+        "dist/content.js"
       ],
       "run_at": "document_idle"
     }
   ],
 
   "web_accessible_resources": [
-    "dist/content.js"
+    "dist/inject.js"
   ],
 
   "options_page": "dist/options.html",

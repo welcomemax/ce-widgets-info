@@ -11,4 +11,17 @@ options.config(['$compileProvider', function ($compileProvider) {
 
 options.controller('optionsController', ['$scope', function ($scope) {
 
+
+    this.$onInit = function () {
+        $scope.bg_port = chrome.extension.connect();
+        $scope.bg_port.onMessage.addListener(function (obj) {
+            if (obj && obj.method) {
+                if (obj.data) {
+                    $scope[obj.method](obj.data);
+                } else {
+                    $scope[obj.method]();
+                }
+            }
+        });
+    };
 }]);

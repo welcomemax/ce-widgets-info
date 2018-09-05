@@ -1,18 +1,25 @@
-require('./data.js');
+import './data.js';
 
-ewiBackgroundClass = function () {};
-ewiBackgroundClass.prototype = {
-    storedWidgetsData: {},
-    widgetsData: [],
-    sites: {},
-    tabs: {},
-    tab: {},
-    tab_port: false,
-    popup_port: false,
+import Utils from './../utils/utils.js';
 
-    init: function () {
-        let self = this;
+class Background {
+    constructor() {
+        this.storedWidgetsData = {};
+        this.widgetsData = [];
 
+        this.sites = {};
+        this.tabs = {};
+        this.tab = {};
+
+        this.tab_port = null;
+        this.popup_port = null;
+
+        this.utils = new Utils();
+
+        this.init();
+    }
+
+    init() {
         chrome.extension.onConnect.addListener((port) => {
             this.popup_port = port;
             this.popup_port.onMessage.addListener(postMessageFactory);
@@ -51,19 +58,19 @@ ewiBackgroundClass.prototype = {
                     }
                 }
 
-                this.tab_port = chrome.tabs.connect(self.tab.id);
+                this.tab_port = chrome.tabs.connect(this.tab.id);
                 this.tab_port.onMessage.addListener(postMessageFactory);
 
                 // @TODO move to separate class
                 if (this.tab.site === 'partners.shopify.com' && this.tab.url.match(/managed_stores\/new/)) {
-                    this.shopify_setManagedStore({
-                        store_url: this.getQueryParam('store_url', tab.url),
-                        permissions: this.getQueryParam('permissions', tab.url).split(','),
-                        message: this.getQueryParam('message', tab.url)
+                    this.message(this.tab_port, 'setManagedStore', {
+                        store_url: this.utils.getQueryParam('store_url', tab.url),
+                        permissions: this.utils.getQueryParam('permissions', tab.url).split(','),
+                        message: this.utils.getQueryParam('message', tab.url)
                     });
                 }
 
-                this.collectWidgetsData();
+                this.message(this.tab_port, 'getWidgetsData');
             }
         });
 
@@ -73,6 +80,7 @@ ewiBackgroundClass.prototype = {
             this.returnWidgetsData();
         });
 
+        // @TODO move factory to utils (what about _this_?)
         let postMessageFactory = (obj) => {
             if (obj && obj.method) {
                 if (obj.data) {
@@ -81,24 +89,18 @@ ewiBackgroundClass.prototype = {
                     this[obj.method]();
                 }
             }
-        }
-    },
+        };
+    }
 
-    setBadge: function (count) {
-        if (count) {
-            chrome.browserAction.setBadgeText({text: count.toString()});
+    setBadge(count) {
+        console.log(count)
+        chrome.browserAction.setBadgeText({text: count ? count.toString() : ''});
+        if (!count) {
             chrome.browserAction.setBadgeBackgroundColor({color: '#38393a'});
-        } else {
-            chrome.browserAction.setBadgeText({text: ''});
         }
-    },
+    }
 
-    collectWidgetsData: function () {
-        // tab_port.postMessage({method: 'highlightWidgets'});
-        this.tab_port.postMessage({method: 'getWidgetsData'});
-    },
-
-    returnWidgetsData: function (data) {
+    returnWidgetsData(data) {
         if (data) {
             this.storeWidgetsData(data)
         }
@@ -117,36 +119,25 @@ ewiBackgroundClass.prototype = {
         }
 
         if (this.popup_port) {
-            this.popup_port.postMessage({method: 'setWidgetsData', data: this.widgetsData});
+            this.message(this.popup_port, 'setWidgetsData', this.widgetsData);
         }
-    },
+    }
 
-    // @TODO move to utils class
-    getQueryParam: function(name, url) {
-        name = name.replace(/[\[\]]/g, '\\$&');
+    message(port, method, data) {
+        let event = {method: method};
+        if (data) event.data = data;
 
-        let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-            results = regex.exec(url);
+        port.postMessage(event);
+    }
 
-        if (!results) return null;
-        if (!results[2]) return '';
+    requestWidgetsData () {
+        this.message(this.popup_port, 'setWidgetsData', this.widgetsData);
+    }
 
-        return decodeURIComponent(results[2].replace(/\+/g, ' '));
-    },
-
-    // @TODO move to separate class
-    shopify_setManagedStore: function(data) {
-        this.tab_port.postMessage({method: 'shopify_setManagedStore', data: data});
-    },
-
-    requestWidgetsData: function () {
-        this.popup_port.postMessage({method: 'setWidgetsData', data: this.widgetsData});
-    },
-
-    storeWidgetsData: function (data) {
+    storeWidgetsData (data) {
         this.storedWidgetsData[this.tab.id] = data;
     }
-};
+}
 
-ewiBackground = new ewiBackgroundClass();
-ewiBackground.init();
+
+new Background();
