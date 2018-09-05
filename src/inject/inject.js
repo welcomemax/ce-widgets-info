@@ -445,7 +445,11 @@ ewiInjectClass.prototype = {
                 console.log(format_key(key), value, '\n');
             });
 
-            console.log('---------------------------------------------' + widget.app_name.replace(/./g, '-') + '\n\n');
+            if (widget.app_name !== undefined) {
+                console.log('---------------------------------------------' + widget.app_name.replace(/./g, '-') + '\n\n');
+            } else {
+                console.log('------------------------------------------------------' + '\n\n');
+            }
 
             function format_key (key) {
                 for (let i = 0; i < 10 - key.trim().length; i++) {
