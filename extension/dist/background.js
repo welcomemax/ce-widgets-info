@@ -1,1 +1,133 @@
-!function(t){var e={};function s(a){if(e[a])return e[a].exports;var i=e[a]={i:a,l:!1,exports:{}};return t[a].call(i.exports,i,i.exports,s),i.l=!0,i.exports}s.m=t,s.c=e,s.d=function(t,e,a){s.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:a})},s.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},s.t=function(t,e){if(1&e&&(t=s(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var a=Object.create(null);if(s.r(a),Object.defineProperty(a,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var i in t)s.d(a,i,function(e){return t[e]}.bind(null,i));return a},s.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return s.d(e,"a",e),e},s.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},s.p="",s(s.s=29)}({20:function(t,e){chrome.storage.sync.set({apps:function(t){return t.map(function(t){return{name:t.name,slug:t.slug,func:t.func,aliases:t.aliases?t.aliases.concat([t.slug,t.name]):[t.slug,t.name],type:"",version:{curr:!1,last:t.version?t.version:"1.0.0"}}})}([{slug:"instagram-feed",name:"Instagram Feed",func:"EappsInstagramFeed",aliases:["instagramfeed","instashow"]},{slug:"instalink",name:"Instagram Widget",func:"instalink"},{slug:"instagram-testimonials",name:"Instagram Testimonials",func:"EappsInstagramTestimonials"},{slug:"yottie",name:"Yottie",func:"yottie"},{slug:"google-maps",name:"Google Maps",func:"EappsGoogleMaps"},{slug:"pricing-table",name:"Pricing Table",func:"EappsPricingTable"},{slug:"social-icons",name:"Social Media Icons",func:"EappsMediaIcons"},{slug:"social-share-buttons",name:"Social Share Buttons",func:"EappsSocialShareButtons"},{slug:"facebook-feed",name:"Facebook Feed",func:"EappsFacebookFeed"},{slug:"facebook-comments",name:"Facebook Comments",func:"EappsFacebookComments"},{slug:"facebook-like-button",name:"Facebook Like Button",func:"EappsFacebookLikeButton"},{slug:"facebook-share-button",name:"Facebook Share Button",func:"EappsFacebookShareButton"},{slug:"testimonials-slider",name:"TestimonialsSlider",func:"EappsTestimonialsSlider"},{slug:"faq",name:"FAQ",func:"EappsFaq"},{slug:"contact-form",name:"Contact Form",func:"EappsContactForm"},{slug:"form-builder",name:"Form Builder",func:"EappsFormBuilder"}])},function(){})},29:function(t,e,s){"use strict";s.r(e);s(20);class a{constructor(){}postMessageFactory(t){t&&t.method&&(t.data?this[t.method](t.data):this[t.method]())}getQueryParam(t,e){t=t.replace(/[\[\]]/g,"\\$&");let s=new RegExp("[?&]"+t+"(=([^&#]*)|&|#|$)").exec(e);return s?s[2]?decodeURIComponent(s[2].replace(/\+/g," ")):"":null}}new class{constructor(){this.storedWidgetsData={},this.widgetsData=[],this.sites={},this.tabs={},this.tab={},this.tab_port=null,this.popup_port=null,this.utils=new a,this.init()}init(){chrome.extension.onConnect.addListener(e=>{this.popup_port=e,this.popup_port.onMessage.addListener(t)}),chrome.tabs.onUpdated.addListener((e,s,a)=>{if(s&&s.status&&"complete"===s.status.toLowerCase()){if(!(e&&a&&a.url&&a.url.indexOf("http")+1))return;this.tab=a,this.tab.site=a.url.match(/^(?:https?:)?(?:\/\/)?(?:w+\.)?([^\/\?]+)/)[1],this.tabs[a.id]||(this.tabs[a.id]={id:a.id,site:a.site,url:a.url,title:a.title,favIconUrl:a.favIconUrl}),this.sites[a.site]||(this.sites[a.site]={site:a.site,pages:{}}),this.sites[a.site].pages[a.url]||(this.sites[a.site].pages[a.url]={url:a.url,widgetsData:[]}),this.tab_port=chrome.tabs.connect(this.tab.id),this.tab_port.onMessage.addListener(t),"partners.shopify.com"===this.tab.site&&this.tab.url.match(/managed_stores\/new/)&&this.message(this.tab_port,"setManagedStore",{store_url:this.utils.getQueryParam("store_url",a.url),permissions:this.utils.getQueryParam("permissions",a.url).split(","),message:this.utils.getQueryParam("message",a.url)}),this.message(this.tab_port,"getWidgetsData")}}),chrome.tabs.onActivated.addListener(t=>{this.tab=this.tabs[t.tabId],this.returnWidgetsData()});let t=t=>{t&&t.method&&(t.data?this[t.method](t.data):this[t.method]())}}setBadge(t){console.log(t),chrome.browserAction.setBadgeText({text:t?t.toString():""}),t||chrome.browserAction.setBadgeBackgroundColor({color:"#38393a"})}returnWidgetsData(t){t&&this.storeWidgetsData(t),this.tab&&this.storedWidgetsData[this.tab.id]?(this.widgetsData=this.storedWidgetsData[this.tab.id],this.setBadge(this.storedWidgetsData[this.tab.id].length)):(this.widgetsData=[],this.setBadge(0)),this.popup_port&&this.message(this.popup_port,"setWidgetsData",this.widgetsData)}message(t,e,s){let a={method:e};s&&(a.data=s),t.postMessage(a)}requestWidgetsData(){this.message(this.popup_port,"setWidgetsData",this.widgetsData)}storeWidgetsData(t){this.storedWidgetsData[this.tab.id]=t}}}});
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/bg/background.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./src/bg/background.js":
+/*!******************************!*\
+  !*** ./src/bg/background.js ***!
+  \******************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _data_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./data.js */ "./src/bg/data.js");
+/* harmony import */ var _data_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_data_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _utils_utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../utils/utils.js */ "./src/utils/utils.js");
+class Background{constructor(){this.storedWidgetsData={};this.widgetsData=[];this.sites={};this.tabs={};this.tab={};this.tab_port=null;this.popup_port=null;this.utils=new _utils_utils_js__WEBPACK_IMPORTED_MODULE_1__["default"]();this.init();}init(){chrome.extension.onConnect.addListener(port=>{this.popup_port=port;this.popup_port.onMessage.addListener(postMessageFactory);});chrome.tabs.onUpdated.addListener((id,info,tab)=>{if(info&&info.status&&info.status.toLowerCase()==='complete'){if(!id||!tab||!tab.url||!(tab.url.indexOf('http')+1)){return;}this.tab=tab;this.tab.site=tab.url.match(/^(?:https?:)?(?:\/\/)?(?:w+\.)?([^\/\?]+)/)[1];if(!this.tabs[tab.id]){this.tabs[tab.id]={id:tab.id,site:tab.site,url:tab.url,title:tab.title,favIconUrl:tab.favIconUrl};}if(!this.sites[tab.site]){this.sites[tab.site]={site:tab.site,pages:{}};}if(!this.sites[tab.site].pages[tab.url]){this.sites[tab.site].pages[tab.url]={url:tab.url,widgetsData:[]};}this.tab_port=chrome.tabs.connect(this.tab.id);this.tab_port.onMessage.addListener(postMessageFactory);// @TODO move to separate class
+if(this.tab.site==='partners.shopify.com'&&this.tab.url.match(/managed_stores\/new/)){this.message(this.tab_port,'setManagedStore',{store_url:this.utils.getQueryParam('store_url',tab.url),permissions:this.utils.getQueryParam('permissions',tab.url).split(','),message:this.utils.getQueryParam('message',tab.url)});}this.message(this.tab_port,'getWidgetsData');}});chrome.tabs.onActivated.addListener(info=>{this.tab=this.tabs[info.tabId];this.returnWidgetsData();});// @TODO move factory to utils (what about _this_?)
+let postMessageFactory=obj=>{if(obj&&obj.method){if(obj.data){this[obj.method](obj.data);}else{this[obj.method]();}}};}setBadge(count){console.log(count);chrome.browserAction.setBadgeText({text:count?count.toString():''});if(!count){chrome.browserAction.setBadgeBackgroundColor({color:'#38393a'});}}returnWidgetsData(data){if(data){this.storeWidgetsData(data);}if(this.tab){if(this.storedWidgetsData[this.tab.id]){this.widgetsData=this.storedWidgetsData[this.tab.id];this.setBadge(this.storedWidgetsData[this.tab.id].length);}else{this.widgetsData=[];this.setBadge(0);}}else{this.widgetsData=[];this.setBadge(0);}if(this.popup_port){this.message(this.popup_port,'setWidgetsData',this.widgetsData);}}message(port,method,data){let event={method:method};if(data)event.data=data;port.postMessage(event);}requestWidgetsData(){this.message(this.popup_port,'setWidgetsData',this.widgetsData);}storeWidgetsData(data){this.storedWidgetsData[this.tab.id]=data;}}new Background();
+
+/***/ }),
+
+/***/ "./src/bg/data.js":
+/*!************************!*\
+  !*** ./src/bg/data.js ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var apps=[{slug:'instagram-feed',name:'Instagram Feed',func:'EappsInstagramFeed',aliases:['instagramfeed','instashow']},{slug:'instalink',name:'Instagram Widget',func:'instalink'},{slug:'instagram-testimonials',name:'Instagram Testimonials',func:'EappsInstagramTestimonials'},{slug:'yottie',name:'Yottie',func:'yottie'},{slug:'google-maps',name:'Google Maps',func:'EappsGoogleMaps'},{slug:'pricing-table',name:'Pricing Table',func:'EappsPricingTable'},{slug:'social-icons',name:'Social Media Icons',func:'EappsMediaIcons'},{slug:'social-share-buttons',name:'Social Share Buttons',func:'EappsSocialShareButtons'},{slug:'facebook-feed',name:'Facebook Feed',func:'EappsFacebookFeed'},{slug:'facebook-comments',name:'Facebook Comments',func:'EappsFacebookComments'},{slug:'facebook-like-button',name:'Facebook Like Button',func:'EappsFacebookLikeButton'},{slug:'facebook-share-button',name:'Facebook Share Button',func:'EappsFacebookShareButton'},{slug:'testimonials-slider',name:'TestimonialsSlider',func:'EappsTestimonialsSlider'},{slug:'faq',name:'FAQ',func:'EappsFaq'},{slug:'contact-form',name:'Contact Form',func:'EappsContactForm'},{slug:'form-builder',name:'Form Builder',func:'EappsFormBuilder'},{slug:'twitter-feed',name:'Twitter Feed',func:'EappsTwitterFeed'},{slug:'paypal-button',name:'PayPal Button',func:'EappsPaypalButton'}];function formatAppsData(apps){return apps.map(function(app){return{name:app.name,slug:app.slug,func:app.func,aliases:app.aliases?app.aliases.concat([app.slug,app.name]):[app.slug,app.name],type:'',version:{curr:false,last:app.version?app.version:'1.0.0'}};});}chrome.storage.sync.set({'apps':formatAppsData(apps)},function(){});
+
+/***/ }),
+
+/***/ "./src/utils/utils.js":
+/*!****************************!*\
+  !*** ./src/utils/utils.js ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Utils; });
+class Utils{constructor(){}postMessageFactory(obj){if(obj&&obj.method){if(obj.data){this[obj.method](obj.data);}else{this[obj.method]();}}}getQueryParam(name,url){name=name.replace(/[\[\]]/g,'\\$&');let regex=new RegExp('[?&]'+name+'(=([^&#]*)|&|#|$)'),results=regex.exec(url);if(!results)return null;if(!results[2])return'';return decodeURIComponent(results[2].replace(/\+/g,' '));}}
+
+/***/ })
+
+/******/ });
+//# sourceMappingURL=background.js.map

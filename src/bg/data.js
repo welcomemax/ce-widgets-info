@@ -63,6 +63,14 @@ var apps = [{
     slug: 'form-builder',
     name: 'Form Builder',
     func: 'EappsFormBuilder'
+}, {
+    slug: 'twitter-feed',
+    name: 'Twitter Feed',
+    func: 'EappsTwitterFeed'
+}, {
+    slug: 'paypal-button',
+    name: 'PayPal Button',
+    func: 'EappsPaypalButton'
 }];
 
 function formatAppsData(apps) {
