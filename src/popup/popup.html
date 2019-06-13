@@ -27,13 +27,13 @@
                                          ng-mouseleave="$parent.$parent.highlightWidget(item.id, false)"
                                          ng-click="$parent.$parent.moveToWidget(item.id)">
                                         <div class="widget-header-app">
-                                            <img class="widget-header-app-icon" src="img/apps/{{item.app_slug}}.svg" alt="{{item.app_name}}"/>
+                                            <img class="widget-header-app-icon" src="img/apps/{{item.app_slug}}.svg"/>
                                             <div class="widget-header-app-title">
                                                 {{item.app_name}}
                                                 <sup class="widget-header-app-version"
-                                                     ng-if="item.version.curr"
-                                                     ng-class="item.version.last == '1.0.0' || item.version.curr == item.version.last ? 'widget-header-app-version-actual' : ''">
-                                                    ver. {{item.version.curr}}
+                                                     ng-show="!!item.app_version.curr"
+                                                     ng-class="item.app_version.last == '1.0.0' || item.app_version.curr == item.app_version.last ? 'widget-header-app-version-actual' : ''">
+                                                    ver. {{item.app_version.curr}}
                                                 </sup>
                                             </div>
                                         </div>

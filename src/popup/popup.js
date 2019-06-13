@@ -8,7 +8,6 @@ import 'jsonformatter/dist/json-formatter.css';
 import './popup.styl';
 import './popup.html';
 
-
 const DEBUG = true;
 
 let popup = angular.module('popup', ['jsonFormatter', 'ui.carousel']);
@@ -52,7 +51,7 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
     };
 
     $scope.setWidgetsData = function (data) {
-        $scope.$apply(function(){
+        $scope.$apply(() => {
             $scope.widgetsData = data;
             $scope.loaded = true;
 

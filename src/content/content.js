@@ -69,18 +69,23 @@ class Content {
             let curr_app;
 
             self.appsData.forEach((app) => {
-                if (widget.func.indexOf(app.func) + 1) {
+                if (!!~widget['id'].indexOf(app.slug)) {
                     curr_app = app;
                 }
             });
+
 
             self.widgetsData.push({
                 id: this.widgetsCounter++,
                 app_type: 'CodeCanyon',
                 app_slug: curr_app.slug,
                 app_name: curr_app.name,
+                app_version: {
+                    curr: widget.version,
+                    last: curr_app.version.last
+                },
                 settings: widget.settings,
-                $el: document.getElementById(widget.el_id)
+                $el: document.getElementById(widget.id)
             });
         });
 
@@ -143,7 +148,7 @@ class Content {
             app_type: data.app_type,
             app_slug: curr_app.slug,
             app_name: curr_app.name,
-            version: curr_app.version
+            version: data.app_version || curr_app.version
         };
 
         if (data.publicID) {

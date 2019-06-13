@@ -1,32 +1,23 @@
-if (window.jQuery) {
-    jQuery(function() {
-        const optionsRegExp = /^elfsight(.*?)Options$/;
-        let widgetsData = [];
+(function() {
+    "use strict";
 
-        setTimeout(() => {
-            jQuery('div').each(function() {
-                let self = this;
-                let data = jQuery(this).data();
+    let widgets = document.querySelectorAll('.elfsight-widget');
+    let widgetsData = [];
 
-                if (!jQuery.isEmptyObject(data)) {
-                    Object.keys(data).forEach(function(key) {
-                        if (key.match(optionsRegExp)) {
-                            widgetsData.push({
-                                func: Object.keys(data)[0],
-                                el_id: jQuery(self).attr('id'),
-                                settings: JSON.parse(decodeURIComponent(data[key]))
-                            })
-                        }
-                    })
-                }
-            });
+    Array.prototype.slice.call(widgets).forEach(function(widget) {
+        let widgetData = widget.data;
 
-            if (widgetsData) {
-                window.postMessage({
-                    'method': 'getDataFromContent',
-                    'data': widgetsData
-                }, '*');
-            }
-        }, 1000);
+        widgetsData.push({
+            version: widgetData.version,
+            settings: widgetData.options,
+            id: widget.getAttribute('id')
+        })
     });
-}
+
+    if (widgetsData) {
+        window.postMessage({
+            'method': 'getDataFromContent',
+            'data': widgetsData
+        }, '*');
+    }
+})();
