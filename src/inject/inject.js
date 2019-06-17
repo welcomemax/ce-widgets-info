@@ -4,7 +4,7 @@
     let widgets = document.querySelectorAll('.elfsight-widget');
     let widgetsData = [];
 
-    Array.prototype.slice.call(widgets).forEach(function(widget) {
+    Array.prototype.slice.call(widgets).forEach((widget) => {
         let widgetData = widget.data;
 
         widgetsData.push({

@@ -12,6 +12,8 @@ const
         'facebook-share-button',
         'testimonials-slider',
         'faq',
+        'google-maps',
+        'pricing-table',
         'contact-form',
         'form-builder',
         'twitter-feed',
@@ -64,22 +66,17 @@ Promise.all(fetchPromises).finally(() => {
         return predefinedApps[alias] && predefinedApps[alias].aliases ? predefinedApps[alias].aliases.concat([alias, name]) : [alias, name]
     };
 
-    const formattedApps = fetchedApps.map(function(app) {
+    const formattedApps = fetchedApps.map((app) => {
         return {
             name: app.name,
             slug: app.alias,
             aliases: getAliases(app.alias, app.name),
-            type: '',
             version: {
-                curr: false,
                 last: app.version ? app.version : '1.0.0'
             },
-            icon: `https://apps.elfsight.com${app.icon}`
+            icon: app.icon
         }
     });
 
-    console.log(fetchedApps)
-    console.log(formattedApps)
-
-    chrome.storage.sync.set({'apps': formattedApps}, function() {});
+    chrome.storage.local.set({'apps': formattedApps});
 });

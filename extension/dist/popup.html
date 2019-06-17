@@ -27,17 +27,17 @@
                                          ng-mouseleave="$parent.$parent.highlightWidget(item.id, false)"
                                          ng-click="$parent.$parent.moveToWidget(item.id)">
                                         <div class="widget-header-app">
-                                            <img class="widget-header-app-icon" src="img/apps/{{item.app_slug}}.svg"/>
+                                            <img class="widget-header-app-icon" src="https://apps.elfsight.com{{item.app.icon}}"/>
                                             <div class="widget-header-app-title">
-                                                {{item.app_name}}
+                                                {{item.app.name}}
                                                 <sup class="widget-header-app-version"
-                                                     ng-show="!!item.app_version.curr"
-                                                     ng-class="item.app_version.last == '1.0.0' || item.app_version.curr == item.app_version.last ? 'widget-header-app-version-actual' : ''">
-                                                    ver. {{item.app_version.curr}}
+                                                     ng-show="!!item.app.version.curr"
+                                                     ng-class="item.app.version.last == '1.0.0' || item.app.version.curr == item.app.version.last ? 'widget-header-app-version-actual' : ''">
+                                                    ver. {{item.app.version.curr}}
                                                 </sup>
                                             </div>
                                         </div>
-                                        <div class="widget-header-type">{{item.app_type}}</div>
+                                        <div class="widget-header-type">{{item.app.type}}</div>
 
                                         <div class="widget-header-tooltip">
                                             Move to widget

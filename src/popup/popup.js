@@ -12,7 +12,7 @@ const DEBUG = true;
 
 let popup = angular.module('popup', ['jsonFormatter', 'ui.carousel']);
 
-popup.config(['$compileProvider', function ($compileProvider) {
+popup.config(['$compileProvider', ($compileProvider) => {
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|local|data|chrome-extension):/);
 }]);
 
@@ -50,10 +50,12 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
         });
     };
 
-    $scope.setWidgetsData = function (data) {
+    $scope.setWidgetsData = (data) => {
         $scope.$apply(() => {
             $scope.widgetsData = data;
             $scope.loaded = true;
+
+            console.log($scope.widgetsData)
 
             // may be a fix for ngClick in carousel item
             // if ($scope.widgetsData.length) {
@@ -64,14 +66,14 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
         })
     };
 
-    $scope.togglePopupActive = function () {
+    $scope.togglePopupActive = () => {
         $timeout(function () {
             $scope.popupActive = !$scope.popupActive;
         });
     };
 
     // @TODO fix in carousel item
-    $scope.highlightWidget = function (id, state) {
+    $scope.highlightWidget = (id, state) => {
         $scope.tab_port.postMessage({
             method: 'highlightWidget',
             data: {id: id, state: state}
@@ -79,7 +81,7 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
     };
 
     // @TODO fix in carousel item
-    $scope.moveToWidget = function (id) {
+    $scope.moveToWidget = (id) => {
         console.log('moveTo', id);
 
         $scope.tab_port.postMessage({
@@ -88,7 +90,7 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
         });
     };
 
-    $scope.reload = function () {
+    $scope.reload = () => {
         $scope.reloaded = true;
 
         $scope.bg_port.postMessage({
@@ -97,7 +99,7 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
         });
     };
 
-    $scope.openOptions = function () {
+    $scope.openOptions = () => {
         // if (chrome.runtime.openOptionsPage) {
         //     chrome.runtime.openOptionsPage();
         // } else {
@@ -106,7 +108,7 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
     };
 }]);
 
-popup.directive('widgetsCount', function() {
+popup.directive('widgetsCount', () => {
     return {
         template: `<span class="widgets-count-counter">{{widgetsData.length}}</span> widget{{widgetsData.length > 1 ? "s" : ""}} detected`
     };

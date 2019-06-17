@@ -29,23 +29,21 @@ class Content {
     }
 
     init() {
-        let self = this;
+        this.injectScript(chrome.runtime.getURL('dist/inject.js'));
 
-        self.injectScript(chrome.runtime.getURL('dist/inject.js'));
+        chrome.storage.local.get((data) => {
+            this.appsData = data.apps;
 
-        chrome.storage.sync.get((data) => {
-            self.appsData = data.apps;
+            this.postMessageFactory();
 
-            self.postMessageFactory();
-
-            self.collectScripts();
-            self.collectWidgets();
+            this.collectScripts();
+            this.collectWidgets();
 
             // @TODO init wrap on popup open
-            self.wrapWidgets();
+            this.wrapWidgets();
 
-            if (self.debug) {
-                self.logWidgetsData();
+            if (this.debug) {
+                this.logWidgetsData();
             }
         });
     }
@@ -63,92 +61,72 @@ class Content {
     }
 
     getDataFromContent(data) {
-        let self = this;
-
         data.forEach((widget) => {
-            let curr_app;
-
-            self.appsData.forEach((app) => {
-                if (!!~widget['id'].indexOf(app.slug)) {
-                    curr_app = app;
-                }
-            });
-
-
-            self.widgetsData.push({
-                id: this.widgetsCounter++,
+            this.pushWidget(Object.assign(widget, {
                 app_type: 'CodeCanyon',
-                app_slug: curr_app.slug,
-                app_name: curr_app.name,
-                app_version: {
-                    curr: widget.version,
-                    last: curr_app.version.last
-                },
-                settings: widget.settings,
+                app_name: widget.id,
                 $el: document.getElementById(widget.id)
-            });
+            }));
         });
 
-        self.wrapWidgets();
-        self.getWidgetsData();
+        this.wrapWidgets();
+        this.getWidgetsData();
     }
 
     postMessageFactory() {
-        let self = this;
-
-        let factory = function(obj) {
+        const factory = (obj) => {
             if (obj && obj.method) {
                 if (obj.data) {
-                    self[obj.method](obj.data);
+                    this[obj.method](obj.data);
                 } else {
-                    self[obj.method]();
+                    this[obj.method]();
                 }
             }
         };
 
-        window.addEventListener('message', function(obj) {
+        window.addEventListener('message', (obj) => {
             factory(obj.data ? obj.data : obj);
         });
 
-        chrome.runtime.onConnect.addListener(function(port) {
-            self.port = port;
+        chrome.runtime.onConnect.addListener((port) => {
+            this.port = port;
 
-            self.port.onMessage.addListener(function (obj) {
+            this.port.onMessage.addListener((obj) => {
                 factory(obj);
             })
         });
     }
 
-    pushWidget(data) {
-        let curr_app = {
-            name: 'Unknown',
-            version: {last: '1.0.0', curr: false}
+    getApp(name, type) {
+        let app = {
+            name: name,
+            type: type,
+            version: {last: '1.0.0', curr: false},
         };
 
-        this.appsData.forEach(function(app) {
-            app.aliases.forEach(function (alias) {
-                if (data.app_name.toLowerCase().indexOf(alias) + 1) {
-                    curr_app = app;
+        this.appsData.forEach((item) => {
+            item.aliases.forEach((alias) => {
+                if (!!~name.toLowerCase().indexOf(alias)) {
+                    return app = Object.assign(app, item);
                 }
             });
         });
 
-        if (data.app_name && curr_app.name === 'Unknown') {
-            curr_app.name = data.app_name;
+        if (type !== "CodeCanyon") {
+            app.version.curr = app.version.last;
         }
 
-        if (data.app_type !== "CodeCanyon") {
-            curr_app.version.curr = curr_app.version.last;
-        }
+        return app;
+    }
+
+    pushWidget(data) {
+        const app = this.getApp(data.app_name, data.app_type);
 
         let widgetData = {
             id: this.widgetsCounter++,
             settings: data.settings,
             $el: data.$el,
-            app_type: data.app_type,
-            app_slug: curr_app.slug,
-            app_name: curr_app.name,
-            version: data.app_version || curr_app.version
+            app: app
         };
 
         if (data.publicID) {
@@ -159,8 +137,6 @@ class Content {
     }
 
     collectWidgets() {
-        let self = this;
-
         // @TODO jQuery widgets support
         // @TODO Weebly Apps widgets support
         // @TODO old Weebly InstaShow widgets support https://elf-test-2.weebly.com/
@@ -176,13 +152,13 @@ class Content {
             /**
              * EAPPS
              */
-            regMatches = $curr.className.match(self.eappsRegex);
+            regMatches = $curr.className.match(this.eappsRegex);
             if (regMatches) {
                 publicID = regMatches[1];
             }
 
             if (publicID) {
-                self.widgets.push({
+                this.widgets.push({
                     app_type: 'Elfsight Apps',
                     $el: $curr,
                     publicID: publicID
@@ -194,35 +170,33 @@ class Content {
             /**
              * ESAPPS
              */
-            regMatches = $curr.className.match(self.esappsRegex);
+            regMatches = $curr.className.match(this.esappsRegex);
             if (regMatches) {
                 publicID = regMatches[1];
             }
 
             if (publicID) {
-                self.widgetsData.push({ // @TODO change temp widgetsData to widgets
-                    id: self.widgetsCounter++,
+                this.pushWidget({
                     publicID: publicID,
                     app_type: 'Shopify',
-                    // shop: Shopify.shop // @TODO wait until Shopify can be accessed
-                    settings: {"widgetData": "currently unavailable for shopify"}, // @TODO remove temp
+                    settings: {
+                        "widgetData": "currently unavailable for Shopify"
+                    },
                     $el: $curr
                 });
 
                 publicID = null;
             }
 
-            self.checkDataAttr($curr);
+            this.checkDataAttr($curr);
         }
 
-        self.checkTagNames();
+        this.checkTagNames();
 
-        self.collectWidgetsData();
+        this.collectWidgetsData();
     }
 
     collectScripts() {
-        let self = this;
-
         let version = false;
         let $scripts = document.getElementsByTagName('script');
 
@@ -231,7 +205,7 @@ class Content {
 
             let src = $curr.getAttribute('src');
             if (src) {
-                self.appsData.forEach(function(app) {
+                this.appsData.forEach(function(app) {
                     app.aliases.forEach(function(alias) {
                         if (src.indexOf(alias) + 1) {
                             version = src.split('?ver=')[1];
@@ -239,7 +213,7 @@ class Content {
                             if (version) {
                                 app.version.curr = version;
                             } else {
-                                app.version.curr = self.parseScriptVersion(src);
+                                app.version.curr = this.parseScriptVersion(src);
                             }
                         }
                     })
@@ -280,14 +254,12 @@ class Content {
      * OLD EAPPS
      */
     checkTagNames() {
-        let self = this;
-
         let $tags = document.getElementsByTagName('elfsight-app');
 
         for (let i = 0; i < $tags.length; i++) {
             let $curr = $tags[i];
 
-            self.widgets.push({
+            this.widgets.push({
                 app_type: 'Elfsight Apps',
                 $el: $curr,
                 publicID: $curr.dataset.id
@@ -299,8 +271,6 @@ class Content {
      * data-is, data-it, data-yt
      */
     checkDataAttr($curr) {
-        let self = this;
-
         let dataset = $curr.dataset,
             dataset_keys = Object.keys(dataset);
 
@@ -330,7 +300,7 @@ class Content {
                     settings[option] = dataset[dataset_keys[i]];
                 }
 
-                self.pushWidget({
+                this.pushWidget({
                     app_type: 'data-' + data_prefix,
                     app_name: app_name,
                     settings: settings,
@@ -341,26 +311,22 @@ class Content {
     }
 
     collectWidgetsData() {
-        let self = this;
-
-        for (let i = 0; i < self.widgets.length; i++) {
-            let widget = self.widgets[i];
+        for (let i = 0; i < this.widgets.length; i++) {
+            let widget = this.widgets[i];
 
             if (widget.app_type === 'Elfsight Apps' || widget.app_type === 'Shopify') {
-                self.getPlatformData(widget);
+                this.getPlatformData(widget);
             }
         }
     }
 
     // @TODO refactor, try to catch network requests with chrome.webRequest
     getPlatformData(widget) {
-        let self = this;
-
         let platformUrl;
         if (widget.app_type === 'Elfsight Apps') {
-            platformUrl = self.eappsUrl + '&w=' + widget.publicID;
+            platformUrl = this.eappsUrl + '&w=' + widget.publicID;
         } else if (widget.app_type === 'Shopify' && widget.shop) {
-            platformUrl = self.eappsUrl + '&shop=' + widget.shop + '&w=' + widget.publicID; // @TODO wait until can get shop
+            platformUrl = this.eappsUrl + '&shop=' + widget.shop + '&w=' + widget.publicID; // @TODO wait until can get shop
         }
 
         if (platformUrl) {
@@ -375,7 +341,7 @@ class Content {
                 let responseWidget = responseJSON.data.widgets[widget.publicID];
 
                 if (responseWidget.status) {
-                    self.pushWidget({
+                    this.pushWidget({
                         publicID: widget.publicID,
                         app_type: widget.app_type,
                         app_name: responseWidget.data.app,
@@ -389,12 +355,10 @@ class Content {
     }
 
     wrapWidgets() {
-        let self = this;
-
-        for (let i = 0; i < self.widgetsData.length; i++) {
-            if (!self.widgetsData[i].wrapped) {
-                let app_name = self.widgetsData[i].app_name,
-                    $curr = self.widgetsData[i].$el,
+        for (let i = 0; i < this.widgetsData.length; i++) {
+            if (!this.widgetsData[i].wrapped) {
+                let app_name = this.widgetsData[i].app_name,
+                    $curr = this.widgetsData[i].$el,
                     $wrap = document.createElement('div'),
                     $label = document.createElement('div');
 
@@ -408,8 +372,8 @@ class Content {
                     $label.classList.add('elfsight-widget-label');
                     $label.innerHTML = app_name;
 
-                    self.widgetsData[i].$wrap = $wrap;
-                    self.widgetsData[i].wrapped = true;
+                    this.widgetsData[i].$wrap = $wrap;
+                    this.widgetsData[i].wrapped = true;
                 }
             }
         }
