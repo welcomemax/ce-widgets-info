@@ -202,11 +202,11 @@ class Content {
 
         for (let i = 0; i < $scripts.length; i++) {
             let $curr = $scripts[i];
-
             let src = $curr.getAttribute('src');
+
             if (src) {
-                this.appsData.forEach(function(app) {
-                    app.aliases.forEach(function(alias) {
+                this.appsData.forEach((app) => {
+                    app.aliases.forEach((alias) => {
                         if (src.indexOf(alias) + 1) {
                             version = src.split('?ver=')[1];
 
@@ -413,10 +413,10 @@ class Content {
 
             console.log('\n----------------| ' + widget.app_name + ' detected' + ' |----------------');
 
-            Object.keys(widget).forEach(function (key) {
+            Object.keys(widget).forEach((key) => {
                 let value = widget[key];
 
-                console.log(format_key(key), value, '\n');
+                console.log(this.formatKeyOut(key), value, '\n');
             });
 
             if (widget.app_name !== undefined) {
@@ -424,15 +424,15 @@ class Content {
             } else {
                 console.log('------------------------------------------------------' + '\n\n');
             }
-
-            function format_key (key) {
-                for (let i = 0; i < 10 - key.trim().length; i++) {
-                    key = ' ' + key;
-                }
-
-                return key + ':';
-            }
         }
+    }
+
+    formatKeyOut(key) {
+        for (let i = 0; i < 10 - key.trim().length; i++) {
+            key = ' ' + key;
+        }
+
+        return key + ':';
     }
 
     getWidgetsData() {
