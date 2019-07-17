@@ -63,21 +63,21 @@ class Background {
 
                 // @TODO move to separate class
                 if (this.tab.site === 'partners.shopify.com' && this.tab.url.match(/managed_stores\/new/)) {
-                    this.message(this.tab_port, 'setManagedStore', {
+                    this.postMessage(this.tab_port, 'utilsSetManagedStore', {
                         store_url: this.utils.getQueryParam('store_url', tab.url),
                         permissions: this.utils.getQueryParam('permissions', tab.url).split(','),
                         message: this.utils.getQueryParam('message', tab.url)
                     });
                 }
 
-                this.message(this.tab_port, 'getWidgetsData');
+                this.postMessage(this.tab_port, 'postMessageWidgetsData');
             }
         });
 
         chrome.tabs.onActivated.addListener((info) => {
             this.tab = this.tabs[info.tabId];
 
-            this.returnWidgetsData();
+            this.postMessageReturnWidgetsData();
         });
 
         // @TODO move factory to utils (what about _this_?)
@@ -93,14 +93,14 @@ class Background {
     }
 
     setBadge(count) {
-        console.log(count)
         chrome.browserAction.setBadgeText({text: count ? count.toString() : ''});
+
         if (!count) {
             chrome.browserAction.setBadgeBackgroundColor({color: '#38393a'});
         }
     }
 
-    returnWidgetsData(data) {
+    postMessageReturnWidgetsData(data) {
         if (data) {
             this.storeWidgetsData(data)
         }
@@ -119,25 +119,24 @@ class Background {
         }
 
         if (this.popup_port) {
-            this.message(this.popup_port, 'setWidgetsData', this.widgetsData);
+            this.postMessage(this.popup_port, 'postMessageSetWidgetsData', this.widgetsData);
         }
     }
 
-    message(port, method, data) {
+    postMessage(port, method, data) {
         let event = {method: method};
         if (data) event.data = data;
 
         port.postMessage(event);
     }
 
-    requestWidgetsData () {
-        this.message(this.popup_port, 'setWidgetsData', this.widgetsData);
+    postMessageRequestWidgetsData () {
+        this.postMessage(this.popup_port, 'postMessageSetWidgetsData', this.widgetsData);
     }
 
     storeWidgetsData (data) {
         this.storedWidgetsData[this.tab.id] = data;
     }
 }
-
 
 new Background();

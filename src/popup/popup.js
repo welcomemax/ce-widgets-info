@@ -39,7 +39,7 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
                 }
             }
         });
-        $scope.bg_port.postMessage({method: 'requestWidgetsData'});
+        $scope.bg_port.postMessage({method: 'postMessageRequestWidgetsData'});
 
         chrome.tabs.query({
             currentWindow: true,
@@ -50,7 +50,7 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
         });
     };
 
-    $scope.setWidgetsData = (data) => {
+    $scope.postMessageSetWidgetsData = (data) => {
         $scope.$apply(() => {
             $scope.widgetsData = data;
             $scope.loaded = true;
@@ -75,7 +75,7 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
     // @TODO fix in carousel item
     $scope.highlightWidget = (id, state) => {
         $scope.tab_port.postMessage({
-            method: 'highlightWidget',
+            method: 'postMessageHighlightWidget',
             data: {id: id, state: state}
         });
     };
@@ -85,7 +85,7 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
         console.log('moveTo', id);
 
         $scope.tab_port.postMessage({
-            method: 'moveToWidget',
+            method: 'postMessageMoveToWidget',
             data: {id: id}
         });
     };
@@ -94,7 +94,7 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
         $scope.reloaded = true;
 
         $scope.bg_port.postMessage({
-            method: 'reload',
+            method: 'postMessageRequestWidgetsData',
             data: {tab: $scope.tab}
         });
     };

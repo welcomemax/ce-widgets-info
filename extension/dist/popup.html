@@ -26,22 +26,27 @@
                                          ng-mouseenter="$parent.$parent.highlightWidget(item.id, true)"
                                          ng-mouseleave="$parent.$parent.highlightWidget(item.id, false)"
                                          ng-click="$parent.$parent.moveToWidget(item.id)">
-                                        <div class="widget-header-app">
-                                            <img class="widget-header-app-icon" src="https://apps.elfsight.com{{item.app.icon}}"/>
-                                            <div class="widget-header-app-title">
-                                                {{item.app.name}}
-                                                <sup class="widget-header-app-version"
-                                                     ng-show="!!item.app.version.curr"
-                                                     ng-class="item.app.version.last == '1.0.0' || item.app.version.curr == item.app.version.last ? 'widget-header-app-version-actual' : ''">
-                                                    ver. {{item.app.version.curr}}
-                                                </sup>
+                                        <div class="widget-header-row">
+                                            <div class="widget-header-app">
+                                                <img class="widget-header-app-icon" src="https://apps.elfsight.com{{item.app.icon}}"/>
+                                                <div class="widget-header-app-title">
+                                                    {{item.app.name}}
+                                                    <sup class="widget-header-app-version"
+                                                         ng-show="!!item.app.version.curr"
+                                                         ng-class="item.app.version.last == '1.0.0' || item.app.version.curr == item.app.version.last ? 'widget-header-app-version-actual' : ''">
+                                                        ver. {{item.app.version.curr}}
+                                                    </sup>
+                                                </div>
+                                            </div>
+                                            <div class="widget-header-type">{{item.app.type}}</div>
+
+                                            <div class="widget-header-tooltip">
+                                                Move to widget
+                                                <svg class="widget-header-tooltip-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-forward"></use> </svg>
                                             </div>
                                         </div>
-                                        <div class="widget-header-type">{{item.app.type}}</div>
-
-                                        <div class="widget-header-tooltip">
-                                            Move to widget
-                                            <svg class="widget-header-tooltip-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-forward"></use> </svg>
+                                        <div class="widget-header-row" ng-show="!!item.public_id">
+                                            <span class="widget-header-id" ng-show="!!item.public_id">Public ID: <b>{{item.public_id}}</b></span>
                                         </div>
                                     </div>
 
