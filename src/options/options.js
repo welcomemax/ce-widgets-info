@@ -10,7 +10,8 @@ options.config(['$compileProvider', ($compileProvider) => {
 }]);
 
 options.controller('optionsController', ['$scope', function ($scope) {
-    $scope.widgetsData = [];
+    $scope.data = {};
+    $scope.widgets = [];
 
     this.$onInit = function () {
         $scope.bg_port = chrome.extension.connect();
@@ -24,22 +25,28 @@ options.controller('optionsController', ['$scope', function ($scope) {
             }
         });
 
-        $scope.bg_port.postMessage({method: 'postMessageRequestWidgetsData'});
+        $scope.bg_port.postMessage({method: 'postMessageRequestAllData'});
     };
 
-    $scope.postMessageSetWidgetsData = (data) => {
+    $scope.postMessageSetAllData = (data) => {
         $scope.$apply(() => {
-            $scope.widgetsData = data;
+            $scope.data = data;
+
+            $scope.widgets = [];
+
+            angular.forEach($scope.data.widgets, (tabWidgets, tabId) => {
+                tabWidgets.forEach(tabWidgets => {
+                    tabWidgets.tab = $scope.data.tabs[tabId];
+                    tabWidgets.site = $scope.data.sites[tabWidgets.tab.site];
+                });
+
+                $scope.widgets = $scope.widgets.concat(tabWidgets);
+            });
+
             $scope.loaded = true;
 
-            console.log($scope.widgetsData)
-
-            // may be a fix for ngClick in carousel item
-            // if ($scope.widgetsData.length) {
-            //     $scope.widgetsData.forEach((item) => {
-            //         item.moveTo = $scope.moveToWidget;
-            //     })
-            // }
+            console.log($scope.data)
+            console.log($scope.widgets)
         })
     };
 }]);

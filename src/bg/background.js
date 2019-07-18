@@ -4,12 +4,12 @@ import Utils from './../utils/utils.js';
 
 class Background {
     constructor() {
-        this.storedWidgetsData = {};
-        this.widgetsData = [];
-
+        this.widgets = {};
         this.sites = {};
         this.tabs = {};
         this.tab = {};
+
+        this.tabWidgets = [];
 
         this.tab_port = null;
         this.popup_port = null;
@@ -54,7 +54,7 @@ class Background {
                 if (!this.sites[tab.site].pages[tab.url]) {
                     this.sites[tab.site].pages[tab.url] = {
                         url: tab.url,
-                        widgetsData: []
+                        widgets: []
                     }
                 }
 
@@ -70,14 +70,14 @@ class Background {
                     });
                 }
 
-                this.postMessage(this.tab_port, 'postMessageWidgetsData');
+                this.postMessage(this.tab_port, 'postMessageWidgets');
             }
         });
 
         chrome.tabs.onActivated.addListener((info) => {
             this.tab = this.tabs[info.tabId];
 
-            this.postMessageReturnWidgetsData();
+            this.postMessageReturnTabWidgets();
         });
 
         // @TODO move factory to utils (what about _this_?)
@@ -100,26 +100,21 @@ class Background {
         }
     }
 
-    postMessageReturnWidgetsData(data) {
+    postMessageReturnTabWidgets(data) {
         if (data) {
-            this.storeWidgetsData(data)
+            this.storeWidgets(data)
         }
 
-        if (this.tab) {
-            if (this.storedWidgetsData[this.tab.id]) {
-                this.widgetsData = this.storedWidgetsData[this.tab.id];
-                this.setBadge(this.storedWidgetsData[this.tab.id].length);
-            } else {
-                this.widgetsData = [];
-                this.setBadge(0);
-            }
+        if (this.tab && this.widgets[this.tab.id]) {
+            this.tabWidgets = this.widgets[this.tab.id];
+            this.setBadge(this.widgets[this.tab.id].length);
         } else {
-            this.widgetsData = [];
+            this.tabWidgets = [];
             this.setBadge(0);
         }
 
         if (this.popup_port) {
-            this.postMessage(this.popup_port, 'postMessageSetWidgetsData', this.widgetsData);
+            this.postMessage(this.popup_port, 'postMessageSetTabWidgets', this.tabWidgets);
         }
     }
 
@@ -130,12 +125,20 @@ class Background {
         port.postMessage(event);
     }
 
-    postMessageRequestWidgetsData () {
-        this.postMessage(this.popup_port, 'postMessageSetWidgetsData', this.widgetsData);
+    postMessageRequestAllData() {
+        this.postMessage(this.popup_port, 'postMessageSetAllData', {
+            tabs: this.tabs,
+            sites: this.sites,
+            widgets: this.widgets,
+        });
     }
 
-    storeWidgetsData (data) {
-        this.storedWidgetsData[this.tab.id] = data;
+    postMessageRequestTabWidgets() {
+        this.postMessage(this.popup_port, 'postMessageSetTabWidgets', this.tabWidgets);
+    }
+
+    storeWidgets(data) {
+        this.widgets[this.tab.id] = data;
     }
 }
 

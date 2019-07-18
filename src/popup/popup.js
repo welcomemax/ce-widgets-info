@@ -17,7 +17,7 @@ popup.config(['$compileProvider', ($compileProvider) => {
 }]);
 
 popup.controller('popupController', ['$scope', '$timeout', function ($scope, $timeout) {
-    $scope.widgetsData = [];
+    $scope.widgets = [];
     $scope.loaded = false;
     $scope.settingsFormatted = true;
 
@@ -39,7 +39,7 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
                 }
             }
         });
-        $scope.bg_port.postMessage({method: 'postMessageRequestWidgetsData'});
+        $scope.bg_port.postMessage({method: 'postMessageRequestTabWidgets'});
 
         chrome.tabs.query({
             currentWindow: true,
@@ -50,19 +50,10 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
         });
     };
 
-    $scope.postMessageSetWidgetsData = (data) => {
+    $scope.postMessageSetTabWidgets = (data) => {
         $scope.$apply(() => {
-            $scope.widgetsData = data;
+            $scope.widgets = data;
             $scope.loaded = true;
-
-            console.log($scope.widgetsData)
-
-            // may be a fix for ngClick in carousel item
-            // if ($scope.widgetsData.length) {
-            //     $scope.widgetsData.forEach((item) => {
-            //         item.moveTo = $scope.moveToWidget;
-            //     })
-            // }
         })
     };
 
@@ -94,7 +85,7 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
         $scope.reloaded = true;
 
         $scope.bg_port.postMessage({
-            method: 'postMessageRequestWidgetsData',
+            method: 'postMessageRequestTabWidgets',
             data: {tab: $scope.tab}
         });
     };
@@ -110,6 +101,6 @@ popup.controller('popupController', ['$scope', '$timeout', function ($scope, $ti
 
 popup.directive('widgetsCount', () => {
     return {
-        template: `<span class="widgets-count-counter">{{widgetsData.length}}</span> widget{{widgetsData.length > 1 ? "s" : ""}} detected`
+        template: `<span class="widgets-count-counter">{{widgets.length}}</span> widget{{widgets.length > 1 ? "s" : ""}} detected`
     };
 });

@@ -13,13 +13,13 @@
 
             <header>
                 <h1>Elfsight Widgets Info</h1>
-                <widgets-count ng-if="widgetsData.length" class="widgets-count"></widgets-count>
+                <widgets-count ng-if="widgets.length" class="widgets-count"></widgets-count>
             </header>
 
             <main class="popup-main">
                 <div ng-if="loaded" class="popup-main-container">
-                    <div ng-if="widgetsData.length">
-                        <ui-carousel slides="widgetsData" dots="true">
+                    <div ng-if="widgets.length">
+                        <ui-carousel slides="widgets" dots="true">
                             <carousel-item>
                                 <div class="widget">
                                     <div class="widget-header"
@@ -68,7 +68,7 @@
                         </ui-carousel>
                     </div>
 
-                    <div ng-if="!widgetsData.length" class="widgets-empty">
+                    <div ng-if="!widgets.length" class="widgets-empty">
                         <div class="widgets-empty-text">
                             Widgets weren't detected on the current page
                         </div>
@@ -88,11 +88,11 @@
             </main>
 
             <footer>
-                <div class="control-btn control-btn-left control-clear" ng-click="reload()">
+                <div class="control-btn control-btn-left control-btn-disabled" ng-click="reload()">
                     <svg class="control-btn-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-reload"></use> </svg>
                     Clear cache
                 </div>
-                <div class="control-btn control-btn-right control-options" ng-click="openOptions()">
+                <div class="control-btn control-btn-right" ng-click="openOptions()">
                     Options
                     <svg class="control-btn-icon"> <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-options"></use> </svg>
                 </div>

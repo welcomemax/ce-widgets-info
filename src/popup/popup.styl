@@ -39,7 +39,8 @@ body
         .control-btn
             font-size 12px
             padding 4px 12px 4px 18px
-            transition color .3s .1s, background .3s, padding .3s .2s
+            transition opacity .3s
+            opacity .6
             border-radius 2px
             cursor pointer
             user-select none
@@ -53,9 +54,6 @@ body
                 .control-btn-icon
                     margin-right 4px
 
-                &:hover
-                    padding 4px 12px 4px 20px
-
             &-right
                 margin-right -18px
                 padding 4px 18px 4px 12px
@@ -63,15 +61,8 @@ body
                 .control-btn-icon
                     margin-left 4px
 
-                &:hover
-                    padding 4px 20px 4px 12px
-
-            &:hover
-                background #38393a
-                color #fff
-
-                .control-btn-icon
-                    fill #fff
+            &:hover:not(.control-btn-disabled)
+                opacity 1
 
             &-icon
                 width 16px

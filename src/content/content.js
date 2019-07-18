@@ -4,13 +4,9 @@ class Content {
     constructor() {
         this.debug = true;
 
+        this.apps = [];
         this.widgets = [];
         this.widgetsCounter = 0;
-
-        this.eappsRegex = /^elfsight-app-(.*)$/;
-        this.eappsUrl = 'https://apps.elfsight.com/p/boot/?callback=collect';
-
-        this.widgetsData = [];
 
         this.port = false;
 
@@ -19,8 +15,6 @@ class Content {
             cms: ''
         };
 
-        this.appsData = [];
-
         this.init();
     }
 
@@ -28,7 +22,7 @@ class Content {
         this.injectScript(chrome.runtime.getURL('dist/inject.js'));
 
         chrome.storage.local.get((data) => {
-            this.appsData = data.apps;
+            this.apps = data.apps;
 
             this.postMessageFactory();
         });
@@ -60,7 +54,7 @@ class Content {
             return app;
         }
 
-        this.appsData.forEach((item) => {
+        this.apps.forEach((item) => {
             item.aliases.forEach((alias) => {
                 if (!!~alias.indexOf(name.toLowerCase())) {
                     return app = Object.assign(app, item);
@@ -68,27 +62,47 @@ class Content {
             });
         });
 
-        if (data.platform !== 'cc') {
+        if (data.platform && data.platform !== 'cc') {
             app.version.curr = app.version.last;
         }
 
         return app;
     }
 
-    pushWidget(data) {
-        const app = this.getApp(data);
+    getElement(data) {
+        let element;
 
-        let element = data.element;
+        if (data.element) {
+            element = data.element;
+        }
+
+        if (!element && data.platform && data.public_id) {
+            const classPrefix = data.platform === 'esapps' ? 'elfsight-sapp' : 'elfsight-app';
+
+            let elements = document.querySelectorAll(`.${classPrefix}-${data.public_id}`);
+
+            Array.prototype.slice.call(elements).some(el => {
+                if (!el.selectedAsElement) {
+                    element = el;
+
+                    return el.selectedAsElement = true;
+                }
+            });
+        }
 
         if (!element && data.element_id) {
             element = document.getElementById(data.element_id);
         }
 
+        return element;
+    }
+
+    pushWidget(data) {
         let widgetData = {
             id: this.widgetsCounter++,
             settings: data.settings,
-            element: element,
-            app: app
+            element: this.getElement(data),
+            app: this.getApp(data)
         };
 
         if (data.public_id) {
@@ -99,56 +113,11 @@ class Content {
             this.logWidgetData(widgetData);
         }
 
-        this.widgetsData.push(widgetData);
+        this.widgets.push(widgetData);
 
         widgetData.wrapper = this.wrapWidget(widgetData);
 
-        this.postMessageWidgetsData();
-    }
-
-    /**
-     * data-is, data-it, data-yt
-     */
-
-    // @TODO move into inject
-    checkDataAttr($curr) {
-        let dataset = $curr.dataset,
-            dataset_keys = Object.keys(dataset);
-
-        let settings = {},
-            app_name, data_prefix;
-
-        if (dataset_keys[0]) {
-            switch (dataset_keys[0]) {
-                case 'is':
-                    data_prefix = 'is';
-                    app_name = 'InstaShow';
-                    break;
-                case 'yt':
-                    data_prefix = 'yt';
-                    app_name = 'Yottie';
-                    break;
-                case 'il':
-                    data_prefix = 'il';
-                    app_name = 'InstaLink';
-                    break;
-            }
-
-            if (data_prefix && app_name) {
-                for (let i = 1; i < dataset_keys.length; i++) {
-                    let option = dataset_keys[i].replace(data_prefix, '').toLowerCase();
-
-                    settings[option] = dataset[dataset_keys[i]];
-                }
-
-                this.pushWidget({
-                    app_type: 'data-' + data_prefix,
-                    app_name: app_name,
-                    settings: settings,
-                    element: $curr
-                });
-            }
-        }
+        this.postMessageWidgets();
     }
 
     wrapWidget(widget) {
@@ -178,7 +147,7 @@ class Content {
             return key + ':';
         };
 
-        console.log('\n----------------| ' + widget.app_name + ' detected' + ' |----------------');
+        console.log('\n----------------| ' + widget.app.name + ' detected' + ' |----------------');
 
         Object.keys(widget).forEach((key) => {
             let value = widget[key];
@@ -186,8 +155,8 @@ class Content {
             console.log(formatKeyOut(key), value, '\n');
         });
 
-        if (widget.app_name !== undefined) {
-            console.log('---------------------------------------------' + widget.app_name.replace(/./g, '-') + '\n\n');
+        if (widget.app.name !== undefined) {
+            console.log('---------------------------------------------' + widget.app.name.replace(/./g, '-') + '\n\n');
         } else {
             console.log('------------------------------------------------------' + '\n\n');
         }
@@ -225,14 +194,14 @@ class Content {
         this.pushWidget(widget);
     }
 
-    postMessageWidgetsData() {
+    postMessageWidgets() {
         if (this.port) {
-            this.port.postMessage({method: 'postMessageReturnWidgetsData', data: this.widgetsData});
+            this.port.postMessage({method: 'postMessageReturnTabWidgets', data: this.widgets});
         }
     }
 
     postMessageHighlightWidget(data) {
-        let wrapper = this.widgetsData[data.id].wrapper;
+        let wrapper = this.widgets[data.id].wrapper;
 
         if (wrapper) {
             wrapper.classList.toggle('ceewi-highlight', data.state);
@@ -240,7 +209,7 @@ class Content {
     }
 
     postMessageMoveToWidget(data) {
-        let element = this.widgetsData[data.id].element;
+        let element = this.widgets[data.id].element;
 
         element.scrollIntoView({
             behavior: 'smooth',

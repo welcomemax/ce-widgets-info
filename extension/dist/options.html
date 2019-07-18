@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Widgets Info Options</title>
+        <title>Widgets Info</title>
 
         <script src="options.js" type="text/javascript"></script>
     </head>
@@ -10,16 +10,73 @@
              ng-app="options"
              ng-controller="optionsController as app">
 
+
             <header>
-                Elfight Widgets Info Options
+                <div class="container">
+                    <h1>Widgets Info</h1>
+                </div>
             </header>
 
-            <table>
-                <tr></tr>
-                <tr ng-repeat="widget in widgetsData">
+            <main>
+                <div class="container">
+                    <div class="options-block">
+                        <h3>Widgets</h3>
+                        <table class="options-table">
+                            <thead>
+                                <tr>
+                                    <th>Page</th>
+                                    <th>App</th>
+                                    <th>Widget</th>
+                                    <th>Settings</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="widget in widgets">
+                                    <td class="options-table-page">
+                                        <p><a href="{{widget.tab.url}}" target="_blank">{{widget.tab.title}}</a></p>
+                                    </td>
+                                    <td>
+                                        <p>{{widget.app.name}}<br></p>
+                                        <p ng-show="widget.app.type">({{widget.app.type}})</p>
+                                    </td>
+                                    <td>
+                                        <p ng-show="widget.public_id">Public ID: {{widget.public_id}}<br></p>
+                                        <p ng-show="!widget.public_id && widget.settings.widgetId">Widget ID: {{widget.settings.widgetId}}</p>
+                                    </td>
+                                    <td class="options-table-settings">
+                                        <div class="widget-settings-toggle" ng-click="widget.showSettings = !widget.showSettings">Toggle settings</div>
+                                        <pre class="widget-settings" ng-show="widget.showSettings">{{widget.settings | json}}</pre>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-                </tr>
-            </table>
+                    <div class="container">
+                        <div class="options-block">
+                            <h3>Tabs</h3>
+                            <table class="options-table">
+                                <thead>
+                                    <tr>
+                                        <th>Site</th>
+                                        <th>Page</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="(id, tab) in data.tabs">
+                                        <td>{{tab.site}}</td>
+                                        <td>
+                                            {{tab.title}}<br>
+                                            {{tab.url}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
         </div>
     </body>
 </html>

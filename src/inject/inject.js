@@ -1,14 +1,11 @@
 class Inject {
     constructor() {
-        this.esappsRegex = /^elfsight-sapp-(.*)$/;
-        this.eappsRegex = /^elfsight-app-(.*)$/;
-
         this.init();
     }
 
     init() {
         this.lookupCCApps();
-        // this.lookupPlatformApps();
+        this.lookupDataAttrs();
     }
 
     postMessage(data) {
@@ -35,48 +32,49 @@ class Inject {
         });
     }
 
-    lookupPlatformApps() {
-        let divs = document.getElementsByTagName('div');
+    lookupDataAttrs() {
+        let divs = document.querySelectorAll('div[data-is], div[data-yt], div[data-il]');
 
-        for (let i = 0; i < divs.length; i++) {
-            const currentDiv = divs[i];
-            let type, publicID;
+        Array.prototype.slice.call(divs).forEach((element) => {
+            let dataset = element.dataset,
+                dataset_keys = Object.keys(dataset);
 
-            let esappsRegMatches = currentDiv.className.match(this.esappsRegex);
-            if (esappsRegMatches && esappsRegMatches[1]) {
-                type = 'Shopify';
-                publicID = esappsRegMatches[1];
-            }
+            let settings = {},
+                app_name, data_prefix;
 
-            let eappsRegMatches = currentDiv.className.match(this.eappsRegex);
-            if (eappsRegMatches && eappsRegMatches[1]) {
-                type = 'Elfsight Apps';
-                publicID = eappsRegMatches[1];
-            }
-
-            if (publicID) {
-                this.awaitElementData(currentDiv).then(data => {
-                    this.postMessage({
-                        public_id: publicID,
-                        app_type: type,
-                        settings: data.options,
-                        element_id: currentDiv.getAttribute('id'),
-                    });
-                })
-            }
-        }
-    }
-
-    awaitElementData(element) {
-        let awaitInterval = null;
-
-        return new Promise(resolve => {
-            awaitInterval = setInterval(() => {
-                if (element.data) {
-                    clearInterval(awaitInterval);
-                    return resolve(element.data);
+            if (dataset_keys[0]) {
+                switch (dataset_keys[0]) {
+                    case 'is':
+                        data_prefix = 'is';
+                        app_name = 'InstaShow';
+                        break;
+                    case 'yt':
+                        data_prefix = 'yt';
+                        app_name = 'Yottie';
+                        break;
+                    case 'il':
+                        data_prefix = 'il';
+                        app_name = 'InstaLink';
+                        break;
                 }
-            }, 1000)
+
+                if (data_prefix && app_name) {
+                    for (let i = 1; i < dataset_keys.length; i++) {
+                        let option = dataset_keys[i].replace(data_prefix, '');
+
+                        option = option.charAt(0).toLowerCase() + option.slice(1);
+
+                        settings[option] = dataset[dataset_keys[i]];
+                    }
+
+                    this.postMessage({
+                        settings: settings,
+                        element_id: element.getAttribute('id'),
+                        app_type: 'data-' + data_prefix,
+                        app_name: app_name
+                    });
+                }
+            }
         })
     }
 }
