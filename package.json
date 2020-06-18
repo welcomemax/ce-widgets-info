@@ -35,7 +35,7 @@
     "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
-    "angular": "^1.7.8",
+    "angular": "^1.8.0",
     "angular-ui-carousel": "^0.1.10",
     "jsonformatter": "^0.7.0"
   }
